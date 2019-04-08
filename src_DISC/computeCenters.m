@@ -1,0 +1,76 @@
+function [components,mu_data_fit,state_data_fit] = computeCenters(data,data_fit)
+%% Compute Components, statedata_fit, and clusters from data and state assignment 
+% Author: David S. White
+% Contact: dwhite7@wisc.edu
+%
+% Updates:
+% --------
+% 2018-06-06 DSW wrote the code
+% -------------------------------------------------------------------------
+% Overview:
+% ---------
+% Compute all [weights, mu, sigmas] of each cluster provided in Y from
+% data in X. Y can be either a state data_fit or clusters. 
+%
+% Input Variables:
+% ----------------
+% data = N X 1 data
+%
+% data_fit = N X 1 cluster labels (i.e 1,2,3 or 100 ,200, 300)
+%
+% Output Variables:
+% ----------------
+% components = [weight,mu,sigma] of Gaussian fit [k,3]
+%
+% mu_data_fit = sorted cluster assigment for datapoints as integers (i.e 1,2,3)
+%
+% state_data_fit = cluster assignment for datapoints using mean of cluster (i.e 100,200,300)
+
+% Check Input Varables 
+if ~exist('data','var') | isempty(data)
+    disp('Error in computeCenters: Need Data to Analyze'); 
+    return; 
+end
+if ~exist('data_fit','var') | isempty(data_fit)
+    disp('Error in computeCenter: Need data_fit'); 
+    return; 
+end
+if length(data) ~= length(data_fit)
+    disp('Error in computeCenters: Inputs must be the same length'); 
+    return;
+end
+
+% initalize 
+n_data_points = numel(data);
+labels = unique(data_fit); 
+
+reference_data_fit = zeros(n_data_points,1); % reference
+mu_data_fit = zeros(n_data_points,1);
+state_data_fit = zeros(n_data_points,1);
+
+% create a reference that is sorted
+labels = unique(data_fit); 
+for k = 1:length(labels)
+    idx = find(data_fit == labels(k));
+    reference_data_fit(idx) = mean(data(idx));
+end
+% initalize 
+centers  = unique(reference_data_fit);
+components = zeros(length(labels),3); % [weight, mu, sigma]
+
+% compute all variables
+for k = 1:length(centers);
+    % find data points assigned to cluster == k 
+    index = find(reference_data_fit == centers(k));
+    [mu,sigma] = normfit(data(index));
+    weight = length(index) / n_data_points;
+    
+    % store 
+    mu_data_fit(index) = mu;    % described by mean value
+    state_data_fit(index) = k;  % described by state integer value
+    components(k,1) = weight;   % Proportion of data in the cluster
+    components(k,2) = mu;       % mean of the data in the cluster
+    components(k,3) = sigma + 1e-6; % avoid non-zero standard deviations
+    
+end
+    
