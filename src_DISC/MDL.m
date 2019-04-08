@@ -26,7 +26,7 @@ state_time = zeros(1,n_states);
 % total time in each state 
 for k  = 1:n_states
     state_idx = find(events(:,4) == states(k)); % position 4 = state labels
-    state_time(k) = sum(events(state_idx,3)); % position 3 = dwell times 
+    state_time(k) = sum(events(state_idx,3));   %position 3 = dwell times 
 end
 % transition values ^2
 transitons = (events(1:end-1,4) - events(2:end,4)).^2;
