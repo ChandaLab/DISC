@@ -1,4 +1,4 @@
-# Divisive Segmentation and Clustering Operator (DISC)
+# Divisive Segmentation and Clustering (DISC)
 
 The use of divisive segmentation and clustering (DISC) is an extremely fast and accurate method for  idealizing time series data. DISC was developed for applications in single-molecule data, wherein molecules transitions between different conformational states over time. 
 
