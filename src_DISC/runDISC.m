@@ -1,4 +1,4 @@
-function [components, ideal, class, metrics, DISC_FIT] = runDISC(data, input_type, input_value, divisive_IC, agglomerative_IC, viterbi_iter, return_k);
+function [Components, Ideal, Class, Metrics, DISC_FIT] = runDISC(data, input_type, input_value, divisive_IC, agglomerative_IC, viterbi_iter, return_k);
 %% DISC : Divisive Segmentation and Clustering for Time Series Idealization
 % Author: David S. White
 % Contact: dwhite7@wisc.edu
@@ -72,16 +72,16 @@ function [components, ideal, class, metrics, DISC_FIT] = runDISC(data, input_typ
 % -----------------
 % All input & output variables are contained in the structue: DISC_FIT
 %
-% DISC_FIT.components = [K,3] where rows are the components of each
+% Components = [K,3] where rows are the components of each
 %   identified state [weight, mu, sigma] and K = number of states.
 %
-% DISC_FIT.ideal = [N,1], idealized data_fit described by the mu of each
+% Ideal = [N,1], idealized data_fit described by the mu of each
 %   state.
 %
-% DISC_FIT.class = [N,1] state data_fit of the data points by cluster
+% Class = [N,1] state data_fit of the data points by cluster
 %   assignment (i.e 1 2 3 etc...).
 %
-% DISC_FIT.metrics = Information criterion values obtained during
+% DISC_FIT.Metrics = Information criterion values obtained during
 %   Hierachiacal Agglomerative Clustering. Values are normalized between
 %   0 (best) and 1 (worst).
 %
@@ -181,13 +181,13 @@ if n_states > 1 && ~strcmp(agglomerative_IC, 'none')
     % Compute agglomerative_IC for each and take the best_fit number of
     % states
      norm = 1; 
-     [metrics, best_fit] = computeIC(data, all_data_fits, agglomerative_IC,norm);
+     [Metrics, best_fit] = computeIC(data, all_data_fits, agglomerative_IC,norm);
      
      % store output of best_fit 
      data_fit = all_data_fits(:,best_fit); 
      
 else
-    metrics = []; % need an ouput; 
+    Metrics = []; % need an ouput; 
     all_data_fits = []; 
 end
 
@@ -202,7 +202,7 @@ if return_k
 end
 
 % Store the computed metric values from agglomerative_IC & all_data_fits 
-DISC_FIT.metrics = metrics; 
+DISC_FIT.Metrics = Metrics; 
 DISC_FIT.all_data_fits = all_data_fits;
 
 %% Step 3. Viterbi Algorithm
@@ -211,6 +211,6 @@ if viterbi_iter > 0 && n_states > 1
 end
 
 %% Store Final Output
-[components,ideal,class] = computeCenters(data, data_fit);
+[Components,Ideal,Class] = computeCenters(data, data_fit);
 
 end
