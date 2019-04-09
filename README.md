@@ -1,15 +1,19 @@
 # Divisive Segmentation and Clustering (DISC)
+##David S. White
+##2019-04-09
 
-The use of divisive segmentation and clustering (DISC) is an extremely fast and accurate method for  idealizing time series data. DISC was developed for applications in single-molecule data, wherein molecules transitions between different conformational states over time. 
+
+## Welcome! 
+
+DISC is an open source (GNU license)  MATLAB package for  time series idealization (i.e. identifying significant states and transitions). We enhance change-point detection algorithms with divisive clustering scheme to accelerate the typical speed of time-trajectory analysis by orders of magnitude while retaining or improving accuracy. We have designed the DISC framework to be a flexible approach, with applications primarily in single-molecule data, such as smFRET and force spectroscopy. The full details of this work are described in “High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering (manuscript in preparation)”. 
+
+Our graphical user interface (GUI) was designed to be as user friendly as possible and we welcome feedback on how we can improve. Please see DISC_user_manual.pdf for full instructions. As DISC gains more use, we can make other requested features available. All updates will be made available on https://github.com/ChandaLab/DISC. 
 
 
 ### Installing 
 
 DISC is written entirely in MATLAB (using MATLAB2017b). No installation beyond obtaining MATLAB is required. Simply add the DISC folder to your file path. 
 
-### Sample Data 
-
-Sample data sets are found in  /DISC/sample_data
 
 ### Running DISCO
 
@@ -19,11 +23,11 @@ DISC can be run from the command line of MATLAB via
 DISC
 ```
 
-or run outside of the GUI using the runDISC.m function. 
+or run outside of the GUI using the runDISC.m function. Within the DISC GUI, data can be loaded and saved under file->load / file-> save.
 
 ## Authors
 
-David S. White conceived and wrote the DISC algorithm as part of his thesis work at UW-Madison. Owen Rafferty developed the GUI for running the DISC algorithm.
+David S. White conceived and wrote the DISC algorithm as part of his PhD work at UW-Madison in the labs of Baron Chanda and Randall Goldsmith. Owen Rafferty developed the GUI for running the DISC algorithm.
 
 
 ### Contact 
