@@ -1,7 +1,0 @@
-*.tmp
-
-# Word doc 
-$*.docx*
-
-# Word temporary
-~$*.docx*
