@@ -71,6 +71,7 @@ switch p.inputParameters.divisiveIC
     case 'MDL'
         set(popup_divisiveIC,'Value',5)
 end
+
 % and make the group visible
 popup_divisiveIC.Visible = 'on';
 
