@@ -3,7 +3,7 @@
 
 ## Welcome! 
 
-Welcome to DISC! This porgram is an open source (GNU license)  MATLAB package for  time series idealization (i.e. identifying significant states and transitions). We enhance change-point detection algorithms with divisive clustering scheme to accelerate the typical speed of time-trajectory analysis by orders of magnitude while retaining or improving accuracy. We have designed the DISC framework to be a flexible approach, with applications primarily in single-molecule data, such as smFRET and force spectroscopy. The full details of this work are described in “High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering (manuscript in preparation)”. 
+Welcome to DISC! This porgram is an open source MATLAB package for  time series idealization (i.e. identifying significant states and transitions). We enhance change-point detection algorithms with divisive clustering scheme to accelerate the typical speed of time-trajectory analysis by orders of magnitude while retaining or improving accuracy. We have designed the DISC framework to be a flexible approach, with applications primarily in single-molecule data, such as smFRET and force spectroscopy. The full details of this work are described in “High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering (manuscript in preparation)”. 
 
 Our graphical user interface (GUI) was designed to be as user friendly as possible and we welcome feedback on how we can improve. As DISC gains more use, we can make other requested features available. All updates will be made available on https://github.com/ChandaLab/DISC. 
 
@@ -29,14 +29,17 @@ or run outside of the GUI using the runDISC.m function.
 
 David S. White conceived and wrote the DISC algorithm as part of his PhD work at UW-Madison in the labs of Baron Chanda and Randall Goldsmith. Owen Rafferty developed the GUI for running the DISC algorithm.
 
-
 ## Contact 
 
-All questions and comments pertaining to the use of DISC should be addressed to David S. White at dwhite7@wisc.edu
+If you have any questions, comments, or bugs to report, we will do our best to address them. Please contact David S. White at dwhite7@wisc.edu 
 
 ## References 
 
 White, D.S., et al., 2019, Manuscript in preparation 
+
+## License 
+
+Currently released under GPLv3
 
 ## Acknowledgements 
 
