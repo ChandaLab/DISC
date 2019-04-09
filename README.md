@@ -4,7 +4,7 @@
 
 DISC (divisive segmentation and clustering) is an open source MATLAB package for  time series idealization (i.e. identifying significant states and transitions). We enhance change-point detection algorithms with divisive clustering scheme to accelerate the typical speed of time-trajectory analysis by orders of magnitude while retaining or improving accuracy. We have designed the DISC framework to be a flexible approach, with applications primarily in single-molecule data, such as smFRET and force spectroscopy. The full details of this work are described in “High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering”. 
 
-Our graphical user interface (GUI) was designed to be as user friendly as possible and we welcome feedback on how we can improve. Please see DISC_user_manual.pdf for full instructions. As DISC gains more use, we can make other requested features available. All updates will be made available on https://github.com/ChandaLab/DISC. 
+DISCO the graphical user interface (GUI) for DISC, was designed to be as user friendly as possible and we welcome feedback on how we can improve. Please see DISCO_user_manual.pdf for full instructions. As DISCO gains more use, we can make other requested features available. All updates will be made available on https://github.com/ChandaLab/DISC. 
 
 
 For any questions, comments, or concerns, please contact David S. White at dwhite7@wisc.edu 
@@ -17,10 +17,10 @@ DISC is written entirely in MATLAB (using MATLAB2017b). No installation beyond o
 
 ### Running DISCO
 
-DISC can be run from the command line of MATLAB via
+DISC can be run in a GUI from run from the command line of MATLAB via
 
 ```
-DISC
+DISCO
 ```
 
 or run outside of the GUI using the runDISC.m function. 
