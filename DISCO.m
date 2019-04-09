@@ -1,5 +1,5 @@
-function DISC()
-% DISC GUI
+function DISCO()
+% DISC GUI -> DISCO
 % Authors: David S. White  & Owen Rafferty
 % contact: dwhite7@wisc.edu
 
@@ -40,7 +40,7 @@ end
 % init GUI
 p.guiHandle = roiViewerGUI();
 
-% define default analysis parameters to be called later in dialog
+% define default analysis parameåters to be called later in dialog
 p.inputParameters.thresholdValue = 0.05;
 p.inputParameters.thresholdType = 'alpha_value';
 p.inputParameters.divisiveIC = 'BIC-GMM';

@@ -20,12 +20,12 @@ if isfield(data.rois, 'Metric') && ~isempty(data.rois(p.roiIdx,p.currentChannelI
     metric = data.rois(p.roiIdx,p.currentChannelIdx).Metric;
     total_states = size(data.rois(p.roiIdx,p.currentChannelIdx).Components,1); 
     
-    % plot all values 
-    hold(p.h3, 'on')
+    % plot all values
     plot(p.h3, metric,'-o','MarkerSize',10);
-    best = size(data.rois(p.roiIdx,p.currentChannelIdx).Components,1); 
+    hold(p.h3, 'on')
+    best = size(data.rois(p.roiIdx,p.currentChannelIdx).Components,1);
     scatter(p.h3, best, metric(best),100,'filled', 'MarkerFaceColor','r', 'MarkerEdgeColor','r');
-     hold(p.h3, 'off')
+    hold(p.h3, 'off')
     ylim(p.h3,[-0.1,1.1])
     xlim(p.h3,[0.5, length(metric)+0.5]);
     
