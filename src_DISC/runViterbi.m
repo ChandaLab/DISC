@@ -1,4 +1,4 @@
-function viterbi_data_fit = runViterbi(data, data_fit,max_iter)
+function viterbi_data_fit = runViterbi(data,data_fit,max_iter)
 %% Run Viterbi from DISC
 % David S. White
 % dwhite7@wisc.edu
