@@ -75,17 +75,17 @@ function [components, ideal, class, metrics, DISC_FIT] = runDISC(data, input_typ
 % DISC_FIT.components = [K,3] where rows are the components of each
 %   identified state [weight, mu, sigma] and K = number of states.
 %
-% DISC_FIT.ideal = [N,1], idealized sequence described by the mu of each
+% DISC_FIT.ideal = [N,1], idealized data_fit described by the mu of each
 %   state.
 %
-% DISC_FIT.class = [N,1] state sequence of the data points by cluster
+% DISC_FIT.class = [N,1] state data_fit of the data points by cluster
 %   assignment (i.e 1 2 3 etc...).
 %
 % DISC_FIT.metrics = Information criterion values obtained during
 %   Hierachiacal Agglomerative Clustering. Values are normalized between
 %   0 (best) and 1 (worst).
 %
-% DISC_fit.all_sequences = All potential number of states grouped
+% DISC_fit.all_data_fits = All potential number of states grouped
 %   iteratively by aggCluster.m. [N,K] where [N,1] = 1 states, [N,2] = 2
 %   states, etc..
 %
@@ -167,7 +167,7 @@ DISC_FIT.return_k = return_k;
 
 %% Step 1. Divisive Clustering 
 % Determine number of clusters and transitons between them 
-[sequence,n_states] = divSegment(data, input_type, input_value, divisive_IC);
+[data_fit,n_states] = divSegment(data, input_type, input_value, divisive_IC);
 
 %% Step 2. Hierarchical Agglomerative Clustering
 % If at least one cluster was returned, find the ideal number of states
@@ -176,19 +176,19 @@ DISC_FIT.return_k = return_k;
 if n_states > 1 && ~strcmp(agglomerative_IC, 'none')
     
     % Create Hierarchy of all clusters using Ward's Distance.
-    all_sequences = aggCluster(data, sequence);
+    all_data_fits = aggCluster(data, data_fit);
 
     % Compute agglomerative_IC for each and take the best_fit number of
     % states
      norm = 1; 
-     [metrics, best_fit] = computeIC(data, all_sequences, agglomerative_IC,norm);
+     [metrics, best_fit] = computeIC(data, all_data_fits, agglomerative_IC,norm);
      
      % store output of best_fit 
-     sequence = all_sequences(:,best_fit); 
+     data_fit = all_data_fits(:,best_fit); 
      
 else
     metrics = []; % need an ouput; 
-    all_sequences = []; 
+    all_data_fits = []; 
 end
 
 % Optional: force a best_fit to return_k_states
@@ -198,20 +198,19 @@ if return_k
     if return_k > n_states
         return_k = n_states;
     end
-    sequence = all_sequences(:,return_k);
+    data_fit = all_data_fits(:,return_k);
 end
 
-% Store the computed metric values from agglomerative_IC & all_sequences 
+% Store the computed metric values from agglomerative_IC & all_data_fits 
 DISC_FIT.metrics = metrics; 
-DISC_FIT.all_sequences = all_sequences;
+DISC_FIT.all_data_fits = all_data_fits;
 
 %% Step 3. Viterbi Algorithm
 if viterbi_iter > 0 && n_states > 1
-    sequence = runViterbi(data, sequence, viterbi_iter);
+    data_fit = runViterbi(data, data_fit, viterbi_iter);
 end
 
 %% Store Final Output
-%[DISC_FIT.components, DISC_FIT.ideal,DISC_FIT.class] = computeCenters(data, sequence);
-[components, ideal,class] = computeCenters(data, sequence);
+[components,ideal,class] = computeCenters(data, data_fit);
 
 end
