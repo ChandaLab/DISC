@@ -30,7 +30,7 @@ or run outside of the GUI using the runDISC.m function.
 David S. White conceived and wrote the DISC algorithm as part of his PhD work at UW-Madison in the labs of Baron Chanda and Randall Goldsmith. Owen Rafferty developed the GUI for running the DISC algorithm.
 
 
-### Contact 
+## Contact 
 
 All questions and comments pertaining to the use of DISC should be addressed to David S. White at dwhite7@wisc.edu
 
