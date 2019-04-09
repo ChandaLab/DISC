@@ -1,16 +1,34 @@
-# Divisive Segmentation and Clustering (DISC)
+### Installing \begin{figure}[htbp] %  figure placement: here, top, bottom, or page
+   \centering
+   \includegraphics[width=2in]{example.jpg} 
+   \caption{example caption}
+   \label{fig:example}
+\end{figure}\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}				% Use pdf, png, jpg, or eps§ with pdflatex; use eps in DVI mode
+								% TeX will automatically convert eps --> pdf in pdflatex		
+\usepackage{amssymb}
+
+%SetFonts
+
+%SetFonts
 
 
-## Welcome! 
+\title{Brief Article}
+\author{The Author}
+%\date{}							% Activate to display a given date or no date
 
-Welcome to DISC! This porgram is an open source MATLAB package for  time series idealization (i.e. identifying significant states and transitions). We enhance change-point detection algorithms with divisive clustering scheme to accelerate the typical speed of time-trajectory analysis by orders of magnitude while retaining or improving accuracy. We have designed the DISC framework to be a flexible approach, with applications primarily in single-molecule data, such as smFRET and force spectroscopy. The full details of this work are described in “High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering (manuscript in preparation)”. 
+\begin{document}
+\maketitle
+%\section{}
+%\subsection{}
 
-Our graphical user interface (GUI) was designed to be as user friendly as possible and we welcome feedback on how we can improve. As DISC gains more use, we can make other requested features available. All updates will be made available on https://github.com/ChandaLab/DISC. 
-
- Please see DISC_user_manual.pdf for a comprehensive set of updated instructions. 
 
 
-### Installing 
+\end{document}  
 
 DISC is written entirely in MATLAB (using MATLAB2017b). No installation beyond obtaining MATLAB is required. Simply add the DISC folder to your file path. 
 
