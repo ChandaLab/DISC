@@ -1,6 +1,4 @@
 # Divisive Segmentation and Clustering (DISC)
-##David S. White
-##2019-04-09
 
 
 ## Welcome! 
