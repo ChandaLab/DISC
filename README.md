@@ -38,6 +38,6 @@ White, D.S., et al., 2019, Manuscript in preparation
 
 ## Acknowledgements 
 
-This project would not be possible without the support of both Dr. Baron Chanda and Dr. Randall H. Goldsmith at UW-Madison. We also thank Dr. Marcel Goldschen-Ohm for helpful feedback on the development of DISC and early GUI code. This project was supported in part by the N.I.H. (T32 GM007507 to D.S.W. and 1R01NS101723-01 to B.C.).
+This project would not be possible without the support of both Dr. Baron Chanda and Dr. Randall H. Goldsmith at UW-Madison. We also thank Dr. Marcel Goldschen-Ohm for helpful feedback on the development of DISC and early GUI code. This project was supported by the NIH grants to B.C (NS-101723, NS-081320, and NS-081293), D.S.W (T32 fellowship GM007507) and R.H.G. (GM127957).
 
 
