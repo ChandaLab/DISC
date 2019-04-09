@@ -1,7 +1,7 @@
 *.tmp
 
 # Word doc 
-$*.doc*
+$*.docx*
 
 # Word temporary
-~$*.doc*
+~$*.docx*
