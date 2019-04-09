@@ -21,7 +21,7 @@ DISC can be run from the command line of MATLAB via
 DISC
 ```
 
-or run outside of the GUI using the runDISC.m function. Within the DISC GUI, data can be loaded and saved under file->load / file-> save.
+or run outside of the GUI using the runDISC.m function. 
 
 ## Authors
 
