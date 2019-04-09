@@ -29,10 +29,6 @@ if isfield(data.rois, 'Metric') && ~isempty(data.rois(p.roiIdx,p.currentChannelI
     ylim(p.h3,[-0.1,1.1])
     xlim(p.h3,[0.5, length(metric)+0.5]);
     
-    % plot best value in red 
-%     best = size(data.rois(p.roiIdx,p.currentChannelIdx).Components,1); 
-%     scatter(p.h3, best, metric(best),100,'filled', 'MarkerFaceColor','r', 'MarkerEdgeColor','r');
-    
 else
     % Hide the metric axes if DISC has not yet been run
     set(p.h3, 'Visible','off');
