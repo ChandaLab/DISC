@@ -6,11 +6,12 @@ function [components,mu_data_fit,state_data_fit] = computeCenters(data,data_fit)
 % Updates:
 % --------
 % 2018-06-06 DSW wrote the code
+% 2019-04-09 DSW simplified code. 2X speed increase
 % -------------------------------------------------------------------------
 % Overview:
 % ---------
 % Compute all [weights, mu, sigmas] of each cluster provided in Y from
-% data in X. Y can be either a state data_fit or clusters. 
+% data in data. data_fit can be either a state data_fit or clusters. 
 %
 % Input Variables:
 % ----------------
@@ -43,31 +44,22 @@ end
 % initalize 
 n_data_points = numel(data);
 labels = unique(data_fit); 
+n_labels = length(labels); 
+mu_data_fit = zeros(n_data_points,1); 
+components = zeros(n_labels,3); % [weight, mu, sigma]
 
-reference_data_fit = zeros(n_data_points,1); % reference
-mu_data_fit = zeros(n_data_points,1);
-state_data_fit = zeros(n_data_points,1);
-
-% create a reference that is sorted
-labels = unique(data_fit); 
-for k = 1:length(labels)
-    idx = find(data_fit == labels(k));
-    reference_data_fit(idx) = mean(data(idx));
-end
-% initalize 
-centers  = unique(reference_data_fit);
-components = zeros(length(labels),3); % [weight, mu, sigma]
+% organize unique values in ascending order 
+[~,~,state_data_fit] = unique(data_fit);
 
 % compute all variables
-for k = 1:length(centers);
-    % find data points assigned to cluster == k 
-    index = find(reference_data_fit == centers(k));
+for k = 1:n_labels
+    % find data points assigned to cluster == k
+    index = state_data_fit == k; 
     [mu,sigma] = normfit(data(index));
-    weight = length(index) / n_data_points;
+    weight = sum(index) / n_data_points;
     
-    % store 
+    % store
     mu_data_fit(index) = mu;    % described by mean value
-    state_data_fit(index) = k;  % described by state integer value
     components(k,1) = weight;   % Proportion of data in the cluster
     components(k,2) = mu;       % mean of the data in the cluster
     components(k,3) = sigma + 1e-6; % avoid non-zero standard deviations
