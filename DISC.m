@@ -40,7 +40,7 @@ end
 % init GUI
 p.guiHandle = roiViewerGUI();
 
-% define default analysis parameåters to be called later in dialog
+% define default analysis parameters to be called later in dialog
 p.inputParameters.thresholdValue = 0.05;
 p.inputParameters.thresholdType = 'alpha_value';
 p.inputParameters.divisiveIC = 'BIC-GMM';
