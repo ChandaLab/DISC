@@ -8,6 +8,7 @@ function plotMetric()
 % --------
 % 2019-12       OR      Wrote the code
 % 2019-02-20    DSW     Comments and name change to plotMetric 
+% 2019-04-09    DSW     Added plotting best value in red. 
 
 % input variables 
 global data p
@@ -19,10 +20,16 @@ if isfield(data.rois, 'Metric') && ~isempty(data.rois(p.roiIdx,p.currentChannelI
     metric = data.rois(p.roiIdx,p.currentChannelIdx).Metric;
     total_states = size(data.rois(p.roiIdx,p.currentChannelIdx).Components,1); 
     
-    % plot 
-    plot(p.h3, metric,'-o');
+    % plot all values 
+    plot(p.h3, metric,'-o','MarkerSize',10); hold on; 
     ylim(p.h3,[-0.1,1.1])
     xlim(p.h3,[0.5, length(metric)+0.5]);
+    
+    % plot best value in red 
+    
+    best = size(data.rois(p.roiIdx,p.currentChannelIdx).Components,1); 
+    scatter(p.h3, best, metric(best),100,'filled', 'MarkerFaceColor','r', 'MarkerEdgeColor','r');
+    hold off 
     
 else
     % Hide the metric axes if DISC has not yet been run
