@@ -13,6 +13,20 @@ function initFields()
 
 global data
 
+% check for format converions form roi.zproj to roi.ts 
+if isfield(data.rois,'zproj')
+    [n_rois,n_channels] = size(data.rois);
+    
+    % create new field rois.obs
+    for k = 1:n_channels
+        for n = 1:n_rois
+            data.rois(n,k).time_series = data.rois(n,k).zproj;
+        end
+    end
+    % remove old field for space saving
+    data.rois = rmfield(data.rois,'zproj');
+end
+
 % output runDISC.m
 if ~isfield(data.rois, 'disc_fit') 
     [data.rois.disc_fit] = deal([]); % fit from analysis

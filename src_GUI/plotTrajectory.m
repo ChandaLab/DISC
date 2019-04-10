@@ -1,5 +1,5 @@
 function plotTrajectory()
-% Plot the Time Series Trajectory data (rois.zproj) with fit (rois.ideal)
+% Plot the Time Series Trajectory data (rois.time_series) with fit (rois.ideal)
 %
 % Authors: Owen Rafferty & David S. White 
 % Contact: dwhite7@wisc.edu 
@@ -18,7 +18,7 @@ global p data
 cla(p.h1); 
 
 % plot time series data 
-plot(p.h1, data.rois(p.roiIdx, p.currentChannelIdx).zproj, ...
+plot(p.h1, data.rois(p.roiIdx, p.currentChannelIdx).time_series, ...
      'color', p.channelColors(data.names{p.currentChannelIdx}))
  
 % draw title based on selection or lack thereof  

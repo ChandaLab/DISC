@@ -21,14 +21,14 @@ cla(p.h2);
 bin_color = p.channelColors(data.names{p.currentChannelIdx});
 
 % grab data to plot 
-zproj = data.rois(p.roiIdx, p.currentChannelIdx).zproj;
+time_series = data.rois(p.roiIdx, p.currentChannelIdx).time_series;
 
 % init histogram stuff
 bins = 100; 
-max_value = round(max(zproj),1);
-min_value = round(min(zproj),-1);
+max_value = round(max(time_series),1);
+min_value = round(min(time_series),-1);
 bins = linspace(min_value, max_value, bins);
-counts = hist(zproj, bins);
+counts = hist(time_series, bins);
 data_range = bins(1:end-1);
 data_counts = counts(1:end-1);
 

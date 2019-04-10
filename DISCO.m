@@ -19,7 +19,7 @@ function DISCO()
 % Input Variables:
 % ----------------
 % data = structure to be analyzed. Requires: 
-%   data.zproj = observed emission sequence. 
+%   data.time_series = observed time series. 
 %
 % References:
 % -----------

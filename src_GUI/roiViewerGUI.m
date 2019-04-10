@@ -134,7 +134,7 @@ channelPopup(hObject);
 
 % --- Executes on button press in pushbutton2_nextROI.
 function pushbutton2_nextROI_Callback(hObject, eventdata, handles)
-% go to the next ROI, stops at end of zproj
+% go to the next ROI, stops at end of ts
 global p
 goToROI(p.roiIdx + 1);
 

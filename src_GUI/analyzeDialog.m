@@ -177,7 +177,7 @@ uiwait(d);
         if ~p.analyzeAll
             % runDISC
         data.rois(p.roiIdx, p.currentChannelIdx).disc_fit =  ...
-        runDISC(data.rois(p.roiIdx, p.currentChannelIdx).zproj,disc_input);
+        runDISC(data.rois(p.roiIdx, p.currentChannelIdx).time_series,disc_input);
         goToROI(p.roiIdx);
         end
         
@@ -195,7 +195,7 @@ uiwait(d);
                 waitbar(i/size(data.rois,1),f,sprintf(['ROI ',num2str(i),' of ',num2str(size(data.rois,1))])) % call waitbar and display progress
                 % runDISC
                 [data.rois(i, p.currentChannelIdx).disc_fit] = ...
-                runDISC(data.rois(i, p.currentChannelIdx).zproj, disc_input);
+                runDISC(data.rois(i, p.currentChannelIdx).time_series, disc_input);
             end
             goToROI(p.roiIdx); % display ROI selected before analysis
             delete(f); % close waitbar
