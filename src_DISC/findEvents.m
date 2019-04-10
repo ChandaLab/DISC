@@ -1,4 +1,4 @@
-function [Events] = findEvents(data_fit, event_startRate);
+function [Events] = findEvents(data_fit, event_start);
 %% Find Events and Dwell Times
 % David S. White
 % dwhite7@wisc.edu

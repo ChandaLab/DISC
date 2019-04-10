@@ -6,7 +6,8 @@ function [MDL] = MDL(data,data_fit)
 % the following is adapted from Shuang et al., 2014 J Phys Chem Letters 
 % Overall, 
 % MDL = fit + complexity (F +G)
-
+%
+%
 % 0. Compute necessary variables: 
 % -------------------------------
 
