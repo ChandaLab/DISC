@@ -5,7 +5,7 @@ function [Components, Ideal, Class, Metrics, DISC_FIT] = runDISC(data, input_typ
 %
 % Updates:
 % ---------
-% 2019-02-20    DSW    Version 1.0
+% 2019-02-20    DSW    Version 1.1.0
 %
 %--------------------------------------------------------------------------
 % Overview:
@@ -75,7 +75,7 @@ function [Components, Ideal, Class, Metrics, DISC_FIT] = runDISC(data, input_typ
 % Components = [K,3] where rows are the components of each
 %   identified state [weight, mu, sigma] and K = number of states.
 %
-% Ideal = [N,1], idealized data_fit described by the mu of each
+% Ideal = [N,1], idealized data_fit described by the mean of each
 %   state.
 %
 % Class = [N,1] state data_fit of the data points by cluster

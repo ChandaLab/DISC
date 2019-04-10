@@ -5,7 +5,7 @@ function DISCO()
 
 % Updates:
 % ---------
-% 2019-04-07    DSW    Version 1.0
+% 2019-04-07    DSW    Version 1.1.0
 %
 %--------------------------------------------------------------------------
 % Overview:
@@ -40,11 +40,7 @@ end
 % init GUI
 p.guiHandle = roiViewerGUI();
 
-% define default analysis parameåters to be called later in dialog
-p.inputParameters.thresholdValue = 0.05;
-p.inputParameters.thresholdType = 'alpha_value';
-p.inputParameters.divisiveIC = 'BIC-GMM';
-p.inputParameters.agglomerativeIC = 'BIC-GMM';
-p.inputParameters.hmmIterations = 1;
+% init DISC paramters 
+initDISC()
 
 end
