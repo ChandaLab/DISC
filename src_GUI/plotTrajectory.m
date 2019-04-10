@@ -8,7 +8,7 @@ function plotTrajectory()
 % --------
 % 2019-12       OR      Wrote the code
 % 2019-02-20    DSW     comments and name change to plotTrajectory
-%
+% 2019-04-10    DSW     updated to new disc_fit structure
 
 % global variables 
 global p data 
@@ -35,9 +35,9 @@ set(p.h1, 'fontsize', p.fontSize);
 set(p.h1, 'fontname', p.fontName);
 
 % draw fit if analysis is completed for the current ROI
-if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).Ideal)
+if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
     hold(p.h1, 'on')
-    plot(p.h1, data.rois(p.roiIdx, p.currentChannelIdx).Ideal, ...
+    plot(p.h1, data.rois(p.roiIdx, p.currentChannelIdx).disc_fit.ideal, ...
          '-k','linewidth',1.7)
     hold(p.h1, 'off') 
 end

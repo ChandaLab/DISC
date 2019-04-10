@@ -199,22 +199,14 @@ end
 function pushbutton14_clearThis_Callback(hObject, eventdata, handles)
 % clears analysis fields for current ROI
 global data p
-data.rois(p.roiIdx,p.currentChannelIdx).Ideal = [];
-data.rois(p.roiIdx,p.currentChannelIdx).Class = [];
-data.rois(p.roiIdx,p.currentChannelIdx).Components = [];
-data.rois(p.roiIdx,p.currentChannelIdx).Metric = [];
-data.rois(p.roiIdx,p.currentChannelIdx).DISC_FIT = [];
+data.rois(p.roiIdx,p.currentChannelIdx).disc_fit = []; 
 goToROI(p.roiIdx)
 
 % --- Executes on button press in pushbutton15_clearAll.
 function pushbutton15_clearAll_Callback(hObject, eventdata, handles)
 % clears analysis fields for all ROIs
 global data p
-[data.rois(:,p.currentChannelIdx).Ideal] = deal([]);
-[data.rois(:,p.currentChannelIdx).Class] = deal([]);
-[data.rois(:,p.currentChannelIdx).Components] = deal([]);
-[data.rois(:,p.currentChannelIdx).Metric] = deal([]);
-[data.rois(:,p.currentChannelIdx).DISC_FIT] = deal([]);
+[data.rois(:,p.currentChannelIdx).disc_fit] = deal([]);
 goToROI(p.roiIdx)
 
 
