@@ -1,5 +1,6 @@
 function initDISC()
-% Set default values for DISC analysis
+% Set default values for DISC analysis in the GUI
+% need to update with setDefault.m
 %
 % Authors: David S. White 
 % Contact: dwhite7@wisc.edu 

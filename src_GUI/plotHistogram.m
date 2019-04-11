@@ -9,6 +9,7 @@ function plotHistogram()
 % 2018-07-11    DSW     Wrote code (HistFitFig.m)
 % 2019-02-21    DSW     Full rewrite. Addded comments. Changed name to
 %                       plotHistogram.m
+% 2019-04-10    DSW     updated to new disc_fit structure
 
 % input variables
 global p data
@@ -20,20 +21,19 @@ cla(p.h2);
 bin_color = p.channelColors(data.names{p.currentChannelIdx});
 
 % grab data to plot 
-zproj = data.rois(p.roiIdx, p.currentChannelIdx).zproj;
+time_series = data.rois(p.roiIdx, p.currentChannelIdx).time_series;
 
 % init histogram stuff
 bins = 100; 
-max_value = round(max(zproj),1);
-min_value = round(min(zproj),-1);
+max_value = round(max(time_series),1);
+min_value = round(min(time_series),-1);
 bins = linspace(min_value, max_value, bins);
-counts = hist(zproj, bins);
+counts = hist(time_series, bins);
 data_range = bins(1:end-1);
 data_counts = counts(1:end-1);
 
 % Does data.rois.Components (i.e. "data fit") exist?
-if ~isfield(data.rois(p.roiIdx, p.currentChannelIdx),'Components') ||...
-        isempty(data.rois(p.roiIdx, p.currentChannelIdx).Components)
+if isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
     
     % Lets just plot out the data by itself and exit
     bar(p.h2,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1,'EdgeAlpha',0); hold(p.h2,'on');
@@ -50,7 +50,7 @@ end
 bar(p.h2,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1,'EdgeAlpha',0); hold(p.h2,'on');
 
 % grab components
-components = data.rois(p.roiIdx, p.currentChannelIdx).Components; 
+components = data.rois(p.roiIdx, p.currentChannelIdx).disc_fit.components; 
 n_components = size(components,1); 
 
 % Evalute and plot each component individually
