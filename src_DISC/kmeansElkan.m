@@ -1,4 +1,11 @@
 function [centers,mincenter,mindist,q2,quality] = kmeansElkan(data,initcenters,method)
+% 
+% This script was downloaded by David S. White and used without
+% modifications. See: 
+% https://github.com/probml/pmtk3
+%
+% MIT License Copyright (2010) Kevin Murphy and Matt Dunham
+%
 % Kmeans clustering using Elkan's triangle inequality speedup
 % output: final centers
 % input: data points and initial centers

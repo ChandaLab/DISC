@@ -46,7 +46,11 @@ function [path,log_likelihood] = viterbiPath(weights, transitions_matrix, emissi
 % Notes:
 % ------
 % This code is adapted from PMTK authors Kevin Murphy
-% See https://github.com/bayesnet/bnt
+% See https://github.com/probml/pmtk3
+%
+% MIT License Copyright (2010) Kevin Murphy and Matt Dunham
+%
+% DSW modified the code to make it accesible in the DISC package
 % i.e. renamed variables, added comments, removed normalize function 
 
 [K,N] = size(emissions_matrix);  % number of states & data points
