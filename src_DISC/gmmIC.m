@@ -76,7 +76,6 @@ end
 % Compute Likelihood of gaussian fit of data with components
 % P = probability
 n_components = size(components,1); 
-P = zeros(n_data,n_components); 
 for i = 1:n_components
     % or normpdf
     P(:,i) = components(i,1) * exp(-0.5 * ...
@@ -103,4 +102,9 @@ end
 ic_value =  -2 * loglikelihood + degrees_of_freedom * penalty; 
 
 
-end
+
+
+
+
+
+

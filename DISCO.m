@@ -5,8 +5,7 @@ function DISCO()
 
 % Updates:
 % ---------
-% 2019-04-07    DSW    v1.0.0
-% 2019-04-10    DSW    v1.1.0
+% 2019-04-07    DSW    Version 1.1.0
 %
 %--------------------------------------------------------------------------
 % Overview:
@@ -19,7 +18,7 @@ function DISCO()
 % Input Variables:
 % ----------------
 % data = structure to be analyzed. Requires: 
-%   data.time_series = observed time series. 
+%   data.zproj = observed emission sequence. 
 %
 % References:
 % -----------

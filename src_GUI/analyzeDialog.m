@@ -6,11 +6,9 @@ function analyzeDialog()
 
 % Updates: 
 % --------
-% 2018-12-02    OMR     Wrote the code 
-% 2019-02-21    DSW     Comments added.  
-% 2019-20-20    DSW     Added in AIC_GMM and HQC_GMM as clustering options
-% 2019-04-10    DSW     updated to new disc_fit structure
-
+% 18-12-02  OMR Wrote the code 
+% 19-02-21  DSW Comments added.  
+% 19-20-20  DSW Added in AIC_GMM and HQC_GMM as clustering options
 
 
 % input variables 
@@ -72,8 +70,6 @@ switch p.inputParameters.divisiveIC
         set(popup_divisiveIC,'Value',4)
     case 'MDL'
         set(popup_divisiveIC,'Value',5)
-    case 'none'
-        set(popup_divisiveIC,'Value',6)
 end
 
 % and make the group visible
@@ -162,27 +158,24 @@ uiwait(d);
         end
         delete(gcf)
         
-        % create disc_input structure from provided paramters 
-        % not one-to-one mapping of variable names; Need to modify. -DSW
-        disc_input = struct; 
-        disc_input.input_type = p.inputParameters.thresholdType; 
-        disc_input.input_value = p.inputParameters.thresholdValue;
-        disc_input.divisive = p.inputParameters.divisiveIC; 
-        disc_input.agglomerative = p.inputParameters.agglomerativeIC;
-        disc_input.viterbi = p.inputParameters.hmmIterations;
-        disc_input.return_k = 0; % not an option in DISCO yet.
-        
         
         % run DISC at current ROI and channel
-        if ~p.analyzeAll
-            % runDISC
-        data.rois(p.roiIdx, p.currentChannelIdx).disc_fit =  ...
-        runDISC(data.rois(p.roiIdx, p.currentChannelIdx).time_series,disc_input);
+        if p.analyzeAll == 0
+        [data.rois(p.roiIdx, p.currentChannelIdx).Components, ...
+         data.rois(p.roiIdx, p.currentChannelIdx).Ideal, ...
+         data.rois(p.roiIdx, p.currentChannelIdx).Class, ...
+         data.rois(p.roiIdx, p.currentChannelIdx).Metric,...
+         data.rois(p.roiIdx, p.currentChannelIdx).DISC_FIT] =  ...
+        runDISC(data.rois(p.roiIdx, p.currentChannelIdx).zproj, ... % run DISC
+                p.inputParameters.thresholdType, ... 
+                p.inputParameters.thresholdValue, ... 
+                p.inputParameters.divisiveIC, ...
+                p.inputParameters.agglomerativeIC, ...
+                p.inputParameters.hmmIterations);
         goToROI(p.roiIdx);
-        end
         
         % run DISC on all ROIs for current channel
-        if p.analyzeAll
+        elseif p.analyzeAll == 1
             waitName = sprintf("Running DISC on channel '%s' ...",...
                                char(data.names(p.currentChannelIdx))); % waitbar title
             f = waitbar(0,'1','Name',waitName,...
@@ -193,9 +186,17 @@ uiwait(d);
                     break
                 end
                 waitbar(i/size(data.rois,1),f,sprintf(['ROI ',num2str(i),' of ',num2str(size(data.rois,1))])) % call waitbar and display progress
-                % runDISC
-                [data.rois(i, p.currentChannelIdx).disc_fit] = ...
-                runDISC(data.rois(i, p.currentChannelIdx).time_series, disc_input);
+                [data.rois(i, p.currentChannelIdx).Components, ...
+                 data.rois(i, p.currentChannelIdx).Ideal, ...
+                 data.rois(i, p.currentChannelIdx).Class, ...
+                 data.rois(i, p.currentChannelIdx).Metric, ...
+                 data.rois(i, p.currentChannelIdx).DISC_FIT] = ...
+                runDISC(data.rois(i, p.currentChannelIdx).zproj, ... % run DISC
+                        p.inputParameters.thresholdType, ... 
+                        p.inputParameters.thresholdValue, ... 
+                        p.inputParameters.divisiveIC, ...
+                        p.inputParameters.agglomerativeIC, ...
+                        p.inputParameters.hmmIterations);
             end
             goToROI(p.roiIdx); % display ROI selected before analysis
             delete(f); % close waitbar

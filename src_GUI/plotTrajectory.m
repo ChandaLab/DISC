@@ -1,5 +1,5 @@
 function plotTrajectory()
-% Plot the Time Series Trajectory data (rois.time_series) with fit (rois.ideal)
+% Plot the Time Series Trajectory data (rois.zproj) with fit (rois.ideal)
 %
 % Authors: Owen Rafferty & David S. White 
 % Contact: dwhite7@wisc.edu 
@@ -8,7 +8,7 @@ function plotTrajectory()
 % --------
 % 2019-12       OR      Wrote the code
 % 2019-02-20    DSW     comments and name change to plotTrajectory
-% 2019-04-10    DSW     updated to new disc_fit structure
+%
 
 % global variables 
 global p data 
@@ -18,7 +18,7 @@ global p data
 cla(p.h1); 
 
 % plot time series data 
-plot(p.h1, data.rois(p.roiIdx, p.currentChannelIdx).time_series, ...
+plot(p.h1, data.rois(p.roiIdx, p.currentChannelIdx).zproj, ...
      'color', p.channelColors(data.names{p.currentChannelIdx}))
  
 % draw title based on selection or lack thereof  
@@ -35,9 +35,9 @@ set(p.h1, 'fontsize', p.fontSize);
 set(p.h1, 'fontname', p.fontName);
 
 % draw fit if analysis is completed for the current ROI
-if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
+if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).Ideal)
     hold(p.h1, 'on')
-    plot(p.h1, data.rois(p.roiIdx, p.currentChannelIdx).disc_fit.ideal, ...
+    plot(p.h1, data.rois(p.roiIdx, p.currentChannelIdx).Ideal, ...
          '-k','linewidth',1.7)
     hold(p.h1, 'off') 
 end
