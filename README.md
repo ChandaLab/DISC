@@ -2,14 +2,14 @@
 
 ## Welcome to DISC! 
 
-DISC is an open source MATLAB package for time series idealization (i.e. identifying significant states and transitions). We enhance change-point detection using divisive clustering to accelerate the typical speed of time-trajectory analysis by orders of magnitude while retaining or improving accuracy. We have designed the DISC framework to be a flexible approach, with applications primarily in single-molecule data, such as smFRET and force spectroscopy. The full details of this work are described in our recent manuscript, which we ask you to kindly cite if using this software: 
+DISC is an open source MATLAB package for time series idealization (i.e. identifying significant states and transitions). We enhance change-point detection using divisive clustering to accelerate the typical speed of time-trajectory analysis by orders of magnitude with improved accuracy. We have designed the DISC framework to be a flexible approach, with applications primarily in single-molecule data, such as smFRET and force spectroscopy. The full details of this work are described in our recent manuscript which we ask you to kindly cite if using this software: 
 
 White, D., Goldschen-Ohm, M., Goldsmith, R. & Chanda, B. High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering. bioRxiv, 603761 (2019).
 
 
 ## DISCO
 
-DISCO is the graphical user interface (GUI) for DISC. We aimed to make DISCO as user friendly as possible and welecome feedback on how we can improve. Please see the provided DISC_user_manual.pdf for full instructions. As DISCO gains more use, we can make other requested features available (i.e. dwell time analysis, automated trace selection, etc...). All updates will be made available on https://github.com/ChandaLab/DISC pending manuscript acceptance. Stay tuned!
+DISCO is the graphical user interface (GUI) for DISC. We aimed to make DISCO as user friendly as possible and welcome feedback on how we can improve. Please see the provided DISC_user_manual.pdf for full instructions. As DISCO gains more use, we can make other requested features available (i.e. dwell time analysis, automated trace selection, etc...). All updates will be made available on https://github.com/ChandaLab/DISC pending manuscript acceptance. Stay tuned!
 
 ### Installation 
 
@@ -36,16 +36,16 @@ or run outside of the GUI using the runDISC.m function. See DISC_user_manual.pdf
 
 ### Demo
 
-A sample set of simulated data is provided /sample_data/sample_data.mat. True values of simulation results are provided within this sample. This analysis using DISCO < 10 seconds to complete on a personal MacBook Air (1.6 GHz Intel Core i5) in MATLAB 2018b. Detailed instructions for analyzing this sample to reproduce these results are provided in DISC_user_manual.pdf with the analysis results found in /sample_data/sample_data_idealized.mat.
+A sample set of simulated data is provided /sample_data/sample_data.mat. True values of simulation results are provided within this sample. This analysis took < 10 seconds to complete on a personal MacBook Air (1.6 GHz Intel Core i5) in MATLAB 2018b. Detailed instructions for analyzing this sample to reproduce these results are provided in DISC_user_manual.pdf with the analysis results found in sample_data/sample_data_idealized.mat.
 
 
 ### Simulate Data
 
-All scripts used for the simulations in White et al.,2019 can be found in /simulate_data. Running runSimulations.m as is will generate simulated data with identical conditions to those used in the manuscript. Calculation of accuracy, precision, and recall of DISC performance on simulated data is done using idealizationMetrics.m
+All scripts used for the simulations in White et al.,2019 can be found in /simulate_data. Running runSimulations.m as is will generate simulated data with identical conditions to those used in the manuscript. Calculation of accuracy, precision, and recall of DISC performance on simulated data was completed using idealizationMetrics.m
 
 ### Reproducibility 
 
-Add data sets in White et al., 2019 both simulated and raw were analyzed using runDISC.m or DISCO.m with the following parameters: 
+All data sets in White et al., 2019 both simulated and raw were analyzed using runDISC.m or DISCO.m with the following parameters: 
 
 1. alpha_value = 0.05 for change point detection 
 2. BIC_GMM for both divisive and agglomerative clustering
