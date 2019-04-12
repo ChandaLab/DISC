@@ -6,13 +6,9 @@ function disc_fit = runDISC(data, disc_input)
 %
 % Updates:
 % ---------
-% 2019-02-20    DSW     v1.0.0 version submitted to Nature Methods/
-%                       bioRxiv
+% 2019-02-20    DSW     v1.0.0 version submitted to bioRxiv
 %
 % 2019-04-10    DSW     v1.1.0 modifcations to input/ output arguments
-%
-%
-%
 %
 %--------------------------------------------------------------------------
 % Overview:
