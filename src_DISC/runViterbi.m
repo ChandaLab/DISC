@@ -9,13 +9,7 @@ function viterbi_data_fit = runViterbi(data,data_fit,max_iter)
 % Overview:
 % ---------
 % Adapt the idea of segmental k-means (SKM) to run a Viterbi algorithm on 
-% the results of DISC to find the most optimal state path in the data.  
-%
-% Notes:
-% ------
-% Viterbi code is adapted from PMTK authors Kevin Murphy, Dan Ellis.
-% see https://github.com/pmem/pmdk
-% > viterbiPath.m
+% the results of DISC to find the most optimal state path in the data. 
 %
 %--------------------------------------------------------------------------
 %
