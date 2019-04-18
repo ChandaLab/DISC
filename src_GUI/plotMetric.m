@@ -1,4 +1,4 @@
-function plotMetric()
+function plotMetric(axes)
 % Plot the Metric from agglomerative clustering (rois.Metric)
 %
 % Authors: Owen Rafferty & David S. White
@@ -14,7 +14,7 @@ function plotMetric()
 % input variables
 global data p
 
-cla(p.h3);
+cla(axes);
 
 % draw only if analysis is completed
 if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit) & isfield(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit,'metrics')
@@ -23,28 +23,28 @@ if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit) & isfield(data.roi
         total_states = size(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit.components,1);
 
         % plot 
-        set(p.h3, 'Visible','on');
-        cla(p.h3);
-        plot(p.h3, metric,'-o','MarkerSize',10);
-        hold(p.h3, 'on')
+        set(axes, 'Visible','on');
+        cla(axes);
+        plot(axes, metric,'-o','MarkerSize',10);
+        hold(axes, 'on')
         best = size(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit.components,1);
-        scatter(p.h3, best, metric(best),100,'filled', 'MarkerFaceColor','r', 'MarkerEdgeColor','r');
-        hold(p.h3, 'off')
-        ylim(p.h3,[-0.1,1.1])
-        xlim(p.h3,[0.5, length(metric)+0.5]);
+        scatter(axes, best, metric(best),100,'filled', 'MarkerFaceColor','r', 'MarkerEdgeColor','r');
+        hold(axes, 'off')
+        ylim(axes,[-0.1,1.1])
+        xlim(axes,[0.5, length(metric)+0.5]);
     else
         % Hide the metric axes if DISC has not yet been run
-        set(p.h3, 'Visible','off');
-        cla(p.h3)
+        set(axes, 'Visible','off');
+        cla(axes)
     end
 else
     % Hide the metric axes if DISC has not yet been run
-    set(p.h3, 'Visible','off');
-    cla(p.h3);
+    set(axes, 'Visible','off');
+    cla(axes);
 end
 
-xlabel(p.h3, 'Number of States'); set(p.h3,'ytick',[]);
-set(p.h3, 'fontsize', p.fontSize);
-set(p.h3, 'fontname', p.fontName);
+xlabel(axes, 'Number of States'); set(axes,'ytick',[]);
+set(axes, 'fontsize', p.fontSize);
+set(axes, 'fontname', p.fontName);
 
 end

@@ -1,4 +1,4 @@
-function plotHistogram()
+function plotHistogram(axes, alignaxes)
 % Histogram fitting figure for time series data
 %
 % Author: David S. White & Owen Rafferty
@@ -15,7 +15,7 @@ function plotHistogram()
 global p data
 
 % clear out anything in the previous plot 
-cla(p.h2); 
+cla(axes); 
 
 % grab plot color
 bin_color = p.channelColors(data.names{p.currentChannelIdx});
@@ -36,18 +36,18 @@ data_counts = counts(1:end-1);
 if isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
     
     % Lets just plot out the data by itself and exit
-    bar(p.h2,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1,'EdgeAlpha',0); hold(p.h2,'on');
-    set(p.h2,'xtick',[]); set(p.h2,'ytick',[]); view(p.h2,[90,-90])
+    bar(axes,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1,'EdgeAlpha',0); hold(axes,'on');
+    set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90])
     
     % set the axis to match the time series plot (p.h1) axis.
-    xlim(p.h2, get(p.h1,'Ylim'))
+    xlim(axes, get(alignaxes,'Ylim'))
     return;
 end
 
 % If data.rois.Components exists, we can plot the histogram fits
 
 % plot raw data histogram
-bar(p.h2,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1,'EdgeAlpha',0); hold(p.h2,'on');
+bar(axes,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1,'EdgeAlpha',0); hold(axes,'on');
 
 % grab components
 components = data.rois(p.roiIdx, p.currentChannelIdx).disc_fit.components; 
@@ -70,20 +70,20 @@ for n = 1:n_components
     norm_dist = norm_dist_pdf * round(w,2);
     
     % plot this gaussian component onto the histrogram 
-    plot(p.h2, data_range, norm_dist,  '--k', 'linewidth', 1.5);
+    plot(axes, data_range, norm_dist,  '--k', 'linewidth', 1.5);
 
 end
 
 % Compute the sum of all Gaussians
 gauss_fit_all = gauss_fit_all.* trapz(data_range,data_counts);
-plot(p.h2, data_range, gauss_fit_all, '-k', 'linewidth', 1.7);
+plot(axes, data_range, gauss_fit_all, '-k', 'linewidth', 1.7);
 
-hold(p.h2,'off'); set(p.h2,'xtick',[]); set(p.h2,'ytick',[]); view(p.h2,[90,-90])
-xlim(p.h2, get(p.h1,'Ylim'))
+hold(axes,'off'); set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90])
+xlim(axes, get(alignaxes,'Ylim'))
 
 % plot number of state as the title
-title(p.h2, ['Number of States: ', num2str(n_components)]);
-set(p.h2, 'fontsize', p.fontSize);
-set(p.h2, 'fontname', p.fontName);
+title(axes, ['Number of States: ', num2str(n_components)]);
+set(axes, 'fontsize', p.fontSize);
+set(axes, 'fontname', p.fontName);
 
 end

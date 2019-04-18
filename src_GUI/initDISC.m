@@ -10,9 +10,9 @@ function initDISC()
 %
 % Feel free to update these values for your own convenience!!
 
-global data p 
+global p 
 
-% define default analysis parameåters to be called later in dialog
+% define default analysis parameï¿½ters to be called later in dialog
 p.inputParameters.thresholdValue = 0.05;            % 95% CI
 p.inputParameters.thresholdType = 'alpha_value';    % or 'critical_value'
 p.inputParameters.divisiveIC = 'BIC-GMM';           % lots of options 

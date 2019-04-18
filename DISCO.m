@@ -42,6 +42,6 @@ end
 p.guiHandle = roiViewerGUI();
 
 % init DISC paramters 
-initDISC()
+initDISC();
 
 end

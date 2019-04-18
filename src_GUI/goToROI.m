@@ -27,10 +27,10 @@ p.roiIdx = roiIdx;
 % Update all 3 plots in GUI
 
 % 1. time series data (and fit)
-plotTrajectory();
+plotTrajectory(p.h1);
 
 % 2. time series histogram (and fit)
-plotHistogram()
+plotHistogram(p.h2, p.h1)
 
 % 3. information criterion values of the fit
-plotMetric();
+plotMetric(p.h3);
