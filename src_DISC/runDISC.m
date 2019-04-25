@@ -119,9 +119,6 @@ if ~exist('data','var') || isempty(data);
     return;
 end
 
-% grab size information about data
-[n_data,dim] = size(data);
-
 % check the format of data. Must be N by
 [n_data,dim] = size(data);
 if dim > 1 || n_data < 5 % need at least 5 data points
