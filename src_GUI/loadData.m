@@ -23,7 +23,7 @@ function loadData()
 global data p
 
 disp('Loading Data...')
-[file, path] = uigetfile({'*.mat;*.dat','Data files (*.mat,*.dat)'},...
+[file, path] = uigetfile({'*.mat;*.dat;*.csv','Data files (*.mat,*.dat,*.csv)'},...
     'Open data file.'); % open file picker
 if isequal(file, 0)
     return;
@@ -31,7 +31,7 @@ end
 p.fp = fullfile(path, file);
 [~, ~, ext] = fileparts(p.fp);
 switch lower(ext)
-    case '.dat'
+    case {'.dat' '.csv'}
         temp = importdata(p.fp);
         [data.names, ~, ic] = unique(temp.colheaders);
         roi_counts = accumarray(ic,1);
