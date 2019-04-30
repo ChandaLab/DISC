@@ -21,13 +21,17 @@ cla(axes);
 plot(axes, data.rois(p.roiIdx, p.currentChannelIdx).time_series, ...
      'color', p.channelColors(data.names{p.currentChannelIdx}))
  
-% draw title based on selection or lack thereof  
+% draw title based on selection or lack thereof
+numsel = nnz(vertcat(data.rois(:,1).status)==1);
 if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
-    title(axes, ['ROI # ',num2str(p.roiIdx),' - Status: Selected']);
+    title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: Selected','  (',num2str(numsel),' selected)']);
 elseif data.rois(p.roiIdx,p.currentChannelIdx).status == 0
-    title(axes, ['ROI # ',num2str(p.roiIdx),' - Status: Unselected']);
+    title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: Unselected','  (',num2str(numsel),' selected)']);
 else
-    title(axes, ['ROI # ',num2str(p.roiIdx),' - Status: null']);
+    title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: null','  (',num2str(numsel),' selected)']);
 end
 xlabel(axes, 'Frames'); 
 ylabel(axes, 'Intensity (AU)');

@@ -27,6 +27,9 @@ time_series = data.rois(p.roiIdx, p.currentChannelIdx).time_series;
 bins = 100; 
 max_value = round(max(time_series),1);
 min_value = round(min(time_series),-1);
+if isempty(max_value) || isempty(min_value)
+    return;
+end
 bins = linspace(min_value, max_value, bins);
 counts = hist(time_series, bins);
 data_range = bins(1:end-1);
