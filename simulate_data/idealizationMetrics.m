@@ -22,7 +22,7 @@ function [Accuracy, Precision, Recall] = idealizationMetrics...
 %
 %   TP = True Positive
 %       states : true state == obtained state within state_threshold
-%       events : true event == obtained event ± 1 fevent_threshold
+%       events : true event == obtained event ± 1 event_threshold
 %       overall: both obtained event and obtained state are TP. 
 %
 %   FP = False Positive
@@ -173,13 +173,13 @@ switch method
             t_event = true_events(t,:); % current true event
             o_event = obtained_events(o,:); % current obtained event
             if  abs(t_event(1)-o_event(1)) + abs(t_event(2)-o_event(2)) <= event_threshold &...
-                    abs(obtained_components(o_event(3),2) - true_components(t_event(3),2)) <= state_threshold * true_components(t_event(3),3)
+                    abs(obtained_components(o_event(4),2) - true_components(t_event(4),2)) <= state_threshold * true_components(t_event(4),3)
                 TP = TP + 1;
                 t = t + 1;
                 o = o + 1;
                 % correct event, state mismatch
             elseif abs(t_event(1)-o_event(1)) + abs(t_event(2)-o_event(2)) <= 1 &...
-                    abs(obtained_components(o_event(3),2) - true_components(t_event(3),2)) > state_threshold * true_components(t_event(3),3);
+                    abs(obtained_components(o_event(4),2) - true_components(t_event(4),2)) > state_threshold * true_components(t_event(4),3);
                 FP = FP + 1;
                 % FN = FN + 1;
                 o = o + 1;

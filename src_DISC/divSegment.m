@@ -89,7 +89,7 @@ end
 
 % Set a minimum number of data points needed in a cluster to prevent the
 % identification of spurious noise.
-n_min = 5;
+n_min = 3;
 
 % number of data points
 n_data = numel(data);
