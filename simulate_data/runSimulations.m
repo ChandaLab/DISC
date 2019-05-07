@@ -19,7 +19,7 @@
 %   1. Reproduces Simulations used in Fig 2a and Supplemental Fig 6-8
 %   2. Reproduces Simulations used in Fig 2b. 
 %   3. Reproduces Simulations used in Fig 3
-%   4. Reprodcues Simulatd used in Supplemental Fig 2
+%   4. Reproduces Simulations used in Supplemental Fig 2
 
 %% 1. Simulate tetrameric-CNBD (no cooperativity) with or without heterogneous fcAMP intensities 
 % vary number of sites and SNR 
