@@ -22,7 +22,7 @@ function varargout = roiViewerGUI(varargin)
 
 % Edit the above text to modify the response to help roiViewerGUI
 
-% Last Modified by GUIDE v2.5 27-Nov-2018 19:05:05
+% Last Modified by GUIDE v2.5 31-May-2019 09:14:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -261,3 +261,17 @@ global data p
     if ~isempty(j) 
         goToROI(j(end)); 
     end
+
+
+% --------------------------------------------------------------------
+function menuFunctions_Callback(hObject, eventdata, handles)
+% hObject    handle to menuFunctions (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function menuFunctions_TraceSelection_Callback(hObject, eventdata, handles)
+% hObject    handle to menuFunctions_TraceSelection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
