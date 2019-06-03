@@ -85,7 +85,14 @@ hold(axes,'off'); set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90]
 xlim(axes, get(alignaxes,'Ylim'))
 
 % plot number of state as the title
-title(axes, ['Number of States: ', num2str(n_components)]);
+snr = data.rois(p.roiIdx,p.currentChannelIdx).SNR;
+if isempty(snr)
+    title(axes, ['Number of States: ', num2str(n_components)],...
+        'HorizontalAlignment','left');
+else
+    title(axes, ['SNR: ', num2str(round(snr,1)),'   ','Numer of States: ',...
+        num2str(n_components)], 'HorizontalAlignment','left');
+end
 set(axes, 'fontsize', p.fontSize);
 set(axes, 'fontname', p.fontName);
 

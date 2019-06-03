@@ -22,7 +22,7 @@ function varargout = roiViewerGUI(varargin)
 
 % Edit the above text to modify the response to help roiViewerGUI
 
-% Last Modified by GUIDE v2.5 31-May-2019 09:14:31
+% Last Modified by GUIDE v2.5 03-Jun-2019 11:49:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -215,12 +215,16 @@ function pushbutton16_toggleSelect_Callback(hObject, eventdata, handles)
 % change "status" field for ROI and title if necessary
 global data p
 data.rois(p.roiIdx,p.currentChannelIdx).status = 1;
+numsel = nnz(vertcat(data.rois(:,1).status)==1);
 if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
-    title(p.h1, ['ROI # ',num2str(p.roiIdx),' - Status: Selected']);
+    title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: Selected','  (',num2str(numsel),' selected)']);
 elseif data.rois(p.roiIdx,p.currentChannelIdx).status == 0
-    title(p.h1, ['ROI # ',num2str(p.roiIdx),' - Status: Unselected']);
+    title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: Unselected','  (',num2str(numsel),' selected)']);
 else
-    title(p.h1, ['ROI # ',num2str(p.roiIdx),' - Status: null']);
+    title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: null','  (',num2str(numsel),' selected)']);
 end
 
 
@@ -229,12 +233,16 @@ function pushbutton17_toggleDeselect_Callback(hObject, eventdata, handles)
 % change "status" field for ROI and title if necessary
 global data p
 data.rois(p.roiIdx,p.currentChannelIdx).status = 0;
+numsel = nnz(vertcat(data.rois(:,1).status)==1);
 if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
-    title(p.h1, ['ROI # ',num2str(p.roiIdx),' - Status: Selected']);
+    title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: Selected','  (',num2str(numsel),' selected)']);
 elseif data.rois(p.roiIdx,p.currentChannelIdx).status == 0
-    title(p.h1, ['ROI # ',num2str(p.roiIdx),' - Status: Unselected']);
+    title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: Unselected','  (',num2str(numsel),' selected)']);
 else
-    title(p.h1, ['ROI # ',num2str(p.roiIdx),' - Status: null']);
+    title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+        ' - Status: null','  (',num2str(numsel),' selected)']);
 end
 
 
@@ -275,3 +283,66 @@ function menuFunctions_TraceSelection_Callback(hObject, eventdata, handles)
 % hObject    handle to menuFunctions_TraceSelection (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in pushbutton_filter.
+function pushbutton_filter_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_filter (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global p data
+
+params = traceSelection;
+if isempty(params)
+    return
+end
+[data.rois.status] = deal(0);
+% sort by SNR only
+if params.snrEnable == 1 && params.numstatesEnable == 0
+    handles.text_snr_filt.String = [num2str(params.snr_min),...
+        ' -> ', num2str(params.snr_max)];
+    handles.text_numstates_filt.String = 'any';
+    computeSNR(0);
+    for ii = 1:length(data.rois)
+        if data.rois(ii,p.currentChannelIdx).SNR <= params.snr_max ...
+                && data.rois(ii,p.currentChannelIdx).SNR >= params.snr_min
+            data.rois(ii,p.currentChannelIdx).status = 1;
+        end
+    end
+end
+% sort by # of states only
+if params.numstatesEnable == 1 && params.snrEnable == 0
+    handles.text_numstates_filt.String = [num2str(params.numstates_min),...
+        ' -> ', num2str(params.numstates_max)];
+    handles.text_snr_filt.String = 'any';
+    for ii = 1:length(data.rois)
+        if size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ... 
+                <= params.numstates_max && ... 
+                size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ...
+                >= params.numstates_min
+            data.rois(ii,p.currentChannelIdx).status = 1;
+        end
+    end
+end
+% sort by SNR and # of states....
+if params.numstatesEnable == 1 && params.snrEnable == 1
+    handles.text_snr_filt.String = [num2str(params.snr_min),...
+        ' -> ', num2str(params.snr_max)];
+    computeSNR(0);
+    
+    handles.text_numstates_filt.String = [num2str(params.numstates_min),...
+        ' -> ', num2str(params.numstates_max)];
+    
+    for ii = 1:length(data.rois)
+        if size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ... 
+                <= params.numstates_max && ... 
+                size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ...
+                >= params.numstates_min && ...
+                data.rois(ii,p.currentChannelIdx).SNR <= params.snr_max && ...
+                data.rois(ii,p.currentChannelIdx).SNR >= params.snr_min
+            data.rois(ii,p.currentChannelIdx).status = 1;
+        end
+    end
+end
+
+goToROI(p.roiIdx);

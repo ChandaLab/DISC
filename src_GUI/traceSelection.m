@@ -6,7 +6,7 @@ d = dialog('Position',[0.5*(dspyinfo(3)-dwidth) 0.5*(dspyinfo(4)-dheight) dwidth
     'Name','Trace Selection');
 
 btn_cancel = uicontrol(d,'string','Cancel','Position',...
-    [0.5*dwidth-115 25 100 30],'callback','delete(gcf)');
+    [0.5*dwidth-115 25 100 30],'callback',@traceSel_cancel_callback);
 btn_export = uicontrol(d,'string','Export','Position',...
     [0.5*dwidth+15 25 100 30],'callback',@traceSel_callback);
 
@@ -66,6 +66,10 @@ uiwait(d);
     end
     function edit_numstates_max_callback(H,~)
         params.numstates_max = str2double(get(H,'string'));
+    end
+    function traceSel_cancel_callback(~,~)
+        params = [];
+        delete(gcf);
     end
     function traceSel_callback(~,~)
         params.snrEnable = get(snr_check,'Value');

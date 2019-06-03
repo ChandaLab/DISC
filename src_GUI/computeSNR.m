@@ -1,7 +1,15 @@
 function computeSNR(histplot)
 global data p
 
-for ii = 1:length(vertcat(data.rois(:,p.currentChannelIdx).disc_fit))
+idx = zeros(length(vertcat(data.rois(:,p.currentChannelIdx).disc_fit)),1);
+for ii = 1:length(data.rois)
+    if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
+        idx(ii) = ii;
+    end
+end
+idx = nonzeros(idx); % remove zeros inserted between nonconsecutive roi analyses
+
+for ii = idx'
     mu(1) = data.rois(ii, p.currentChannelIdx).disc_fit.components(1,2);
     st(1) = data.rois(ii, p.currentChannelIdx).disc_fit.components(1,3);
     for jj = 2:length(data.rois(ii, p.currentChannelIdx).disc_fit.components(:,2))
