@@ -101,7 +101,7 @@ n_states = length(states);
 events = findEvents(state_seq);
 
 same_value = 1;
-inten_sites = checkVariable(Intensities,n_states,same_value); % bound and unbound
+intensites = checkVariable(Intensities,n_states,same_value); % bound and unbound
 SNR = checkVariable(SNR,1);
 
 ideal_seq = zeros(duration_f,1);
@@ -109,9 +109,9 @@ ideal_seq_var = zeros(duration_f,1);
 zproj =  zeros(duration_f,1);
 
 % signal to noise ratio
-inten_sites_mu = mean(inten_sites(2:end));
+intensites_mu = mean(intensites(2:end));
 sigma = [];
-sigma(1) = inten_sites_mu / SNR;
+sigma(1) = intensites_mu / SNR;
 sigma(2) = sigma(1);
 
 for n = 1:size(events,1);
@@ -120,7 +120,7 @@ for n = 1:size(events,1);
     EventState = events(n,4);
     
     % Add ideal_seq
-    ideal_seq(event_start:event_stop) = sum(inten_sites(1:EventState));
+    ideal_seq(event_start:event_stop) = sum(intensites(1:EventState));
     
     % Add ideal_seq_var & zproj
     event_dur = event_stop-event_start;
@@ -138,11 +138,11 @@ for n = 1:size(events,1);
             else
                 modulation = 0;
             end
-            current_intensity_var = (inten_sites(k) * modulation +  inten_sites(k));
+            current_intensity_var = (intensites(k) * modulation +  intensites(k));
             itensity_var = itensity_var + current_intensity_var;
         else
             % keep the baseline stable for simulationplicity
-            itensity_var = (inten_sites(k));
+            itensity_var = (intensites(k));
         end
         
     end
@@ -151,7 +151,7 @@ end
 
 % Add noise
 intensities = unique(ideal_seq);
-sigma = (inten_sites(1)) / SNR;
+sigma = (intensites(1)) / SNR;
 zproj = normrnd(ideal_seq_var, sigma);
 
 % create components
