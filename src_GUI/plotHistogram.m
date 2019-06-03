@@ -84,7 +84,7 @@ plot(axes, data_range, gauss_fit_all, '-k', 'linewidth', 1.7);
 hold(axes,'off'); set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90])
 xlim(axes, get(alignaxes,'Ylim'))
 
-% plot number of state as the title
+% draw number of states and SNR (if it exists) in the title
 snr = data.rois(p.roiIdx,p.currentChannelIdx).SNR;
 if isempty(snr)
     title(axes, ['Number of States: ', num2str(n_components)],...

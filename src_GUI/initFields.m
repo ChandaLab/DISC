@@ -35,8 +35,11 @@ end
 if ~isfield(data.rois, 'status')
     [data.rois.status] = deal(0); % default is unselected
 end
-% a further computation after DISC (see computeSNR.m)
-[data.rois.SNR] = deal([]); % clear any values
+% further computation after DISC (see computeSNR.m)
+[data.rois.SNR] = deal([]); % clear any values, avoids confusion as SNR 
+                            % will otherwise be displayed in title and will
+                            % not necessarily be that which is computed in
+                            % computeSNR.m
 
 % old format here for reference while debugging 
 % if ~isfield(data.rois, 'Ideal') 

@@ -29,13 +29,15 @@ if isequal(file, 0)
     return;
 end
 p.fp = fullfile(path, file);
-[~, ~, ext] = fileparts(p.fp);
+[~, ~, ext] = fileparts(p.fp); % get extension, will determine which method
+                               % to use for importing
 switch lower(ext)
     case {'.dat' '.csv'}
-        temp = importdata(p.fp);
+        temp = importdata(p.fp); % load into a convenient cell
+        % pull data
         [data.names, ~, ic] = unique(temp.colheaders);
         roi_counts = accumarray(ic,1);
-        data.rois = struct;
+        data.rois = struct; % init struct
         % assign each column to a roi, remove NaN elements
         for ii = 1:length(data.names)
             for jj = 1:roi_counts(ii)
@@ -43,7 +45,7 @@ switch lower(ext)
                 data.rois(jj,ii).time_series(any(isnan(data.rois(jj,ii).time_series),2),:) = [];
             end
         end
-    case '.mat'
+    case '.mat' % use standard matlab loading
         temp = load(p.fp, 'data'); % load from path
         data = temp.data;
 end
@@ -54,7 +56,9 @@ disp('Data Loaded.')
 initChannels();
 initFields();
 
-if ~isempty(p.guiHandle) && ishghandle(p.guiHandle) % if the GUI has a handle stored and is open, begin plotting
+if ~isempty(p.guiHandle) && ishghandle(p.guiHandle) % if the GUI has a 
+                                                    % handle stored and is open, 
+                                                    % begin plotting
     p.currentChannelIdx = 1;
     goToROI(1);
     channelPopup(p.channelPopupObject);

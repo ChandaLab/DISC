@@ -22,7 +22,7 @@ plot(axes, data.rois(p.roiIdx, p.currentChannelIdx).time_series, ...
      'color', p.channelColors(data.names{p.currentChannelIdx}))
  
 % draw title based on selection or lack thereof
-numsel = nnz(vertcat(data.rois(:,1).status)==1);
+numsel = nnz(vertcat(data.rois(:,1).status)==1); % determind num of selected traces
 if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
     title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);

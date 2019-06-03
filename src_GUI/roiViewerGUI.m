@@ -293,16 +293,19 @@ function pushbutton_filter_Callback(hObject, eventdata, handles)
 global p data
 
 params = traceSelection;
+% cancel if dialog returns empty output
 if isempty(params)
-    return
+    return;
 end
-[data.rois.status] = deal(0);
+[data.rois.status] = deal(0); % clear any statuses
 % sort by SNR only
 if params.snrEnable == 1 && params.numstatesEnable == 0
+    % change corresponding text in GUI
     handles.text_snr_filt.String = [num2str(params.snr_min),...
         ' -> ', num2str(params.snr_max)];
     handles.text_numstates_filt.String = 'any';
     computeSNR(0);
+    % adjust trace status of parameters are met
     for ii = 1:length(data.rois)
         if data.rois(ii,p.currentChannelIdx).SNR <= params.snr_max ...
                 && data.rois(ii,p.currentChannelIdx).SNR >= params.snr_min
@@ -312,9 +315,11 @@ if params.snrEnable == 1 && params.numstatesEnable == 0
 end
 % sort by # of states only
 if params.numstatesEnable == 1 && params.snrEnable == 0
+    % change corresponding text in GUI
     handles.text_numstates_filt.String = [num2str(params.numstates_min),...
         ' -> ', num2str(params.numstates_max)];
     handles.text_snr_filt.String = 'any';
+    % adjust trace status of parameters are met
     for ii = 1:length(data.rois)
         if size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ... 
                 <= params.numstates_max && ... 
@@ -326,13 +331,13 @@ if params.numstatesEnable == 1 && params.snrEnable == 0
 end
 % sort by SNR and # of states....
 if params.numstatesEnable == 1 && params.snrEnable == 1
+    % change corresponding text in GUI
     handles.text_snr_filt.String = [num2str(params.snr_min),...
         ' -> ', num2str(params.snr_max)];
     computeSNR(0);
-    
     handles.text_numstates_filt.String = [num2str(params.numstates_min),...
         ' -> ', num2str(params.numstates_max)];
-    
+    % adjust trace status of parameters are met
     for ii = 1:length(data.rois)
         if size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ... 
                 <= params.numstates_max && ... 
@@ -344,5 +349,5 @@ if params.numstatesEnable == 1 && params.snrEnable == 1
         end
     end
 end
-
+% redraw titles
 goToROI(p.roiIdx);
