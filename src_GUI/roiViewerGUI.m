@@ -297,55 +297,60 @@ params = traceSelection;
 if isempty(params)
     return;
 end
-[data.rois.status] = deal(0); % clear any statuses
+[data.rois.status] = deal(0); % clear any existing selections
+
 % sort by SNR only
 if params.snrEnable == 1 && params.numstatesEnable == 0
     % change corresponding text in GUI
     handles.text_snr_filt.String = [num2str(params.snr_min),...
-        ' -> ', num2str(params.snr_max)];
+        ' → ', num2str(params.snr_max)];
     handles.text_numstates_filt.String = 'any';
-    computeSNR(0);
+    computeSNR(0); % fill field in data struct
     % adjust trace status of parameters are met
     for ii = 1:length(data.rois)
-        if data.rois(ii,p.currentChannelIdx).SNR <= params.snr_max ...
-                && data.rois(ii,p.currentChannelIdx).SNR >= params.snr_min
-            data.rois(ii,p.currentChannelIdx).status = 1;
+        if ~isempty(data.rois(ii,p.currentChannelIdx).SNR)
+            trace_snr = data.rois(ii,p.currentChannelIdx).SNR;
+            if trace_snr <= params.snr_max && ...
+                    trace_snr >= params.snr_min
+                data.rois(ii,p.currentChannelIdx).status = 1;
+            end
         end
     end
-end
 % sort by # of states only
-if params.numstatesEnable == 1 && params.snrEnable == 0
+elseif params.numstatesEnable == 1 && params.snrEnable == 0
     % change corresponding text in GUI
     handles.text_numstates_filt.String = [num2str(params.numstates_min),...
-        ' -> ', num2str(params.numstates_max)];
+        ' → ', num2str(params.numstates_max)];
     handles.text_snr_filt.String = 'any';
     % adjust trace status of parameters are met
     for ii = 1:length(data.rois)
-        if size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ... 
-                <= params.numstates_max && ... 
-                size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ...
-                >= params.numstates_min
-            data.rois(ii,p.currentChannelIdx).status = 1;
+        if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
+            n_components = size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1);
+            if n_components <= params.numstates_max && ...
+                    n_components >= params.numstates_min
+                data.rois(ii,p.currentChannelIdx).status = 1;
+            end
         end
     end
-end
-% sort by SNR and # of states....
-if params.numstatesEnable == 1 && params.snrEnable == 1
+% sort by SNR and # of states
+elseif params.numstatesEnable == 1 && params.snrEnable == 1
     % change corresponding text in GUI
     handles.text_snr_filt.String = [num2str(params.snr_min),...
-        ' -> ', num2str(params.snr_max)];
+        ' → ', num2str(params.snr_max)];
     computeSNR(0);
     handles.text_numstates_filt.String = [num2str(params.numstates_min),...
-        ' -> ', num2str(params.numstates_max)];
-    % adjust trace status of parameters are met
+        ' → ', num2str(params.numstates_max)];
+    % adjust trace status if parameters are met
     for ii = 1:length(data.rois)
-        if size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ... 
-                <= params.numstates_max && ... 
-                size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1) ...
-                >= params.numstates_min && ...
-                data.rois(ii,p.currentChannelIdx).SNR <= params.snr_max && ...
-                data.rois(ii,p.currentChannelIdx).SNR >= params.snr_min
-            data.rois(ii,p.currentChannelIdx).status = 1;
+        if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
+            n_components = size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1);
+            trace_snr = data.rois(ii,p.currentChannelIdx).SNR;
+            if n_components <= params.numstates_max && ...
+                    n_components >= params.numstates_min && ...
+                    trace_snr <= params.snr_max && ...
+                    trace_snr >= params.snr_min
+                data.rois(ii,p.currentChannelIdx).status = 1;
+            end
         end
     end
 end

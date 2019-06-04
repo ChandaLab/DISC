@@ -16,6 +16,8 @@ numstates_cat = zeros(length(idx),1); % allocate
 for ii = idx'
     numstates_cat(ii) = size(data.rois(ii, p.currentChannelIdx).disc_fit.components, 1);
 end
+% again, remove zeros from gaps in analyses
+numstates_cat = nonzeros(numstates_cat);
 
 % make a graphical histogram if the parameter indicates (it almost always
 % will)
