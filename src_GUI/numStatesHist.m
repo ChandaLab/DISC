@@ -4,7 +4,7 @@ global data p
 % allocate
 idx = zeros(length(vertcat(data.rois(:,p.currentChannelIdx).disc_fit)),1);
 % find indices of analyzed traces
-for ii = 1:length(data.rois)
+for ii = 1:size(data.rois,1)
     if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
         idx(ii) = ii;
     end

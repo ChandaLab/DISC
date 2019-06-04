@@ -1,10 +1,12 @@
-function saveData()
-% Save Data 
+function saveData(selected_reload)
+% Save Data in the .mat format. selected_reload input parameter trims
+% unselected traces from the current data set, lets the user save the file,
+% and then reloads that file in the GUI.
 %
-% Authors: Owen Rafferty & David S. White 
-% Contact: dwhite7@wisc.edu 
+% Authors: Owen Rafferty & David S. White
+% Contact: dwhite7@wisc.edu
 
-% Updates: 
+% Updates:
 % --------
 % 2019-12-01    OR      Wrote the code; Adapted from code intially written
 %                       by Dr. Marcel Goldschen-Ohm
@@ -13,12 +15,33 @@ function saveData()
 
 global p data
 
-    [file, path] = uiputfile('*.mat', 'Save data to file.', p.fp);
-    if isequal(file, 0) 
-        return; 
+if exist('selected_reload', 'var') && selected_reload == 1
+    [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
+        'Save data to file.', 'selected.mat');
+    if isequal(file, 0)
+        return
+    end
+    disp('Saving Data...');
+    fp = fullfile(path, file);
+    % loop over rois backwards so as to not affect indices
+    for ii = fliplr(1:(size(data.rois, 1)))
+        if data.rois(ii,1).status == 0
+           data.rois(ii,:) = [];
+        end
+    end
+    save(fp, 'data');
+    disp('Data Saved.');
+    loadData(fp);
+else
+    [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
+        'Save data to file.', p.fp);
+    if isequal(file, 0)
+        return
     end
     disp('Saving Data...');
     p.fp = fullfile(path, file);
     save(p.fp, 'data');
     disp('Data Saved.');
+end
+
 end

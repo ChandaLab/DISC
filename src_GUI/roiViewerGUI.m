@@ -22,7 +22,7 @@ function varargout = roiViewerGUI(varargin)
 
 % Edit the above text to modify the response to help roiViewerGUI
 
-% Last Modified by GUIDE v2.5 03-Jun-2019 11:49:46
+% Last Modified by GUIDE v2.5 04-Jun-2019 10:41:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -214,8 +214,11 @@ goToROI(p.roiIdx)
 function pushbutton16_toggleSelect_Callback(hObject, eventdata, handles)
 % change "status" field for ROI and title if necessary
 global data p
-data.rois(p.roiIdx,p.currentChannelIdx).status = 1;
-numsel = nnz(vertcat(data.rois(:,1).status)==1);
+% change status on all channels
+for ii = 1:size(data.rois,2)
+    data.rois(p.roiIdx,ii).status = 1;
+end
+numsel = nnz(vertcat(data.rois(:,1).status)==1); % count # of selected
 if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
     title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
@@ -232,8 +235,11 @@ end
 function pushbutton17_toggleDeselect_Callback(hObject, eventdata, handles)
 % change "status" field for ROI and title if necessary
 global data p
-data.rois(p.roiIdx,p.currentChannelIdx).status = 0;
-numsel = nnz(vertcat(data.rois(:,1).status)==1);
+% change status on all channels
+for ii = 1:size(data.rois, 2)
+    data.rois(p.roiIdx,ii).status = 0;
+end
+numsel = nnz(vertcat(data.rois(:,1).status)==1); % count # of selected
 if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
     title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
@@ -272,15 +278,8 @@ global data p
 
 
 % --------------------------------------------------------------------
-function menuFunctions_Callback(hObject, eventdata, handles)
-% hObject    handle to menuFunctions (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --------------------------------------------------------------------
-function menuFunctions_TraceSelection_Callback(hObject, eventdata, handles)
-% hObject    handle to menuFunctions_TraceSelection (see GCBO)
+function menuPlots_Callback(hObject, eventdata, handles)
+% hObject    handle to menuPlots (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 

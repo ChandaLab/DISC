@@ -1,4 +1,4 @@
-function loadData()
+function loadData(fp)
 % Load Data
 %
 % Authors: Owen Rafferty & David S. White
@@ -16,19 +16,23 @@ function loadData()
 % data = struct;
 % data.rois = region of interests;
 %    [number of rois, number of channels] = size(data.rois)
-% data.rois.zproj = time series data to be analyzed
+% data.rois.time_series = time series data to be analyzed
 
 
 % input variables
 global data p
 
 disp('Loading Data...')
-[file, path] = uigetfile({'*.mat;*.dat;*.csv','Data files (*.mat,*.dat,*.csv)'},...
-    'Open data file.'); % open file picker
-if isequal(file, 0)
-    return;
+if ~exist('fp','var')
+    [file, path] = uigetfile({'*.mat;*.dat;*.csv','Data files (*.mat,*.dat,*.csv)'},...
+        'Open data file.'); % open file picker
+    if isequal(file, 0)
+        return;
+    end
+    p.fp = fullfile(path, file);
+else
+    p.fp = fp;
 end
-p.fp = fullfile(path, file);
 [~, ~, ext] = fileparts(p.fp); % get extension, will determine which method
                                % to use for importing
 switch lower(ext)
