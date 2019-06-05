@@ -53,6 +53,9 @@ global p
 p.h1 = handles.axes1;
 p.h2 = handles.axes2;
 p.h3 = handles.axes3;
+
+p.text_snr_filt = handles.text_snr_filt;
+p.text_numstates_filt = handles.text_numstates_filt;
 % Choose default command line output for roiViewerGUI
 handles.output = hObject;
 
@@ -114,7 +117,7 @@ function popupmenu1_Callback(hObject, eventdata, handles)
 global data p 
 
 popup_sel_index = get(handles.popupmenu1, 'Value');
-for i = 1:length(data.names)
+for i = 1:size(data.rois,2)
     switch popup_sel_index
         case i
             p.currentChannelIdx = i;
@@ -199,7 +202,8 @@ end
 function pushbutton14_clearThis_Callback(hObject, eventdata, handles)
 % clears analysis fields for current ROI
 global data p
-data.rois(p.roiIdx,p.currentChannelIdx).disc_fit = []; 
+data.rois(p.roiIdx,p.currentChannelIdx).disc_fit = [];
+data.rois(p.roiIdx,p.currentChannelIdx).SNR = [];
 goToROI(p.roiIdx)
 
 % --- Executes on button press in pushbutton15_clearAll.
@@ -207,6 +211,7 @@ function pushbutton15_clearAll_Callback(hObject, eventdata, handles)
 % clears analysis fields for all ROIs
 global data p
 [data.rois(:,p.currentChannelIdx).disc_fit] = deal([]);
+[data.rois(:,p.currentChannelIdx).SNR] = deal([]);
 goToROI(p.roiIdx)
 
 
@@ -292,8 +297,10 @@ function pushbutton_filter_Callback(hObject, eventdata, handles)
 global p data
 
 params = traceSelection;
-% cancel if dialog returns empty output
-if isempty(params)
+% cancel if continue is not pressed
+if params.contpr ~= 1
+    handles.text_snr_filt.String = 'any';
+    handles.text_numstates_filt.String = 'any';
     return;
 end
 [data.rois.status] = deal(0); % clear any existing selections

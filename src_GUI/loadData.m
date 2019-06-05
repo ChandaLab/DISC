@@ -68,6 +68,10 @@ if ~isempty(p.guiHandle) && ishghandle(p.guiHandle) % if the GUI has a
     channelPopup(p.channelPopupObject);
 end
 
+% reset filter texts in GUI
+p.text_snr_filt.String = 'any';
+p.text_numstates_filt.String = 'any';
+
 % start at roi 1;
 p.roiIdx = 1;
 p.currentChannelIdx = 1;
