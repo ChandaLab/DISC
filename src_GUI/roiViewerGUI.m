@@ -218,7 +218,7 @@ global data p
 for ii = 1:size(data.rois,2)
     data.rois(p.roiIdx,ii).status = 1;
 end
-numsel = nnz(vertcat(data.rois(:,1).status)==1); % count # of selected
+numsel = nnz(vertcat(data.rois(:,p.currentChannelIdx).status)==1); % count # of selected
 if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
     title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
@@ -239,7 +239,7 @@ global data p
 for ii = 1:size(data.rois, 2)
     data.rois(p.roiIdx,ii).status = 0;
 end
-numsel = nnz(vertcat(data.rois(:,1).status)==1); % count # of selected
+numsel = nnz(vertcat(data.rois(:,p.currentChannelIdx).status)==1); % count # of selected
 if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
     title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
@@ -261,7 +261,7 @@ function menuFile_Callback(hObject, eventdata, handles)
 function pushbutton18_nextSelected_Callback(hObject, eventdata, handles)
 % finds next ROI with "selected" status and goes to it in the GUI
 global data p    
-    j = find(vertcat(data.rois(p.roiIdx+1:end,1).status) == 1);
+    j = find(vertcat(data.rois(p.roiIdx+1:end,p.currentChannelIdx).status) == 1);
     if ~isempty(j) 
         goToROI(p.roiIdx + j(1)); 
     end
@@ -271,7 +271,7 @@ global data p
 function pushbutton19_prevSelected_Callback(hObject, eventdata, handles)
 % finds previous ROI with "selected" status and goes to it in the GUI
 global data p
-    j = find(vertcat(data.rois(1:p.roiIdx-1,1).status) == 1);
+    j = find(vertcat(data.rois(1:p.roiIdx-1,p.currentChannelIdx).status) == 1);
     if ~isempty(j) 
         goToROI(j(end)); 
     end
@@ -311,7 +311,9 @@ if params.snrEnable == 1 && params.numstatesEnable == 0
             trace_snr = data.rois(ii,p.currentChannelIdx).SNR;
             if trace_snr <= params.snr_max && ...
                     trace_snr >= params.snr_min
-                data.rois(ii,p.currentChannelIdx).status = 1;
+                for jj = 1:size(data.rois,2)
+                    data.rois(ii,jj).status = 1;
+                end
             end
         end
     end
@@ -327,7 +329,9 @@ elseif params.numstatesEnable == 1 && params.snrEnable == 0
             n_components = size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1);
             if n_components <= params.numstates_max && ...
                     n_components >= params.numstates_min
-                data.rois(ii,p.currentChannelIdx).status = 1;
+                for jj = 1:size(data.rois,2)
+                    data.rois(ii,jj).status = 1;
+                end
             end
         end
     end
@@ -348,7 +352,9 @@ elseif params.numstatesEnable == 1 && params.snrEnable == 1
                     n_components >= params.numstates_min && ...
                     trace_snr <= params.snr_max && ...
                     trace_snr >= params.snr_min
-                data.rois(ii,p.currentChannelIdx).status = 1;
+                for jj = 1:size(data.rois,2)
+                    data.rois(ii,jj).status = 1;
+                end
             end
         end
     end
