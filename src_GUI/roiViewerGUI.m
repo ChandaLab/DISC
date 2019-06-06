@@ -305,6 +305,21 @@ if params.contpr ~= 1
 end
 % if cancel is pressed, no filter will be applied, but the traces from the
 % previous filtering will still be selected.
+
+% assign min and max values if entry boxes are left empty
+if ~exist('params.snr_max', 'var')
+    params.snr_max = Inf;
+end
+if ~exist('params.snr_min', 'var')
+    params.snr_min = -Inf;
+end
+if ~exist('params.numstates_max', 'var')
+    params.numstates_max = Inf;
+end
+if ~exist('params.numstates_min', 'var')
+    params.numstates_min = 0;
+end
+
 [data.rois.status] = deal(0); % clear any existing selections
 
 % sort by SNR only
