@@ -303,6 +303,8 @@ if params.contpr ~= 1
     handles.text_numstates_filt.String = 'any';
     return;
 end
+% if cancel is pressed, no filter will be applied, but the traces from the
+% previous filtering will still be selected.
 [data.rois.status] = deal(0); % clear any existing selections
 
 % sort by SNR only

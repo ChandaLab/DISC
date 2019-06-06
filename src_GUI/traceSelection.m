@@ -77,7 +77,7 @@ uiwait(d); % output when closed
 % for ease of conditions in main GUI, assure output params are empty if the
 % dialog is cancelled
     function traceSel_cancel_callback(~,~)
-        params = [];
+        params.contpr = 0;
         delete(gcf);
     end
 % export checks only when 'Continue' is pressed
