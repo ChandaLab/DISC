@@ -1,5 +1,7 @@
 function exportFigs
 global p
+% store channel idx so proper value is returned after for loop below
+channel = p.currentChannelIdx;
 % close the figure if it is already open
 if exist('f','var')
     clf(f);
@@ -22,7 +24,8 @@ figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
         plotHistogram(ax(row,2), ax(row,1));
         plotMetric(ax(row,3));
     end
-
+p.currentChannelIdx = channel;
+    
 end
 
 % dialog to select which channels to place in figure
