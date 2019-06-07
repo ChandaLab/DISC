@@ -54,8 +54,17 @@ p.h1 = handles.axes1;
 p.h2 = handles.axes2;
 p.h3 = handles.axes3;
 
+% init variables for filter values
+p.filters.enableSNR = 0;
+p.filters.enablenumStates = 0;
+p.filters.snr_min = [];
+p.filters.snr_max = [];
+p.filters.numstates_min = [];
+p.filters.numstates_max = [];
+% put text handles in global struct 
 p.text_snr_filt = handles.text_snr_filt;
 p.text_numstates_filt = handles.text_numstates_filt;
+
 % Choose default command line output for roiViewerGUI
 handles.output = hObject;
 
@@ -296,9 +305,9 @@ function pushbutton_filter_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global p data
 
-params = traceSelection;
+traceSelection
 % cancel if continue is not pressed
-if params.contpr ~= 1
+if ~p.filters.contpr
     handles.text_snr_filt.String = 'any';
     handles.text_numstates_filt.String = 'any';
     return;
@@ -307,34 +316,34 @@ end
 % previous filtering will still be selected.
 
 % assign min and max values if entry boxes are left empty
-if ~exist('params.snr_max', 'var')
-    params.snr_max = Inf;
+if isfield(p.filters, 'snr_max') && isnan(p.filters.snr_max)
+    p.filters.snr_max = Inf;
 end
-if ~exist('params.snr_min', 'var')
-    params.snr_min = -Inf;
+if isfield(p.filters, 'snr_min') && isnan(p.filters.snr_min)
+    p.filters.snr_min = -Inf;
 end
-if ~exist('params.numstates_max', 'var')
-    params.numstates_max = Inf;
+if isfield(p.filters, 'numstates_max') && isnan(p.filters.numstates_max)
+    p.filters.numstates_max = Inf;
 end
-if ~exist('params.numstates_min', 'var')
-    params.numstates_min = 0;
+if isfield(p.filters, 'numstates_min') && isnan(p.filters.numstates_min)
+    p.filters.numstates_min = 0;
 end
 
 [data.rois.status] = deal(0); % clear any existing selections
 
 % sort by SNR only
-if params.snrEnable == 1 && params.numstatesEnable == 0
+if p.filters.snrEnable && ~p.filters.numstatesEnable
     % change corresponding text in GUI
-    handles.text_snr_filt.String = [num2str(params.snr_min),...
-        ' → ', num2str(params.snr_max)];
+    handles.text_snr_filt.String = [num2str(p.filters.snr_min),...
+        ' → ', num2str(p.filters.snr_max)];
     handles.text_numstates_filt.String = 'any';
     computeSNR(0); % fill field in data struct
     % adjust trace status of parameters are met
     for ii = 1:length(data.rois)
         if ~isempty(data.rois(ii,p.currentChannelIdx).SNR)
             trace_snr = data.rois(ii,p.currentChannelIdx).SNR;
-            if trace_snr <= params.snr_max && ...
-                    trace_snr >= params.snr_min
+            if trace_snr <= p.filters.snr_max && ...
+                    trace_snr >= p.filters.snr_min
                 for jj = 1:size(data.rois,2)
                     data.rois(ii,jj).status = 1;
                 end
@@ -342,17 +351,17 @@ if params.snrEnable == 1 && params.numstatesEnable == 0
         end
     end
 % sort by # of states only
-elseif params.numstatesEnable == 1 && params.snrEnable == 0
+elseif p.filters.numstatesEnable && ~p.filters.snrEnable
     % change corresponding text in GUI
-    handles.text_numstates_filt.String = [num2str(params.numstates_min),...
-        ' → ', num2str(params.numstates_max)];
+    handles.text_numstates_filt.String = [num2str(p.filters.numstates_min),...
+        ' → ', num2str(p.filters.numstates_max)];
     handles.text_snr_filt.String = 'any';
     % adjust trace status of parameters are met
     for ii = 1:length(data.rois)
         if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
             n_components = size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1);
-            if n_components <= params.numstates_max && ...
-                    n_components >= params.numstates_min
+            if n_components <= p.filters.numstates_max && ...
+                    n_components >= p.filters.numstates_min
                 for jj = 1:size(data.rois,2)
                     data.rois(ii,jj).status = 1;
                 end
@@ -360,22 +369,22 @@ elseif params.numstatesEnable == 1 && params.snrEnable == 0
         end
     end
 % sort by SNR and # of states
-elseif params.numstatesEnable == 1 && params.snrEnable == 1
+elseif p.filters.numstatesEnable && p.filters.snrEnable
     % change corresponding text in GUI
-    handles.text_snr_filt.String = [num2str(params.snr_min),...
-        ' → ', num2str(params.snr_max)];
+    handles.text_snr_filt.String = [num2str(p.filters.snr_min),...
+        ' → ', num2str(p.filters.snr_max)];
     computeSNR(0);
-    handles.text_numstates_filt.String = [num2str(params.numstates_min),...
-        ' → ', num2str(params.numstates_max)];
+    handles.text_numstates_filt.String = [num2str(p.filters.numstates_min),...
+        ' → ', num2str(p.filters.numstates_max)];
     % adjust trace status if parameters are met
     for ii = 1:length(data.rois)
         if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
             n_components = size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1);
             trace_snr = data.rois(ii,p.currentChannelIdx).SNR;
-            if n_components <= params.numstates_max && ...
-                    n_components >= params.numstates_min && ...
-                    trace_snr <= params.snr_max && ...
-                    trace_snr >= params.snr_min
+            if n_components <= p.filters.numstates_max && ...
+                    n_components >= p.filters.numstates_min && ...
+                    trace_snr <= p.filters.snr_max && ...
+                    trace_snr >= p.filters.snr_min
                 for jj = 1:size(data.rois,2)
                     data.rois(ii,jj).status = 1;
                 end
