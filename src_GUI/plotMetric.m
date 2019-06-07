@@ -17,11 +17,9 @@ global data p
 cla(axes);
 
 % draw only if analysis is completed
-if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit) & isfield(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit,'metrics')
+if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit) && isfield(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit,'metrics')
     metric = data.rois(p.roiIdx,p.currentChannelIdx).disc_fit.metrics;
     if ~isempty(metric)
-        total_states = size(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit.components,1);
-
         % plot 
         set(axes, 'Visible','on');
         cla(axes);

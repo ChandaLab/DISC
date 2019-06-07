@@ -21,7 +21,7 @@ numstates_cat = nonzeros(numstates_cat);
 
 % make a graphical histogram if the parameter indicates (it almost always
 % will)
-if histplot == 1
+if histplot
     figure();
     histogram(numstates_cat);
     title('# of States Histogram')

@@ -23,7 +23,7 @@ for ii = idx'
 end
 
 % make a graphical histogram if given parameter
-if histplot == 1
+if histplot
     figure();
     histogram(vertcat(data.rois(:,p.currentChannelIdx).SNR));
     title('SNR Histogram')
