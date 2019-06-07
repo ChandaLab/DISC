@@ -39,7 +39,7 @@ data_counts = counts(1:end-1);
 if isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
     
     % Lets just plot out the data by itself and exit
-    bar(axes,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1,'EdgeAlpha',0); hold(axes,'on');
+    bar(axes,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1); hold(axes,'on');
     set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90])
     
     % set the axis to match the time series plot (p.h1) axis.
@@ -50,7 +50,7 @@ end
 % If data.rois.Components exists, we can plot the histogram fits
 
 % plot raw data histogram
-bar(axes,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1,'EdgeAlpha',0); hold(axes,'on');
+bar(axes,data_range,data_counts,'FaceColor',bin_color,'BarWidth',1); hold(axes,'on');
 
 % grab components
 components = data.rois(p.roiIdx, p.currentChannelIdx).disc_fit.components; 

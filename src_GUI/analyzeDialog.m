@@ -24,17 +24,17 @@ rpanel = uipanel(d,'Position',[0.5 0.4 0.4 0.55]);
 llowerpanel = uipanel(d,'Position',[0.14 0.29 0.35 0.3]);
 
 % create button group/panel for threshold type selection
-bg_threshold = uibuttongroup(d,'Position',[0.14 0.6 0.35 0.38],'Title','Threshold Value','Visible','off',...
-                             'SelectionChangedFcn',@thresholdSelection);
+bg_threshold = uibuttongroup(d,'Position',[0.14 0.6 0.35 0.38],'Title','Threshold Value',...
+    'Visible','off','SelectionChangedFcn',@thresholdSelection);
 
 % create threshold edit box and radio from selection of threshold type                         
 edit_threshold = uicontrol(bg_threshold,'Style','edit','Position',[6 50 60 20],...
-                           'String',p.inputParameters.thresholdValue,...
-                           'Horizontalalignment','left','Callback',@edit_threshold_callback);
+    'String',p.inputParameters.thresholdValue,...
+    'Horizontalalignment','left','Callback',@edit_threshold_callback);
 radio_alpha_threshold = uicontrol(bg_threshold,'Style','radiobutton','Position',[6 26 100 20],...
-                                  'String','Alpha Value','HandleVisibility','off');
+    'String','Alpha Value','HandleVisibility','off');
 radio_critical_threshold = uicontrol(bg_threshold,'Style','radiobutton','Position',[6 6 120 20],...
-                                     'String','Critical Value','HandleVisibility','off');
+    'String','Critical Value','HandleVisibility','off');
 align([edit_threshold radio_alpha_threshold radio_critical_threshold], 'distributed','left')
 
 % check if last run altered default theshold type, and use altered value if so
@@ -49,16 +49,17 @@ bg_threshold.Visible = 'on';
 
 % create iterations label and input
 txt_iterations = uicontrol(llowerpanel,'Style','text','Position',[6 30 110 40],...
-                           'String','Viterbi Iterations','HorizontalAlignment','left');
+    'String','Viterbi Iterations','HorizontalAlignment','left');
 edit_iterations = uicontrol(llowerpanel,'Style','edit','Position',[6 10 60 20],...
-                            'String',p.inputParameters.hmmIterations,'HorizontalAlignment','left','Callback',@edit_iterations_callback);
+    'String',p.inputParameters.hmmIterations,'HorizontalAlignment','left',...
+    'Callback',@edit_iterations_callback);
 
 % create divisive IC label and popup                 
 txt_divisiveIC = uicontrol(rpanel,'Style','text','Position',[10 105 100 20],...
-                           'String','Divisive IC','HorizontalAlignment','left');
+    'String','Divisive IC','HorizontalAlignment','left');
 popup_divisiveIC = uicontrol(rpanel,'Style','popup','Position',[10 85 100 20],...
-                             'String',{'AIC-GMM';'BIC-GMM';'BIC-RSS';'HQC-GMM';'MDL'},'Visible','off',...
-                             'Callback',@popup_divisiveIC_callback);
+    'String',{'AIC-GMM';'BIC-GMM';'BIC-RSS';'HQC-GMM';'MDL'},'Visible','off',...
+    'Callback',@popup_divisiveIC_callback);
                          
 % check if last run altered default divIC parameters, and use altered values if so
 switch p.inputParameters.divisiveIC
@@ -81,10 +82,10 @@ popup_divisiveIC.Visible = 'on';
 
 % create agglomerative IC label and popup
 txt_agglomerativeIC = uicontrol(rpanel,'Style','text','Position',[10 45 120 20],...
-                                'String','Agglomerative IC','HorizontalAlignment','left');
+    'String','Agglomerative IC','HorizontalAlignment','left');
 popup_agglomerativeIC = uicontrol(rpanel,'Style','popup','Position',[10 25 100 20],...
-                                  'String',{'AIC-GMM';'BIC-GMM';'BIC-RSS';'HQC-GMM';'MDL';'none'},'Visible','off',...
-                                  'Callback',@popup_agglomerativeIC_callback);
+    'String',{'AIC-GMM';'BIC-GMM';'BIC-RSS';'HQC-GMM';'MDL';'none'},'Visible','off',...
+    'Callback',@popup_agglomerativeIC_callback);
 
 % check if last run altered default aggIC parameters, and use altered values if so
 switch p.inputParameters.agglomerativeIC
@@ -106,8 +107,10 @@ end
 popup_agglomerativeIC.Visible = 'on';
 
 % create cancel and go buttons
-btn_cancel = uicontrol('Parent',d,'Position',[65 25 100 30],'String','Cancel','Callback','delete(gcf)');
-btn_go = uicontrol('Parent',d,'Position',[185 25 100 30],'String','Go','Callback',@goAnalyze);
+btn_cancel = uicontrol('Parent',d,'Position',[65 25 100 30],'String','Cancel',...
+    'Callback','delete(gcf)');
+btn_go = uicontrol('Parent',d,'Position',[185 25 100 30],'String','Go',...
+    'Callback',@goAnalyze);
 
 % callback functions for dialog. these functions are unused if the default
 % values are unchanged
@@ -176,23 +179,24 @@ uiwait(d);
         % run DISC at current ROI and channel
         if ~p.analyzeAll
             % runDISC
-        data.rois(p.roiIdx, p.currentChannelIdx).disc_fit =  ...
-        runDISC(data.rois(p.roiIdx, p.currentChannelIdx).time_series,disc_input);
-        goToROI(p.roiIdx);
+            data.rois(p.roiIdx, p.currentChannelIdx).disc_fit =  ...
+                runDISC(data.rois(p.roiIdx, p.currentChannelIdx).time_series,disc_input);
+            goToROI(p.roiIdx);
         end
         
         % run DISC on all ROIs for current channel
         if p.analyzeAll
-            waitName = sprintf("Running DISC on channel '%s' ...",...
-                               char(data.names(p.currentChannelIdx))); % waitbar title
+            waitName = sprintf('Running DISC on channel %s ...',...
+                char(data.names(p.currentChannelIdx))); % waitbar title
             f = waitbar(0,'1','Name',waitName,...
-                        'CreateCancelBtn','setappdata(gcbf,''canceling'',1)'); % init waitbar
+                'CreateCancelBtn','setappdata(gcbf,''canceling'',1)'); % init waitbar
             setappdata(f,'canceling',0);
             for i = 1:size(data.rois,1)
                 if getappdata(f,'canceling') % stop analysis if cancel is clicked
                     break
                 end
-                waitbar(i/size(data.rois,1),f,sprintf(['ROI ',num2str(i),' of ',num2str(size(data.rois,1))])) % call waitbar and display progress
+                waitbar(i/size(data.rois,1),f,sprintf(['ROI ',num2str(i),' of ',...
+                    num2str(size(data.rois,1))])) % call waitbar and display progress
                 % runDISC
                 [data.rois(i, p.currentChannelIdx).disc_fit] = ...
                 runDISC(data.rois(i, p.currentChannelIdx).time_series, disc_input);
