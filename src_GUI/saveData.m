@@ -15,17 +15,17 @@ function saveData(selected_reload)
 
 global p data
 
-if exist('selected_reload', 'var') && selected_reload == 1
+if exist('selected_reload', 'var') && selected_reload
     [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
         'Save data to file.', 'selected.mat');
-    if isequal(file, 0)
+    if ~file
         return
     end
     disp('Saving Data...');
     fp = fullfile(path, file);
     % loop over rois backwards so as to not affect indices
     for ii = fliplr(1:(size(data.rois, 1)))
-        if data.rois(ii,1).status == 0
+        if ~data.rois(ii,1).status
            data.rois(ii,:) = [];
         end
     end
@@ -35,7 +35,7 @@ if exist('selected_reload', 'var') && selected_reload == 1
 else
     [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
         'Save data to file.', p.fp);
-    if isequal(file, 0)
+    if ~file
         return
     end
     disp('Saving Data...');

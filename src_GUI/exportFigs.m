@@ -24,7 +24,7 @@ figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
         plotHistogram(ax(row,2), ax(row,1));
         plotMetric(ax(row,3));
     end
-p.currentChannelIdx = channel;
+p.currentChannelIdx = channel; % restore original channel idx
     
 end
 

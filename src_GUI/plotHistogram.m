@@ -31,11 +31,11 @@ if isempty(max_value) || isempty(min_value)
     return;
 end
 bins = linspace(min_value, max_value, bins);
-counts = hist(time_series, bins);
+counts = histcounts(time_series, bins);
 data_range = bins(1:end-1);
-data_counts = counts(1:end-1);
+data_counts = counts(1:end);
 
-% Does data.rois.Components (i.e. "data fit") exist?
+% Does data.rois.components (i.e. "data fit") exist?
 if isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
     
     % Lets just plot out the data by itself and exit
@@ -48,7 +48,7 @@ if isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
     return;
 end
 
-% If data.rois.Components exists, we can plot the histogram fits
+% If data.rois.components exists, we can plot the histogram fits
 
 % plot raw data histogram
 bar(axes,data_range,data_counts,'FaceColor',bin_color,'EdgeColor',bin_color,'BarWidth',1); 
@@ -74,7 +74,7 @@ for n = 1:n_components
     % convert PDF to distribution
     norm_dist = norm_dist_pdf * round(w,2);
     
-    % plot this gaussian component onto the histrogram 
+    % plot this gaussian component onto the histogram 
     plot(axes, data_range, norm_dist,  '--k', 'linewidth', 1.5);
 
 end
@@ -92,7 +92,7 @@ if isempty(snr)
     title(axes, ['Number of States: ', num2str(n_components)],...
         'HorizontalAlignment','left');
 else
-    title(axes, ['SNR: ', num2str(round(snr,1)),'   ','Numer of States: ',...
+    title(axes, ['SNR: ', num2str(round(snr,1)),'   ','Number of States: ',...
         num2str(n_components)], 'HorizontalAlignment','left');
 end
 set(axes, 'fontsize', p.fontSize);

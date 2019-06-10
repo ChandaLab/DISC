@@ -1,17 +1,18 @@
 function exportText()
-% exports DISC fit data to .dat file in the vein of vbFRET/HaMMy
+% exports DISC ideal or class data to .dat file in the vein of vbFRET/HaMMy, 
+% keeping four decimal places of precision.
 global p data
 
 % open dialog, cancel fcn if dialog cancels
 [file, path] = uiputfile({'*.dat','Data files (*.dat)'},...
     'Export data to plain text (.dat)');
-if isequal(file, 0)
+if ~file
     return;
 end
 
 % store path and ext
 p.fp = fullfile(path, file);
-[~, ~, ext] = fileparts(p.fp);
+[~, ~, ext] = fileparts(p.fp); % gets file extension, only .dat is supported
 
 opt = typedialog;
 % cancel operation unless export is explicitly pressed
@@ -35,7 +36,8 @@ switch opt.data_sel
         idx = find(vertcat(data.rois(:,1).status) == 1);
 end
 
-switch lower(ext) % will probably add support for other plain text formats in the future
+% will probably add support for other plain text formats in the future
+switch lower(ext) 
     case '.dat'
         % construct matrix of ideal or class data (on current channel)
         switch opt.data_type
@@ -57,19 +59,30 @@ switch lower(ext) % will probably add support for other plain text formats in th
                         data.rois(ii,p.currentChannelIdx).disc_fit.class;
                 end
         end
-        % create file, write headers, close file
-        fid = fopen(p.fp, 'wt');
-        % replace spaces (and some other characters) with an underscore, as
-        % importdata cannot discern strings with spaces as column headers
-        name = regexprep(data.names(p.currentChannelIdx), '\s', '_');
-        for ii = 1:(size(idx, 1) - 1)
-            fprintf(fid, '%s\t', char(name));
+        % replace whitespaces with an underscore, as importdata cannot 
+        % discern strings with spaces as column headers
+        name = regexprep(char(data.names(p.currentChannelIdx)), '\s', '_');
+        % create cell of name repeated across all but last trace
+        names = cell(1, size(idx,1)-1);
+        names(:) = {name};
+        fid = fopen(p.fp, 'wt'); % open file
+        fprintf(fid, '%s\t', names{:}); % print name cell with tabs
+        fprintf(fid, '%s\n', name); % print name string with newline
+        % print temp matrix, one row at a time
+        waitName = sprintf('.dat Export'); % waitbar title
+        f = waitbar(0,'Exporting ...','Name',waitName,...
+            'CreateCancelBtn','setappdata(gcbf,''canceling'',1)'); % init waitbar
+        setappdata(f,'canceling',0);
+        for ii = 1:size(temp,1)
+            if getappdata(f,'canceling') % stop analysis if cancel is clicked
+                break
+            end
+            waitbar(ii/size(temp,1),f) % call waitbar and display progress
+            fprintf(fid, '%.4f\t', temp(ii,1:end-1)); % print all but last with tab
+            fprintf(fid, '%.4f\n', temp(ii,end)); % print last column with newline
         end
-        fprintf(fid, '%s\n', char(name)); % last header w/ newline instead of tab
-        fclose(fid);
-        % append data under headers. there are probably more efficient
-        % methods of doing this than dlmwrite.
-        dlmwrite(p.fp, temp, '-append', 'delimiter', '\t');
+        delete(f); % close waitbar
+        fclose(fid); % close file
 end
 
 clear temp
