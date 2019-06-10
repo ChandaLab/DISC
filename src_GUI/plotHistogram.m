@@ -31,9 +31,8 @@ if isempty(max_value) || isempty(min_value)
     return;
 end
 bins = linspace(min_value, max_value, bins);
-counts = histcounts(time_series, bins);
-data_range = bins(1:end-1);
-data_counts = counts(1:end);
+data_counts = histcounts(time_series, bins);
+data_range = bins(2:end);
 
 % Does data.rois.components (i.e. "data fit") exist?
 if isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)

@@ -19,7 +19,12 @@ for ii = idx'
         st(jj) = data.rois(ii, p.currentChannelIdx).disc_fit.components(jj,3);
         snr_trace(jj-1) = (mu(jj) - mu(jj-1))/st(jj-1);
     end
-    data.rois(ii, p.currentChannelIdx).SNR = mean(snr_trace);
+    % set SNR to NaN if only one component is found
+    if size(data.rois(ii, p.currentChannelIdx).disc_fit.components, 1) == 1
+        data.rois(ii, p.currentChannelIdx).SNR = NaN;
+    else
+        data.rois(ii, p.currentChannelIdx).SNR = mean(snr_trace);
+    end
 end
 
 % make a graphical histogram if given parameter

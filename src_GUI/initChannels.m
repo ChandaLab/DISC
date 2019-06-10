@@ -1,5 +1,5 @@
 function initChannels()
-% Enure Channels are Made and Assign Color Schemes
+% Ensure Channels are Made and Assign Color Schemes
 %
 % Authors: Owen Rafferty & David S. White
 % Contact: dwhite7@wisc.edu

@@ -8,9 +8,9 @@ d = dialog('Position',[0.5*(dspyinfo(3)-dwidth) 0.5*(dspyinfo(4)-dheight) dwidth
     'Name','Trace Selection');
 
 % init buttons
-btn_cancel = uicontrol(d,'string','Cancel','Position',...
+uicontrol(d,'string','Cancel','Position',...
     [0.5*dwidth-115 25 100 30],'callback',@traceSel_cancel_callback);
-btn_continue = uicontrol(d,'string','Continue','Position',...
+uicontrol(d,'string','Continue','Position',...
     [0.5*dwidth+15 25 100 30],'callback',@traceSel_callback);
 
 % init checks
@@ -84,15 +84,27 @@ uiwait(d); % output when closed
 % export edit strings (as doubles)
     function edit_snr_min_callback(H,~)
         p.filters.snr_min = str2double(get(H,'string'));
+        if isnan(p.filters.snr_min)
+            p.filters.snr_min = [];
+        end
     end
     function edit_snr_max_callback(H,~)
         p.filters.snr_max = str2double(get(H,'string'));
+        if isnan(p.filters.snr_max)
+            p.filters.snr_max = [];
+        end
     end
     function edit_numstates_min_callback(H,~)
         p.filters.numstates_min = str2double(get(H,'string'));
+        if isnan(p.filters.numstates_min)
+            p.filters.numstates_min = [];
+        end
     end
     function edit_numstates_max_callback(H,~)
         p.filters.numstates_max = str2double(get(H,'string'));
+        if isnan(p.filters.numstates_max)
+            p.filters.numstates_max = [];
+        end
     end
 % for ease of conditions in main GUI, assure output params are empty if the
 % dialog is cancelled

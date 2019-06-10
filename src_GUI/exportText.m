@@ -67,7 +67,7 @@ switch lower(ext)
         names(:) = {name};
         fid = fopen(p.fp, 'wt'); % open file
         fprintf(fid, '%s\t', names{:}); % print name cell with tabs
-        fprintf(fid, '%s\n', name); % print name string with newline
+        fprintf(fid, '%s\n', name); % print last name string with newline
         % print temp matrix, one row at a time
         waitName = sprintf('.dat Export'); % waitbar title
         f = waitbar(0,'Exporting ...','Name',waitName,...
