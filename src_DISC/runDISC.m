@@ -72,9 +72,6 @@ function disc_fit = runDISC(data, disc_input)
 %   max value found will be returned.
 %   * Default return_k_states= 0 (Boolean check)
 % 
-%   Note: Currently return_k is not supported in DISCO. This feature will
-%   be added in future updates 
-%
 %
 % Output Variables:
 % -----------------
@@ -114,7 +111,7 @@ disc_fit.metrics = [];
 disc_fit.all_ideal = []; 
 
 % Check data
-if ~exist('data','var') || isempty(data);
+if ~exist('data','var') || isempty(data)
     disp('Error in runDISC: No data provided');
     return;
 end

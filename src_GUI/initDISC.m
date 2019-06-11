@@ -12,9 +12,10 @@ function initDISC()
 
 global p 
 
-% define default analysis parame�ters to be called later in dialog
-p.inputParameters.thresholdValue = 0.05;            % 95% CI
-p.inputParameters.thresholdType = 'alpha_value';    % or 'critical_value'
-p.inputParameters.divisiveIC = 'BIC-GMM';           % lots of options 
-p.inputParameters.agglomerativeIC = 'BIC-GMM';      % lots of options
-p.inputParameters.hmmIterations = 1;                % 1-2 recommended 
+% define default analysis parameters to be called later in dialog
+p.inputParameters.input_value = 0.05;            % 95% CI
+p.inputParameters.input_type = 'alpha_value';    % or 'critical_value'
+p.inputParameters.divisive = 'BIC-GMM';          % lots of options 
+p.inputParameters.agglomerative = 'BIC-GMM';     % lots of options
+p.inputParameters.viterbi = 1;                   % 1-2 recommended
+p.inputParameters.return_k = 0;                  % any nonnegative integer, unused by default in DISC

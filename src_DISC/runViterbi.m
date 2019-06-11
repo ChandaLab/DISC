@@ -29,13 +29,13 @@ function viterbi_data_fit = runViterbi(data,data_fit,max_iter)
 %% runViterbi
 % Check Arguments; set default values
 % Check data
-if ~exist('data','var') || isempty(data);
+if ~exist('data','var') || isempty(data)
     disp('Error in divSegment: No data provided.');
     return;
 end
 
 % Check data_fit
-if ~exist('data_fit','var') || isempty(data_fit);
+if ~exist('data_fit','var') || isempty(data_fit)
     disp('Error in divSegment: No data_fit provided.');
     return;
 end
@@ -47,7 +47,7 @@ if length(data) ~= length(data_fit)
 end
 
 % Check max_iter
-if ~exist('max_iter','var') || isempty(max_iter);
+if ~exist('max_iter','var') || isempty(max_iter)
     max_iter = 1;
     return;
 end

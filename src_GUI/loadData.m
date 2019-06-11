@@ -36,7 +36,7 @@ end
 [~, ~, ext] = fileparts(p.fp); % get extension, will determine which method
                                % to use for importing
 switch lower(ext)
-    case {'.dat' '.csv'}
+    case {'.dat' '.csv'} % loads if formatted as in HaMMy/vbFRET
         temp = importdata(p.fp); % load into a convenient cell
         % pull data
         [data.names, ~, ic] = unique(temp.colheaders);

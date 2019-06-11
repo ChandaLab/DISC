@@ -22,7 +22,7 @@ function varargout = roiViewerGUI(varargin)
 
 % Edit the above text to modify the response to help roiViewerGUI
 
-% Last Modified by GUIDE v2.5 04-Jun-2019 10:41:40
+% Last Modified by GUIDE v2.5 11-Jun-2019 11:23:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -107,19 +107,19 @@ selection = questdlg(['Close ' get(handles.figure1,'Name') '?'],...
                      ['Close ' get(handles.figure1,'Name') '...'],...
                      'Yes','No','Yes');
 if strcmp(selection,'No')
-    return;
+    return
 end
 
 delete(handles.figure1)
 
 
-% --- Executes on selection change in popupmenu1.
-function popupmenu1_Callback(hObject, eventdata, handles)
+% --- Executes on selection change in popupmenu_channelSelect.
+function popupmenu_channelSelect_Callback(hObject, eventdata, handles)
 % changes the channel selected via popup, and remains on the current ROI.
 % Supports an arbitrary number of channels
 global data p 
 
-popup_sel_index = get(handles.popupmenu1, 'Value');
+popup_sel_index = get(handles.popupmenu_channelSelect, 'Value');
 for ii = 1:size(data.rois,2)
     switch popup_sel_index
         case ii
@@ -130,49 +130,45 @@ end
 
 
 % --- Executes during object creation, after setting all properties.
-function popupmenu1_CreateFcn(hObject, eventdata, handles)
+function popupmenu_channelSelect_CreateFcn(hObject, eventdata, handles)
 % create the popupmenu via an external function, retrieving channel names.
-% Supports an arbitraty number of channels
+% Supports an arbitrary number of channels (though colors would need to be
+% adapted as such in initChannels)
 global p
 p.channelPopupObject = hObject;
 channelPopup(hObject);
 
 
-% --- Executes on button press in pushbutton2_nextROI.
-function pushbutton2_nextROI_Callback(hObject, eventdata, handles)
-% go to the next ROI, stops at end of ts
+% --- Executes on button press in pushbutton_nextROI.
+function pushbutton_nextROI_Callback(hObject, eventdata, handles)
+% go to the next ROI, stops at end of channel
 global p
 goToROI(p.roiIdx + 1);
 
 
-% --- Executes on button press in pushbutton3_prevROI.
-function pushbutton3_prevROI_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_prevROI.
+function pushbutton_prevROI_Callback(hObject, eventdata, handles)
 % go to the previous ROI, stops at 1
 global p
 goToROI(p.roiIdx - 1);
 
 
-% --- Executes on button press in pushbutton4_customROI.
-function pushbutton4_customROI_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_customROI.
+function pushbutton_customROI_Callback(hObject, eventdata, handles)
 % jump to any given ROI via a dialog
 goToROI
 
 
-% --- Executes on button press in pushbutton9_analyzeThis.
-function pushbutton9_analyzeThis_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_analyzeThis.
+function pushbutton_analyzeThis_Callback(hObject, eventdata, handles)
 % sets condition to run DISC on the current ROI and brings up param dialog
-global p
-p.analyzeAll = 0;
-analyzeDialog();
+analyzeDialog(0);
 
 
-% --- Executes on button press in pushbutton11_analyzeAll.
-function pushbutton11_analyzeAll_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_analyzeAll.
+function pushbutton_analyzeAll_Callback(hObject, eventdata, handles)
 % sets condition to run DISC on all ROIs and brings up param dialog
-global p 
-p.analyzeAll = 1;
-analyzeDialog();
-
+analyzeDialog(1);
 
 
 % --- Executes on key press with focus on figure1 or any of its controls.
@@ -181,36 +177,36 @@ function figure1_WindowKeyPressFcn(hObject, eventdata, handles)
 % proper strings
 switch eventdata.Key
     case 'rightarrow'
-        uicontrol(handles.pushbutton2_nextROI)
-        pushbutton2_nextROI_Callback(handles.pushbutton2_nextROI,[],handles)
+        uicontrol(handles.pushbutton_nextROI)
+        pushbutton_nextROI_Callback(handles.pushbutton_nextROI,[],handles)
     case 'leftarrow'
-        uicontrol(handles.pushbutton3_prevROI)
-        pushbutton3_prevROI_Callback(handles.pushbutton3_prevROI,[],handles)
+        uicontrol(handles.pushbutton_prevROI)
+        pushbutton_prevROI_Callback(handles.pushbutton_prevROI,[],handles)
     case 'uparrow'
-        uicontrol(handles.pushbutton16_toggleSelect)
-        pushbutton16_toggleSelect_Callback(handles.pushbutton16_toggleSelect,[],handles)
+        uicontrol(handles.pushbutton_toggleSelect)
+        pushbutton_toggleSelect_Callback(handles.pushbutton_toggleSelect,[],handles)
     case 'downarrow'
-        uicontrol(handles.pushbutton17_toggleDeselect)
-        pushbutton17_toggleDeselect_Callback(handles.pushbutton17_toggleDeselect,[],handles)
+        uicontrol(handles.pushbutton_toggleDeselect)
+        pushbutton_toggleDeselect_Callback(handles.pushbutton_toggleDeselect,[],handles)
     case 'period'
-        uicontrol(handles.pushbutton18_nextSelected)
-        pushbutton18_nextSelected_Callback(handles.pushbutton18_nextSelected,[],handles)
+        uicontrol(handles.pushbutton_nextSelected)
+        pushbutton_nextSelected_Callback(handles.pushbutton_nextSelected,[],handles)
     case 'comma'
-        uicontrol(handles.pushbutton19_prevSelected)
-        pushbutton19_prevSelected_Callback(handles.pushbutton19_prevSelected,[],handles)
+        uicontrol(handles.pushbutton_prevSelected)
+        pushbutton_prevSelected_Callback(handles.pushbutton_prevSelected,[],handles)
 end
 
 
-% --- Executes on button press in pushbutton14_clearThis.
-function pushbutton14_clearThis_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_clearThis.
+function pushbutton_clearThis_Callback(hObject, eventdata, handles)
 % clears analysis fields for current ROI
 global data p
 data.rois(p.roiIdx,p.currentChannelIdx).disc_fit = [];
 data.rois(p.roiIdx,p.currentChannelIdx).SNR = [];
 goToROI(p.roiIdx)
 
-% --- Executes on button press in pushbutton15_clearAll.
-function pushbutton15_clearAll_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_clearAll.
+function pushbutton_clearAll_Callback(hObject, eventdata, handles)
 % clears analysis fields for all ROIs
 global data p
 [data.rois(:,p.currentChannelIdx).disc_fit] = deal([]);
@@ -218,8 +214,8 @@ global data p
 goToROI(p.roiIdx)
 
 
-% --- Executes on button press in pushbutton16_toggleSelect.
-function pushbutton16_toggleSelect_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_toggleSelect.
+function pushbutton_toggleSelect_Callback(hObject, eventdata, handles)
 % change "status" field for ROI and title if necessary
 global data p
 % change status on all channels
@@ -239,8 +235,8 @@ else
 end
 
 
-% --- Executes on button press in pushbutton17_toggleDeselect.
-function pushbutton17_toggleDeselect_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_toggleDeselect.
+function pushbutton_toggleDeselect_Callback(hObject, eventdata, handles)
 % change "status" field for ROI and title if necessary
 global data p
 % change status on all channels
@@ -260,8 +256,8 @@ else
 end
 
 
-% --- Executes on button press in pushbutton18_nextSelected.
-function pushbutton18_nextSelected_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_nextSelected.
+function pushbutton_nextSelected_Callback(hObject, eventdata, handles)
 % finds next ROI with "selected" status and goes to it in the GUI
 global data p    
     j = find(vertcat(data.rois(p.roiIdx+1:end,p.currentChannelIdx).status) == 1);
@@ -270,8 +266,8 @@ global data p
     end
 
 
-% --- Executes on button press in pushbutton19_prevSelected.
-function pushbutton19_prevSelected_Callback(hObject, eventdata, handles)
+% --- Executes on button press in pushbutton_prevSelected.
+function pushbutton_prevSelected_Callback(hObject, eventdata, handles)
 % finds previous ROI with "selected" status and goes to it in the GUI
 global data p
     j = find(vertcat(data.rois(1:p.roiIdx-1,p.currentChannelIdx).status) == 1);

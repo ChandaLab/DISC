@@ -16,7 +16,7 @@ p.fp = fullfile(path, file);
 
 opt = typedialog;
 % cancel operation unless export is explicitly pressed
-if opt.export_pr ~= 1
+if ~opt.export_pr
     disp('Export cancelled.');
     return
 end
@@ -62,26 +62,18 @@ switch lower(ext)
         % replace whitespaces with an underscore, as importdata cannot 
         % discern strings with spaces as column headers
         name = regexprep(char(data.names(p.currentChannelIdx)), '\s', '_');
-        % create cell of name repeated across all but last trace
-        names = cell(1, size(idx,1)-1);
-        names(:) = {name};
+        % create cell of channel name, repeated in a row
+        names = cell(1, size(idx,1)); names(:) = {name};
+        % find largest string between channel name or largest number, and
+        % use this for aesthetic padding.
+        padding = num2str(max(length(num2str(max(temp(:)))), length(name))); 
         fid = fopen(p.fp, 'wt'); % open file
-        fprintf(fid, '%s\t', names{:}); % print name cell with tabs
-        fprintf(fid, '%s\n', name); % print last name string with newline
-        % print temp matrix, one row at a time
-        waitName = sprintf('.dat Export'); % waitbar title
-        f = waitbar(0,'Exporting ...','Name',waitName,...
-            'CreateCancelBtn','setappdata(gcbf,''canceling'',1)'); % init waitbar
-        setappdata(f,'canceling',0);
-        for ii = 1:size(temp,1)
-            if getappdata(f,'canceling') % stop analysis if cancel is clicked
-                break
-            end
-            waitbar(ii/size(temp,1),f) % call waitbar and display progress
-            fprintf(fid, '%.4f\t', temp(ii,1:end-1)); % print all but last with tab
-            fprintf(fid, '%.4f\n', temp(ii,end)); % print last column with newline
-        end
-        delete(f); % close waitbar
+        % use repmat to construct arbitrarily long format spec and pad data
+        % with spaces to match printed channel name
+        fprintf(fid, [repmat(['%',padding,'s\t'], 1, size(temp,2)-1)...
+            ['%',padding,'s\n']], names{:});
+        fprintf(fid, [repmat(['%',padding,'.4f\t'], 1, size(temp,2)-1)...
+            ['%',padding,'.4f\n']], temp');
         fclose(fid); % close file
 end
 
@@ -128,7 +120,7 @@ uiwait(d); % output at exit
         opt.data_sel = event.NewValue.String;
     end
     function goexport(~,~)
-        opt.export_pr = 1; % assure export is pressed; values proceed to
+        opt.export_pr = 1; % assure export is pressed;
         % values proceed to main fcn even if the dialog
         % is exited.
         delete(gcf);
