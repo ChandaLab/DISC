@@ -60,12 +60,14 @@ disp('Data Loaded.')
 initChannels();
 initFields();
 
-if ~isempty(p.guiHandle) && ishghandle(p.guiHandle) % if the GUI has a 
-                                                    % handle stored and is open, 
-                                                    % begin plotting
-    p.currentChannelIdx = 1;
+% if the GUI is open and has a handle stored, begin plotting.
+if ~isempty(p.guiHandle) && ishghandle(p.guiHandle)
+    p.channelIdx = 1;
     goToROI(1);
-    channelPopup(p.channelPopupObject);
+    % adjust popup labels to new channels
+    gui_objects = guidata(p.guiHandle);
+    gui_objects.popupmenu_channelSelect.String = data.names;
+    gui_objects.popupmenu_channelSelect.Value = 1;
 end
 
 % reset filter texts in GUI
@@ -74,4 +76,4 @@ p.text_numstates_filt.String = 'any';
 
 % start at roi 1;
 p.roiIdx = 1;
-p.currentChannelIdx = 1;
+p.channelIdx = 1;

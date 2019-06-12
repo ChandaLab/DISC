@@ -1,7 +1,7 @@
 function exportFigs
 global p
 % store channel idx so proper value is returned after for loop below
-channel = p.currentChannelIdx;
+channel = p.channelIdx;
 % close the figure if it is already open
 if exist('f','var')
     clf(f);
@@ -11,20 +11,20 @@ checked = channelSelectDialog;
 ax = gobjects(length(checked),3);
 figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
 % make the subplots
-    for jj=1:length(checked)
-        ax(jj,1) = subplot(length(checked),4,(4*(jj-1)+[1,2]));
-        ax(jj,2) = subplot(length(checked),4,(4*(jj-1)+3));
-        ax(jj,3) = subplot(length(checked),4,(4*(jj-1)+4));
-    end
-    % fill the subplots based on indices determined in dialog
-    for ii = checked
-        p.currentChannelIdx = ii;
-        row = find(checked==ii);
-        plotTrajectory(ax(row,1));
-        plotHistogram(ax(row,2), ax(row,1));
-        plotMetric(ax(row,3));
-    end
-p.currentChannelIdx = channel; % restore original channel idx
+for jj=1:length(checked)
+    ax(jj,1) = subplot(length(checked),4,(4*(jj-1)+[1,2]));
+    ax(jj,2) = subplot(length(checked),4,(4*(jj-1)+3));
+    ax(jj,3) = subplot(length(checked),4,(4*(jj-1)+4));
+end
+% fill the subplots based on indices determined in dialog
+for ii = checked
+    p.channelIdx = ii;
+    row = find(checked==ii);
+    plotTrajectory(ax(row,1));
+    plotHistogram(ax(row,2), ax(row,1));
+    plotMetric(ax(row,3));
+end
+p.channelIdx = channel; % restore original channel idx
     
 end
 

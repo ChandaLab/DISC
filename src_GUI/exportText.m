@@ -24,9 +24,9 @@ end
 switch opt.data_sel
     case 'All analyzed traces'
         % find indices of analyzed traces
-        idx = zeros(length(vertcat(data.rois(:,p.currentChannelIdx).disc_fit)),1);
+        idx = zeros(length(vertcat(data.rois(:,p.channelIdx).disc_fit)),1);
         for ii = 1:size(data.rois, 1)
-            if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
+            if ~isempty(data.rois(ii,p.channelIdx).disc_fit)
                 idx(ii) = ii;
             end
         end
@@ -49,19 +49,19 @@ switch lower(ext)
                     % align column index of matrix to relative index of
                     % selection
                     temp(:,find(idx==ii)) = ... 
-                        data.rois(ii,p.currentChannelIdx).disc_fit.ideal;
+                        data.rois(ii,p.channelIdx).disc_fit.ideal;
                 end
             case 'Class'
                 temp = zeros(size(data.rois(1,1).disc_fit.class,1),...
                     size(idx,1));
                 for ii = idx'
                     temp(:,find(idx==ii)) = ...
-                        data.rois(ii,p.currentChannelIdx).disc_fit.class;
+                        data.rois(ii,p.channelIdx).disc_fit.class;
                 end
         end
         % replace whitespaces with an underscore, as importdata cannot 
         % discern strings with spaces as column headers
-        name = regexprep(char(data.names(p.currentChannelIdx)), '\s', '_');
+        name = regexprep(char(data.names(p.channelIdx)), '\s', '_');
         % create cell of channel name, repeated in a row
         names = cell(1, size(idx,1)); names(:) = {name};
         % find largest string between channel name or largest number, and

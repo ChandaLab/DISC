@@ -1,4 +1,4 @@
-function [Events] = findEvents(data_fit, event_start);
+function [Events] = findEvents(data_fit, event_start)
 %% Find Events and Dwell Times
 % David S. White
 % dwhite7@wisc.edu
@@ -6,7 +6,7 @@ function [Events] = findEvents(data_fit, event_start);
 % Updates:
 % --------
 % 2018-08-22 DSW wrote the code in this version, not sure when original
-% code was written. Added in computing dwell times for convience
+% code was written. Added in computing dwell times for convenience
 % 2018-10-01 DSW added event_start rate as optional variable
 % 2019-02-12 Edited a bug that shortened all dwell times by 1, resulting in
 % dwells of 0

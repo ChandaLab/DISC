@@ -159,7 +159,7 @@ uiwait(d);
             p.inputParameters.return_k = 0;
         end
     end
-    function edit_return_k_callback(H,~)
+    function edit_return_k_callback(H,~) % called by change in # of states to force
         p.inputParameters.return_k = str2double(get(H,'string'));
     end
 
@@ -197,14 +197,14 @@ uiwait(d);
         % run DISC at current ROI and channel
         if ~analyzeAll
             % runDISC
-            data.rois(p.roiIdx, p.currentChannelIdx).disc_fit =  ...
-                runDISC(data.rois(p.roiIdx, p.currentChannelIdx).time_series, disc_input);
+            data.rois(p.roiIdx, p.channelIdx).disc_fit =  ...
+                runDISC(data.rois(p.roiIdx, p.channelIdx).time_series, disc_input);
             goToROI(p.roiIdx);
       
         % run DISC on all ROIs for current channel
         elseif analyzeAll
             waitName = sprintf('Running DISC on %s ...',...
-                char(data.names(p.currentChannelIdx))); % waitbar title
+                char(data.names(p.channelIdx))); % waitbar title
             f = waitbar(0,'1','Name',waitName,...
                 'CreateCancelBtn','setappdata(gcbf,''canceling'',1)'); % init waitbar
             setappdata(f,'canceling',0);
@@ -215,8 +215,8 @@ uiwait(d);
                 waitbar(ii/size(data.rois,1),f,sprintf(['ROI ',num2str(ii),' of ',...
                     num2str(size(data.rois,1))])) % call waitbar and display progress
                 % runDISC
-                [data.rois(ii, p.currentChannelIdx).disc_fit] = ...
-                runDISC(data.rois(ii, p.currentChannelIdx).time_series, disc_input);
+                [data.rois(ii, p.channelIdx).disc_fit] = ...
+                runDISC(data.rois(ii, p.channelIdx).time_series, disc_input);
             end
             goToROI(p.roiIdx); % display ROI selected before analysis
             delete(f); % close waitbar

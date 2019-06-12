@@ -18,10 +18,10 @@ global p data
 cla(axes); 
 
 % grab plot color
-bin_color = p.channelColors(data.names{p.currentChannelIdx});
+bin_color = p.channelColors(data.names{p.channelIdx});
 
 % grab data to plot 
-time_series = data.rois(p.roiIdx, p.currentChannelIdx).time_series;
+time_series = data.rois(p.roiIdx, p.channelIdx).time_series;
 
 % init histogram stuff
 bins = 100; 
@@ -35,7 +35,7 @@ data_counts = histcounts(time_series, bins);
 data_range = bins(2:end);
 
 % Does data.rois.components (i.e. "data fit") exist?
-if isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
+if isempty(data.rois(p.roiIdx,p.channelIdx).disc_fit)
     
     % Lets just plot out the data by itself and exit
     bar(axes,data_range,data_counts,'FaceColor',bin_color,'EdgeColor',bin_color,'BarWidth',1);
@@ -54,7 +54,7 @@ bar(axes,data_range,data_counts,'FaceColor',bin_color,'EdgeColor',bin_color,'Bar
 hold(axes,'on');
 
 % grab components
-components = data.rois(p.roiIdx, p.currentChannelIdx).disc_fit.components; 
+components = data.rois(p.roiIdx, p.channelIdx).disc_fit.components; 
 n_components = size(components,1); 
 
 % Evalute and plot each component individually
@@ -86,7 +86,7 @@ hold(axes,'off'); set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90]
 xlim(axes, get(alignaxes,'Ylim'))
 
 % draw number of states and SNR (if it exists) in the title
-snr = data.rois(p.roiIdx,p.currentChannelIdx).SNR;
+snr = data.rois(p.roiIdx,p.channelIdx).SNR;
 if isempty(snr)
     title(axes, ['Number of States: ', num2str(n_components)],...
         'HorizontalAlignment','left');

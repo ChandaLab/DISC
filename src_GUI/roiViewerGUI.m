@@ -75,7 +75,7 @@ guidata(hObject, handles);
 % so window can get raised using roiViewerGUI.
 % initial load of ROI 1 at channel 1
 if strcmp(get(hObject,'Visible'),'off')
-    p.currentChannelIdx = 1;
+    p.channelIdx = 1;
     goToROI(1);
 end
 
@@ -123,7 +123,7 @@ popup_sel_index = get(handles.popupmenu_channelSelect, 'Value');
 for ii = 1:size(data.rois,2)
     switch popup_sel_index
         case ii
-            p.currentChannelIdx = ii;
+            p.channelIdx = ii;
             goToROI(p.roiIdx);
     end
 end
@@ -131,12 +131,20 @@ end
 
 % --- Executes during object creation, after setting all properties.
 function popupmenu_channelSelect_CreateFcn(hObject, eventdata, handles)
-% create the popupmenu via an external function, retrieving channel names.
+% creates popup and fetches channel names
 % Supports an arbitrary number of channels (though colors would need to be
 % adapted as such in initChannels)
-global p
-p.channelPopupObject = hObject;
-channelPopup(hObject);
+global data
+% create menu with default colors
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+     set(hObject,'BackgroundColor','white');
+end
+
+% set popup values based on channel names
+set(hObject, 'String', data.names);
+set(hObject, 'Value', 1);
+set(hObject, 'fontsize', 12);
+set(hObject, 'fontname', 'SansSerif');
 
 
 % --- Executes on button press in pushbutton_nextROI.
@@ -201,16 +209,16 @@ end
 function pushbutton_clearThis_Callback(hObject, eventdata, handles)
 % clears analysis fields for current ROI
 global data p
-data.rois(p.roiIdx,p.currentChannelIdx).disc_fit = [];
-data.rois(p.roiIdx,p.currentChannelIdx).SNR = [];
+data.rois(p.roiIdx,p.channelIdx).disc_fit = [];
+data.rois(p.roiIdx,p.channelIdx).SNR = [];
 goToROI(p.roiIdx)
 
 % --- Executes on button press in pushbutton_clearAll.
 function pushbutton_clearAll_Callback(hObject, eventdata, handles)
 % clears analysis fields for all ROIs
 global data p
-[data.rois(:,p.currentChannelIdx).disc_fit] = deal([]);
-[data.rois(:,p.currentChannelIdx).SNR] = deal([]);
+[data.rois(:,p.channelIdx).disc_fit] = deal([]);
+[data.rois(:,p.channelIdx).SNR] = deal([]);
 goToROI(p.roiIdx)
 
 
@@ -222,11 +230,11 @@ global data p
 for ii = 1:size(data.rois,2)
     data.rois(p.roiIdx,ii).status = 1;
 end
-numsel = nnz(vertcat(data.rois(:,p.currentChannelIdx).status)==1); % count # of selected
-if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
+numsel = nnz(vertcat(data.rois(:,p.channelIdx).status)==1); % count # of selected
+if data.rois(p.roiIdx,p.channelIdx).status == 1
     title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
-elseif data.rois(p.roiIdx,p.currentChannelIdx).status == 0
+elseif data.rois(p.roiIdx,p.channelIdx).status == 0
     title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Unselected','  (',num2str(numsel),' selected)']);
 else
@@ -243,11 +251,11 @@ global data p
 for ii = 1:size(data.rois, 2)
     data.rois(p.roiIdx,ii).status = 0;
 end
-numsel = nnz(vertcat(data.rois(:,p.currentChannelIdx).status)==1); % count # of selected
-if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
+numsel = nnz(vertcat(data.rois(:,p.channelIdx).status)==1); % count # of selected
+if data.rois(p.roiIdx,p.channelIdx).status == 1
     title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
-elseif data.rois(p.roiIdx,p.currentChannelIdx).status == 0
+elseif data.rois(p.roiIdx,p.channelIdx).status == 0
     title(p.h1, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Unselected','  (',num2str(numsel),' selected)']);
 else
@@ -260,7 +268,7 @@ end
 function pushbutton_nextSelected_Callback(hObject, eventdata, handles)
 % finds next ROI with "selected" status and goes to it in the GUI
 global data p    
-    j = find(vertcat(data.rois(p.roiIdx+1:end,p.currentChannelIdx).status) == 1);
+    j = find(vertcat(data.rois(p.roiIdx+1:end,p.channelIdx).status) == 1);
     if ~isempty(j) 
         goToROI(p.roiIdx + j(1)); 
     end
@@ -270,7 +278,7 @@ global data p
 function pushbutton_prevSelected_Callback(hObject, eventdata, handles)
 % finds previous ROI with "selected" status and goes to it in the GUI
 global data p
-    j = find(vertcat(data.rois(1:p.roiIdx-1,p.currentChannelIdx).status) == 1);
+    j = find(vertcat(data.rois(1:p.roiIdx-1,p.channelIdx).status) == 1);
     if ~isempty(j) 
         goToROI(j(end)); 
     end
@@ -283,7 +291,7 @@ function pushbutton_filter_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 global p data
 
-traceSelection
+traceSelection();
 % cancel if continue is not pressed
 if ~p.filters.contpr
     handles.text_snr_filt.String = 'any';
@@ -316,10 +324,10 @@ if p.filters.snrEnable && ~p.filters.numstatesEnable
         ' → ', num2str(p.filters.snr_max)];
     handles.text_numstates_filt.String = 'any';
     computeSNR(0); % fill field in data struct
-    % adjust trace status of parameters are met
+    % adjust trace status if parameters are met
     for ii = 1:size(data.rois, 1)
-        if ~isempty(data.rois(ii,p.currentChannelIdx).SNR)
-            trace_snr = data.rois(ii,p.currentChannelIdx).SNR;
+        if ~isempty(data.rois(ii,p.channelIdx).SNR)
+            trace_snr = data.rois(ii,p.channelIdx).SNR;
             if trace_snr <= p.filters.snr_max && ...
                     trace_snr >= p.filters.snr_min
                 for jj = 1:size(data.rois,2)
@@ -334,10 +342,10 @@ elseif p.filters.numstatesEnable && ~p.filters.snrEnable
     handles.text_numstates_filt.String = [num2str(p.filters.numstates_min),...
         ' → ', num2str(p.filters.numstates_max)];
     handles.text_snr_filt.String = 'any';
-    % adjust trace status of parameters are met
+    % adjust trace status if parameters are met
     for ii = 1:size(data.rois, 1)
-        if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
-            n_components = size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1);
+        if ~isempty(data.rois(ii,p.channelIdx).disc_fit)
+            n_components = size(data.rois(ii,p.channelIdx).disc_fit.components,1);
             if n_components <= p.filters.numstates_max && ...
                     n_components >= p.filters.numstates_min
                 for jj = 1:size(data.rois,2)
@@ -356,9 +364,9 @@ elseif p.filters.numstatesEnable && p.filters.snrEnable
         ' → ', num2str(p.filters.numstates_max)];
     % adjust trace status if parameters are met
     for ii = 1:size(data.rois, 1)
-        if ~isempty(data.rois(ii,p.currentChannelIdx).disc_fit)
-            n_components = size(data.rois(ii,p.currentChannelIdx).disc_fit.components,1);
-            trace_snr = data.rois(ii,p.currentChannelIdx).SNR;
+        if ~isempty(data.rois(ii,p.channelIdx).disc_fit)
+            n_components = size(data.rois(ii,p.channelIdx).disc_fit.components,1);
+            trace_snr = data.rois(ii,p.channelIdx).SNR;
             if n_components <= p.filters.numstates_max && ...
                     n_components >= p.filters.numstates_min && ...
                     trace_snr <= p.filters.snr_max && ...
@@ -373,6 +381,6 @@ end
 % redraw titles
 goToROI(p.roiIdx);
 
-% UNUSED
+% unused
 function menuFile_Callback(~, ~, ~)
 function menuPlots_Callback(~, ~, ~)

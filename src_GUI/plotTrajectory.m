@@ -18,16 +18,16 @@ global p data
 cla(axes); 
 
 % plot time series data 
-plot(axes, data.rois(p.roiIdx, p.currentChannelIdx).time_series, ...
-     'color', p.channelColors(data.names{p.currentChannelIdx}))
+plot(axes, data.rois(p.roiIdx, p.channelIdx).time_series, ...
+     'color', p.channelColors(data.names{p.channelIdx}))
  
 % draw title based on selection or lack thereof
 % determind num of selected traces
-numsel = nnz(vertcat(data.rois(:,p.currentChannelIdx).status)==1); 
-if data.rois(p.roiIdx,p.currentChannelIdx).status == 1
+numsel = nnz(vertcat(data.rois(:,p.channelIdx).status)==1); 
+if data.rois(p.roiIdx,p.channelIdx).status == 1
     title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
-elseif data.rois(p.roiIdx,p.currentChannelIdx).status == 0
+elseif data.rois(p.roiIdx,p.channelIdx).status == 0
     title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Unselected','  (',num2str(numsel),' selected)']);
 else
@@ -40,9 +40,9 @@ set(axes, 'fontsize', p.fontSize);
 set(axes, 'fontname', p.fontName);
 
 % draw fit if analysis is completed for the current ROI
-if ~isempty(data.rois(p.roiIdx,p.currentChannelIdx).disc_fit)
+if ~isempty(data.rois(p.roiIdx,p.channelIdx).disc_fit)
     hold(axes, 'on')
-    plot(axes, data.rois(p.roiIdx, p.currentChannelIdx).disc_fit.ideal, ...
+    plot(axes, data.rois(p.roiIdx, p.channelIdx).disc_fit.ideal, ...
          '-k','linewidth',1.7)
     hold(axes, 'off') 
 end
