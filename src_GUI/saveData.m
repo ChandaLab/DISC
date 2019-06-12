@@ -13,7 +13,7 @@ function saveData(selected_reload)
 % 2019-02-20    DSW     Comments added
 %
 
-global p data
+global data
 
 if exist('selected_reload', 'var') && selected_reload
     [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
@@ -34,13 +34,13 @@ if exist('selected_reload', 'var') && selected_reload
     loadData(fp);
 else
     [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
-        'Save data to file.', p.fp);
+        'Save data to file.');
     if ~file
         return
     end
     disp('Saving Data...');
-    p.fp = fullfile(path, file);
-    save(p.fp, 'data');
+    fp = fullfile(path, file);
+    save(fp, 'data');
     disp('Data Saved.');
 end
 

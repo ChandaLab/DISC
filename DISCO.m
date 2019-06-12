@@ -27,8 +27,8 @@ function DISCO()
 
 global data p
 
-% Init data and some fields
-p.fp = ''; p.guiHandle = ''; p.channelPopupObject = '';
+% Init data and gui handle field
+p.guiHandle = [];
 if isempty(data)
     loadData()
 end

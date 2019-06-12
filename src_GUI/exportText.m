@@ -11,8 +11,7 @@ if ~file
 end
 
 % store path and ext
-p.fp = fullfile(path, file);
-[~, ~, ext] = fileparts(p.fp); % gets file extension, only .dat is supported
+fp = fullfile(path, file);
 
 opt = typedialog;
 % cancel operation unless export is explicitly pressed
@@ -36,46 +35,42 @@ switch opt.data_sel
         idx = find(vertcat(data.rois(:,1).status) == 1);
 end
 
-% will probably add support for other plain text formats in the future
-switch lower(ext) 
-    case '.dat'
-        % construct matrix of ideal or class data (on current channel)
-        switch opt.data_type
-            case 'Ideal'
-                % allocate
-                temp = zeros(size(data.rois(1,1).disc_fit.ideal,1),...
-                    size(idx,1));
-                for ii = idx'
-                    % align column index of matrix to relative index of
-                    % selection
-                    temp(:,find(idx==ii)) = ... 
-                        data.rois(ii,p.channelIdx).disc_fit.ideal;
-                end
-            case 'Class'
-                temp = zeros(size(data.rois(1,1).disc_fit.class,1),...
-                    size(idx,1));
-                for ii = idx'
-                    temp(:,find(idx==ii)) = ...
-                        data.rois(ii,p.channelIdx).disc_fit.class;
-                end
+% construct matrix of ideal or class data (on current channel)
+switch opt.data_type
+    case 'Ideal'
+        % allocate
+        temp = zeros(size(data.rois(1,1).disc_fit.ideal,1),...
+            size(idx,1));
+        for ii = idx'
+            % align column index of matrix to relative index of
+            % selection
+            temp(:,find(idx==ii)) = ...
+                data.rois(ii,p.channelIdx).disc_fit.ideal;
         end
-        % replace whitespaces with an underscore, as importdata cannot 
-        % discern strings with spaces as column headers
-        name = regexprep(char(data.names(p.channelIdx)), '\s', '_');
-        % create cell of channel name, repeated in a row
-        names = cell(1, size(idx,1)); names(:) = {name};
-        % find largest string between channel name or largest number, and
-        % use this for aesthetic padding.
-        padding = num2str(max(length(num2str(max(temp(:)))), length(name))); 
-        fid = fopen(p.fp, 'wt'); % open file
-        % use repmat to construct arbitrarily long format spec and pad data
-        % with spaces to match printed channel name
-        fprintf(fid, [repmat(['%',padding,'s\t'], 1, size(temp,2)-1)...
-            ['%',padding,'s\n']], names{:});
-        fprintf(fid, [repmat(['%',padding,'.4f\t'], 1, size(temp,2)-1)...
-            ['%',padding,'.4f\n']], temp');
-        fclose(fid); % close file
+    case 'Class'
+        temp = zeros(size(data.rois(1,1).disc_fit.class,1),...
+            size(idx,1));
+        for ii = idx'
+            temp(:,find(idx==ii)) = ...
+                data.rois(ii,p.channelIdx).disc_fit.class;
+        end
 end
+% replace whitespaces with an underscore, as importdata cannot
+% discern strings with whitespace as column headers
+name = regexprep(char(data.names(p.channelIdx)), '\s', '_');
+% create cell of channel name;  repeat in a row
+names = cell(1, size(idx,1));  names(:) = {name};
+% find largest string between channel name or largest number, and
+% use this for padding.
+padding = num2str(max(length(num2str(max(temp(:)))), length(name)));
+fid = fopen(fp, 'wt'); % open file
+% use repmat to construct arbitrarily long format spec; pad data
+% with spaces to match printed channel name (or vice versa)
+fprintf(fid, [repmat(['%',padding,'s\t'], 1, size(temp,2)-1)...
+    ['%',padding,'s\n']], names{:});
+fprintf(fid, [repmat(['%',padding,'.4f\t'], 1, size(temp,2)-1)...
+    ['%',padding,'.4f\n']], temp');
+fclose(fid); % close file
 
 clear temp
 disp('Data Exported.');

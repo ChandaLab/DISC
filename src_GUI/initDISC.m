@@ -18,4 +18,5 @@ p.inputParameters.input_type = 'alpha_value';    % or 'critical_value'
 p.inputParameters.divisive = 'BIC-GMM';          % lots of options 
 p.inputParameters.agglomerative = 'BIC-GMM';     % lots of options
 p.inputParameters.viterbi = 1;                   % 1-2 recommended
-p.inputParameters.return_k = 0;                  % any nonnegative integer, unused by default in DISC
+p.inputParameters.return_k = 0;                  % any nonnegative integer, 
+                                                 % unused by default in DISC

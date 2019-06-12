@@ -18,7 +18,7 @@ global p data
 cla(axes); 
 
 % grab plot color
-bin_color = p.channelColors(data.names{p.channelIdx});
+bin_color = p.channelColors(p.channelIdx,:);
 
 % grab data to plot 
 time_series = data.rois(p.roiIdx, p.channelIdx).time_series;
@@ -30,9 +30,9 @@ min_value = round(min(time_series),-1);
 if isempty(max_value) || isempty(min_value)
     return;
 end
-bins = linspace(min_value, max_value, bins);
-data_counts = histcounts(time_series, bins);
-data_range = bins(2:end);
+edges = linspace(min_value, max_value, bins);
+data_counts = histcounts(time_series, edges);
+data_range = edges(1:end-1);
 
 % Does data.rois.components (i.e. "data fit") exist?
 if isempty(data.rois(p.roiIdx,p.channelIdx).disc_fit)

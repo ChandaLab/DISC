@@ -1,5 +1,6 @@
 function plotDwellTime
 global data p
+
 % use DISC function
 events = findEvents(data.rois(p.roiIdx, p.channelIdx).disc_fit.class);
 % events = [start frame, stop frame, duration, label]
@@ -10,13 +11,15 @@ durations = cell(1, num_states); % allocate
 for ii = 1:num_states
     durations{ii} = events(events(:,4)==ii,3);
 end
+
 % allocate and create axes depending on num states
+figure();
 ax = gobjects(round(num_states/2),2);
 for ii = 1:round(num_states/2)
     ax(ii,1) = subplot(round(num_states/2), 2, 2*(ii-1) + 1);
     ax(ii,2) = subplot(round(num_states/2), 2, 2*(ii-1) + 2);
 end
-% if the number of states is odd, remove the very last axes
+% if the number of states is odd, make the last set of axes invisible
 if mod(num_states,2)
     ax(end).Visible = 0;
 end

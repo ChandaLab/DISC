@@ -17,16 +17,16 @@ global data p
 p.fontSize = 12; 
 p.fontName = 'arial';
 
-% Add container for channel colors 
-p.channelColors = containers.Map;
+% check the size of the data.rois.
+n_channels = size(data.rois, 2);
 
+% init matrix for channel colors 
+p.channelColors = zeros(n_channels,3);
 
 % 1. Does data.names exist? 
 if ~isfield(data,'names')
     % create empty field 
-    data.names = {};
-    % check the size of the data.rois. 
-    n_channels = size(data.rois,2); 
+    data.names = {}; 
     for n = 1:n_channels
         % assign arbitrary names
         data.names{n} = ['Channel ', num2str(n)];
@@ -44,8 +44,8 @@ color_scheme{5} = [0.3010, 0.7450, 0.9330]; % light blue
 color_scheme{6} = [0.8500, 0.3250, 0.0980]; % orange
 color_scheme{7} = [0.9290, 0.6940, 0.1250]; % yellow
 
-% assign colors
-for i = 1:length(data.names)
-    p.channelColors(data.names{i}) = color_scheme{i};
+% assign colors as needed
+for ii = 1:n_channels
+    p.channelColors(ii,:) = color_scheme{ii};
 end
 

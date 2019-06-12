@@ -42,10 +42,11 @@ channelCheck = gobjects(length(data.names),1);
 for ii=1:length(data.names)
     channelCheck(ii) = uicontrol(d,'style','checkbox','string',data.names(ii),'Position',[0.5*dwidth-115 dheight-(ii+1)*20 300 20]);
 end
-btn_cancel = uicontrol(d,'string','Cancel','Position',...
-                       [0.5*dwidth-115 25 100 30],'callback','delete(gcf)');
-btn_export = uicontrol(d,'string','Export','Position',...
-                       [0.5*dwidth+15 25 100 30],'callback',@exportChannelSelect_callback);
+% create cancel and export buttons
+uicontrol(d,'string','Cancel','Position',...
+    [0.5*dwidth-115 25 100 30],'callback','delete(gcf)');
+uicontrol(d,'string','Export','Position',...
+    [0.5*dwidth+15 25 100 30],'callback',@exportChannelSelect_callback);
 uiwait(d);
     % export selected channels to original function; check for null
     % selection
@@ -56,6 +57,7 @@ uiwait(d);
             msgbox('Please select at least one channel to export.','Error','error');
             return
         end
+        
         delete(gcf);
     end
 end

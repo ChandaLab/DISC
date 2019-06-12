@@ -29,18 +29,23 @@ if ~exist('fp','var')
     if isequal(file, 0)
         return;
     end
-    p.fp = fullfile(path, file);
-else
-    p.fp = fp;
+    fp = fullfile(path, file);
 end
-[~, ~, ext] = fileparts(p.fp); % get extension, will determine which method
+[~, ~, ext] = fileparts(fp); % get extension, will determine which method
                                % to use for importing
 switch lower(ext)
     case {'.dat' '.csv'} % loads if formatted as in HaMMy/vbFRET
-        temp = importdata(p.fp); % load into a convenient cell
+        temp = importdata(fp); % load into a convenient cell
+        % in case colheaders are not assigned by importdata
+        if isfield(temp, 'colheaders')
+            names = temp.colheaders;
+        else
+            names = regexp(temp.textdata, '\S+','match'); % pull from textdata
+            names = names{:}; % "pull up" in cell hierarchy
+        end
         % pull data
-        [data.names, ~, ic] = unique(temp.colheaders);
-        roi_counts = accumarray(ic,1);
+        [data.names, ~, ic] = unique(names);
+        roi_counts = accumarray(ic, 1);
         data.rois = struct; % init struct
         % assign each column to a roi, remove NaN elements
         for ii = 1:length(data.names)
@@ -50,7 +55,7 @@ switch lower(ext)
             end
         end
     case '.mat' % use standard matlab loading
-        temp = load(p.fp, 'data'); % load from path
+        temp = load(fp, 'data'); % load from path
         data = temp.data;
 end
 clear temp;

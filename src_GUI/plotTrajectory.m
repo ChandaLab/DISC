@@ -19,7 +19,7 @@ cla(axes);
 
 % plot time series data 
 plot(axes, data.rois(p.roiIdx, p.channelIdx).time_series, ...
-     'color', p.channelColors(data.names{p.channelIdx}))
+     'color', p.channelColors(p.channelIdx,:))
  
 % draw title based on selection or lack thereof
 % determind num of selected traces

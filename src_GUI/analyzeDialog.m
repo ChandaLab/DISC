@@ -164,7 +164,7 @@ uiwait(d);
     end
 
     function goAnalyze(~,~) % called by "Go" button to gather parameters to send to runDISC and check for their validity.  
-        if mod(p.inputParameters.viterbi,1) ~= 0 || p.inputParameters.viterbi < 0
+        if mod(p.inputParameters.viterbi,1) || p.inputParameters.viterbi < 0
             msgbox('Number of iterations must be a positive integer','Error','error');
             return
         end

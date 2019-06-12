@@ -242,7 +242,6 @@ else
         ' - Status: null','  (',num2str(numsel),' selected)']);
 end
 
-
 % --- Executes on button press in pushbutton_toggleDeselect.
 function pushbutton_toggleDeselect_Callback(hObject, eventdata, handles)
 % change "status" field for ROI and title if necessary
@@ -263,7 +262,6 @@ else
         ' - Status: null','  (',num2str(numsel),' selected)']);
 end
 
-
 % --- Executes on button press in pushbutton_nextSelected.
 function pushbutton_nextSelected_Callback(hObject, eventdata, handles)
 % finds next ROI with "selected" status and goes to it in the GUI
@@ -272,7 +270,6 @@ global data p
     if ~isempty(j) 
         goToROI(p.roiIdx + j(1)); 
     end
-
 
 % --- Executes on button press in pushbutton_prevSelected.
 function pushbutton_prevSelected_Callback(hObject, eventdata, handles)
@@ -283,7 +280,7 @@ global data p
         goToROI(j(end)); 
     end
 
-
+    
 % --- Executes on button press in pushbutton_filter.
 function pushbutton_filter_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_filter (see GCBO)
