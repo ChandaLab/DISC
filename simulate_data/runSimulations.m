@@ -12,7 +12,7 @@
 % ---------
 % This is a wrapper for running simulations used in White et al., 2019
 % 
-% kineitc model used for monomeric/ tetrameric CNBD is taken from our
+% kinetic model used for monomeric/ tetrameric CNBD is taken from our
 % previous work in Goldschen-Ohm et al., 2016, DOI: 10.7554/eLife.20797
 %
 % In reference to White et al., 2019 bioRxiv

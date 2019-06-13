@@ -145,7 +145,7 @@ while k <= length(centers)
         % split_centers = mean values of each cluser [2,1];
         % split_data_fit = assignment of data points into cluster 1 or 2 [N,1];
         [split_centers, split_data_fit] = ...
-            kmeansElkan(change_point_data_fit, center_guesses',1);
+            kmeansElkan(change_point_data_fit, center_guesses');
         
         % Optional: 
         % if running k-means without center guesses for finding 2 clusters:
