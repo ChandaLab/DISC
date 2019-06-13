@@ -25,10 +25,10 @@ function DISCO()
 % -----------
 % White et al., 2019, (in preparation)
 
-global data p
+global data gui
 
-% Init data and gui handle field
-p.guiHandle = [];
+% init data and gui.figure field for loadData
+gui.figure = [];
 if isempty(data)
     loadData()
 end
@@ -39,7 +39,7 @@ if isempty(data)
 end
 
 % init GUI
-p.guiHandle = roiViewerGUI();
+gui.figure = roiViewerGUI();
 
 % init DISC paramters 
 initDISC();

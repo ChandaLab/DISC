@@ -20,7 +20,7 @@ function loadData(fp)
 
 
 % input variables
-global data p
+global data gui
 
 disp('Loading Data...')
 if ~exist('fp','var')
@@ -66,19 +66,17 @@ initChannels();
 initFields();
 
 % if the GUI is open and has a handle stored, begin plotting.
-if ~isempty(p.guiHandle) && ishghandle(p.guiHandle)
-    p.channelIdx = 1;
+if ~isempty(gui.figure) && ishghandle(gui.figure)
+    gui.channelIdx = 1;
     goToROI(1);
-    % adjust popup labels to new channels
-    gui_objects = guidata(p.guiHandle);
+    % adjust popup labels to new channels and reset filter strings
+    gui_objects = guidata(gui.figure);
     gui_objects.popupmenu_channelSelect.String = data.names;
     gui_objects.popupmenu_channelSelect.Value = 1;
+    gui_objects.text_snr_filt.String = 'any';
+    gui_objects.text_numstates_filt.String = 'any';
 end
 
-% reset filter texts in GUI
-p.text_snr_filt.String = 'any';
-p.text_numstates_filt.String = 'any';
-
 % start at roi 1;
-p.roiIdx = 1;
-p.channelIdx = 1;
+gui.roiIdx = 1;
+gui.channelIdx = 1;

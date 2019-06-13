@@ -1,7 +1,7 @@
 function exportText()
 % exports DISC ideal or class data to .dat file in the vein of vbFRET/HaMMy, 
 % keeping four decimal places of precision.
-global p data
+global data gui
 
 % open dialog, cancel fcn if dialog cancels
 [file, path] = uiputfile({'*.dat','Data files (*.dat)'},...
@@ -23,9 +23,9 @@ end
 switch opt.data_sel
     case 'All analyzed traces'
         % find indices of analyzed traces
-        idx = zeros(length(vertcat(data.rois(:,p.channelIdx).disc_fit)),1);
+        idx = zeros(length(vertcat(data.rois(:,gui.channelIdx).disc_fit)),1);
         for ii = 1:size(data.rois, 1)
-            if ~isempty(data.rois(ii,p.channelIdx).disc_fit)
+            if ~isempty(data.rois(ii,gui.channelIdx).disc_fit)
                 idx(ii) = ii;
             end
         end
@@ -45,19 +45,19 @@ switch opt.data_type
             % align column index of matrix to relative index of
             % selection
             temp(:,find(idx==ii)) = ...
-                data.rois(ii,p.channelIdx).disc_fit.ideal;
+                data.rois(ii,gui.channelIdx).disc_fit.ideal;
         end
     case 'Class'
         temp = zeros(size(data.rois(1,1).disc_fit.class,1),...
             size(idx,1));
         for ii = idx'
             temp(:,find(idx==ii)) = ...
-                data.rois(ii,p.channelIdx).disc_fit.class;
+                data.rois(ii,gui.channelIdx).disc_fit.class;
         end
 end
 % replace whitespaces with an underscore, as importdata cannot
 % discern strings with whitespace as column headers
-name = regexprep(char(data.names(p.channelIdx)), '\s', '_');
+name = regexprep(char(data.names(gui.channelIdx)), '\s', '_');
 % create cell of channel name;  repeat in a row
 names = cell(1, size(idx,1));  names(:) = {name};
 % find largest string between channel name or largest number, and

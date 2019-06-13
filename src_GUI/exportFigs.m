@@ -1,7 +1,7 @@
 function exportFigs
-global p
-% store channel idx so proper value is returned after for loop below
-channel = p.channelIdx;
+global gui
+% store channel idx so proper value is returned after FOR loop
+channel = gui.channelIdx;
 % close the figure if it is already open
 if exist('f','var')
     clf(f);
@@ -18,13 +18,13 @@ for jj=1:length(checked)
 end
 % fill the subplots based on indices determined in dialog
 for ii = checked
-    p.channelIdx = ii;
+    gui.channelIdx = ii;
     row = find(checked==ii);
     plotTrajectory(ax(row,1));
     plotHistogram(ax(row,2), ax(row,1));
     plotMetric(ax(row,3));
 end
-p.channelIdx = channel; % restore original channel idx
+gui.channelIdx = channel; % restore original channel idx
     
 end
 

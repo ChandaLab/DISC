@@ -11,38 +11,38 @@ function plotTrajectory(axes)
 % 2019-04-10    DSW     updated to new disc_fit structure
 
 % global variables 
-global p data 
+global data gui 
 
 %plot time series and fit of ROI of GUI-assigned channel
 % figure 1 handle: axes (var)
 cla(axes); 
 
 % plot time series data 
-plot(axes, data.rois(p.roiIdx, p.channelIdx).time_series, ...
-     'color', p.channelColors(p.channelIdx,:))
+plot(axes, data.rois(gui.roiIdx, gui.channelIdx).time_series, ...
+     'color', gui.channelColors(gui.channelIdx, :))
  
 % draw title based on selection or lack thereof
 % determind num of selected traces
-numsel = nnz(vertcat(data.rois(:,p.channelIdx).status)==1); 
-if data.rois(p.roiIdx,p.channelIdx).status == 1
-    title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+numsel = nnz(vertcat(data.rois(:, gui.channelIdx).status)==1); 
+if data.rois(gui.roiIdx, gui.channelIdx).status == 1
+    title(axes, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
-elseif data.rois(p.roiIdx,p.channelIdx).status == 0
-    title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+elseif data.rois(gui.roiIdx, gui.channelIdx).status == 0
+    title(axes, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Unselected','  (',num2str(numsel),' selected)']);
 else
-    title(axes, ['ROI # ',num2str(p.roiIdx),' of ',num2str(size(data.rois,1)),...
+    title(axes, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: null','  (',num2str(numsel),' selected)']);
 end
 xlabel(axes, 'Frames'); 
 ylabel(axes, 'Intensity (AU)');
-set(axes, 'fontsize', p.fontSize);
-set(axes, 'fontname', p.fontName);
+set(axes, 'fontsize', gui.fontSize);
+set(axes, 'fontname', gui.fontName);
 
 % draw fit if analysis is completed for the current ROI
-if ~isempty(data.rois(p.roiIdx,p.channelIdx).disc_fit)
+if ~isempty(data.rois(gui.roiIdx, gui.channelIdx).disc_fit)
     hold(axes, 'on')
-    plot(axes, data.rois(p.roiIdx, p.channelIdx).disc_fit.ideal, ...
+    plot(axes, data.rois(gui.roiIdx, gui.channelIdx).disc_fit.ideal, ...
          '-k','linewidth',1.7)
     hold(axes, 'off') 
 end

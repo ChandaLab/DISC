@@ -1,8 +1,8 @@
 function plotDwellTime
-global data p
+global data gui
 
 % use DISC function
-events = findEvents(data.rois(p.roiIdx, p.channelIdx).disc_fit.class);
+events = findEvents(data.rois(gui.roiIdx, gui.channelIdx).disc_fit.class);
 % events = [start frame, stop frame, duration, label]
 num_states = max(events(:,4));
 durations = cell(1, num_states); % allocate

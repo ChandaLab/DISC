@@ -11,26 +11,26 @@ function goToROI(roiIdx)
 %                       names 
 
 % input variables 
-global p data
+global data gui
 
 % if there is no input variable, open dialog
 if ~exist('roiIdx', 'var')
-    answer = inputdlg('Go to ROI:','Custom ROI', 1, {num2str(p.roiIdx)});
+    answer = inputdlg('Go to ROI:','Custom ROI', 1, {num2str(gui.roiIdx)});
     roiIdx = str2double(answer{1});
 end
 % do nothing if input variable exceeds bounds
 if roiIdx < 1 || roiIdx > size(data.rois, 1)
     return;
 end
-p.roiIdx = roiIdx;
+gui.roiIdx = roiIdx;
 
 % Update all 3 plots in GUI
 
 % 1. time series data (and fit)
-plotTrajectory(p.h1);
+plotTrajectory(gui.axes.h1);
 
 % 2. time series histogram (and fit)
-plotHistogram(p.h2, p.h1)
+plotHistogram(gui.axes.h2, gui.axes.h1)
 
 % 3. information criterion values of the fit
-plotMetric(p.h3);
+plotMetric(gui.axes.h3);

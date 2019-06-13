@@ -12,16 +12,16 @@ function plotHistogram(axes, alignaxes)
 % 2019-04-10    DSW     updated to new disc_fit structure
 
 % input variables
-global p data
+global data gui
 
 % clear out anything in the previous plot 
 cla(axes); 
 
 % grab plot color
-bin_color = p.channelColors(p.channelIdx,:);
+bin_color = gui.channelColors(gui.channelIdx,:);
 
 % grab data to plot 
-time_series = data.rois(p.roiIdx, p.channelIdx).time_series;
+time_series = data.rois(gui.roiIdx, gui.channelIdx).time_series;
 
 % init histogram stuff
 bins = 100; 
@@ -35,14 +35,14 @@ data_counts = histcounts(time_series, edges);
 data_range = edges(1:end-1);
 
 % Does data.rois.components (i.e. "data fit") exist?
-if isempty(data.rois(p.roiIdx,p.channelIdx).disc_fit)
+if isempty(data.rois(gui.roiIdx, gui.channelIdx).disc_fit)
     
     % Lets just plot out the data by itself and exit
     bar(axes,data_range,data_counts,'FaceColor',bin_color,'EdgeColor',bin_color,'BarWidth',1);
     hold(axes,'on');
     set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90])
     
-    % set the axis to match the time series plot (p.h1) axis.
+    % set the axis to match the time series plot (alignaxes) axis.
     xlim(axes, get(alignaxes,'Ylim'))
     return;
 end
@@ -54,7 +54,7 @@ bar(axes,data_range,data_counts,'FaceColor',bin_color,'EdgeColor',bin_color,'Bar
 hold(axes,'on');
 
 % grab components
-components = data.rois(p.roiIdx, p.channelIdx).disc_fit.components; 
+components = data.rois(gui.roiIdx, gui.channelIdx).disc_fit.components; 
 n_components = size(components,1); 
 
 % Evalute and plot each component individually
@@ -65,7 +65,7 @@ for n = 1:n_components
     sigma = components(n,3);   % sigma
     
     % Evaluate each gaussian distribtution
-    norm_dist_pdf = normpdf(data_range, mu,sigma).*trapz(data_range,data_counts);
+    norm_dist_pdf = normpdf(data_range, mu, sigma).*trapz(data_range, data_counts);
     
     % store sum for gauss_fit_all
     gauss_fit_all = gauss_fit_all + w .* normpdf(data_range, mu, sigma);
@@ -79,14 +79,14 @@ for n = 1:n_components
 end
 
 % Compute the sum of all Gaussians
-gauss_fit_all = gauss_fit_all.* trapz(data_range,data_counts);
+gauss_fit_all = gauss_fit_all.* trapz(data_range, data_counts);
 plot(axes, data_range, gauss_fit_all, '-k', 'linewidth', 1.7);
 
 hold(axes,'off'); set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90])
 xlim(axes, get(alignaxes,'Ylim'))
 
 % draw number of states and SNR (if it exists) in the title
-snr = data.rois(p.roiIdx,p.channelIdx).SNR;
+snr = data.rois(gui.roiIdx, gui.channelIdx).SNR;
 if isempty(snr)
     title(axes, ['Number of States: ', num2str(n_components)],...
         'HorizontalAlignment','left');
@@ -94,7 +94,7 @@ else
     title(axes, ['SNR: ', num2str(round(snr,1)),'   ','Number of States: ',...
         num2str(n_components)], 'HorizontalAlignment','left');
 end
-set(axes, 'fontsize', p.fontSize);
-set(axes, 'fontname', p.fontName);
+set(axes, 'fontsize', gui.fontSize);
+set(axes, 'fontname', gui.fontName);
 
 end

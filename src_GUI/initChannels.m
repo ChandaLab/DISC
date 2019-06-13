@@ -11,17 +11,17 @@ function initChannels()
 %                   Name change to initChannels from init Colors    
 
 % Input Variables 
-global data p
+global data gui
 
 % Let's set fontsize and fontname here temporarily 
-p.fontSize = 12; 
-p.fontName = 'arial';
+gui.fontSize = 12; 
+gui.fontName = 'arial';
 
 % check the size of the data.rois.
 n_channels = size(data.rois, 2);
 
 % init matrix for channel colors 
-p.channelColors = zeros(n_channels,3);
+gui.channelColors = zeros(n_channels,3);
 
 % 1. Does data.names exist? 
 if ~isfield(data,'names')
@@ -46,6 +46,6 @@ color_scheme{7} = [0.9290, 0.6940, 0.1250]; % yellow
 
 % assign colors as needed
 for ii = 1:n_channels
-    p.channelColors(ii,:) = color_scheme{ii};
+    gui.channelColors(ii,:) = color_scheme{ii};
 end
 

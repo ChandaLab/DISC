@@ -12,20 +12,20 @@ function plotMetric(axes)
 %                       disc_fit strucure;
 
 % input variables
-global data p
+global data gui
 
 cla(axes);
 
 % draw only if analysis is completed
-if ~isempty(data.rois(p.roiIdx,p.channelIdx).disc_fit) && isfield(data.rois(p.roiIdx,p.channelIdx).disc_fit,'metrics')
-    metric = data.rois(p.roiIdx,p.channelIdx).disc_fit.metrics;
+if ~isempty(data.rois(gui.roiIdx, gui.channelIdx).disc_fit) && isfield(data.rois(gui.roiIdx, gui.channelIdx).disc_fit,'metrics')
+    metric = data.rois(gui.roiIdx, gui.channelIdx).disc_fit.metrics;
     if ~isempty(metric)
         % plot 
         set(axes, 'Visible','on');
         cla(axes);
         plot(axes, metric,'-o','MarkerSize',10);
         hold(axes, 'on')
-        best = size(data.rois(p.roiIdx,p.channelIdx).disc_fit.components,1);
+        best = size(data.rois(gui.roiIdx, gui.channelIdx).disc_fit.components,1);
         scatter(axes, best, metric(best),100,'filled', 'MarkerFaceColor','r', 'MarkerEdgeColor','r');
         hold(axes, 'off')
         ylim(axes,[-0.1,1.1])
@@ -42,7 +42,7 @@ else
 end
 
 xlabel(axes, 'Number of States'); set(axes,'ytick',[]);
-set(axes, 'fontsize', p.fontSize);
-set(axes, 'fontname', p.fontName);
+set(axes, 'fontsize', gui.fontSize);
+set(axes, 'fontname', gui.fontName);
 
 end
