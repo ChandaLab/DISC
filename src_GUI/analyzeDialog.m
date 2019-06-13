@@ -29,7 +29,7 @@ bg_threshold = uibuttongroup(d,'Position',[0.08 0.6 0.41 0.38],'Title','Threshol
 
 % create threshold edit box and radio from selection of threshold type                         
 uicontrol(bg_threshold,'Style','edit','Position',[6 53 60 20],...
-    'String',gui.inputParameters.input_value,...
+    'String',gui.disc_parameters.input_value,...
     'Horizontalalignment','left','Callback',@edit_threshold_callback);
 radio_alpha_threshold = uicontrol(bg_threshold,'Style','radiobutton','Position',[6 26 120 20],...
     'String','Alpha Value','HandleVisibility','off');
@@ -37,7 +37,7 @@ radio_critical_threshold = uicontrol(bg_threshold,'Style','radiobutton','Positio
     'String','Critical Value','HandleVisibility','off');
 
 % check if last run altered default threshold type, and use altered value if so
-switch gui.inputParameters.input_type
+switch gui.disc_parameters.input_type
     case 'alpha_value'
         set(bg_threshold,'SelectedObject',radio_alpha_threshold);
     case 'critical_value'
@@ -50,7 +50,7 @@ bg_threshold.Visible = 'on';
 uicontrol(llowerpanel,'Style','text','Position',[6 30 110 40],...
     'String','Viterbi Iterations','HorizontalAlignment','left');
 uicontrol(llowerpanel,'Style','edit','Position',[6 10 60 20],...
-    'String',gui.inputParameters.viterbi,'HorizontalAlignment','left',...
+    'String',gui.disc_parameters.viterbi,'HorizontalAlignment','left',...
     'Callback',@edit_iterations_callback);
 
 % create divisive IC label and popup                 
@@ -61,7 +61,7 @@ popup_divisiveIC = uicontrol(rpanel,'Style','popup','Position',[7 120 100 20],..
     'Callback',@popup_divisiveIC_callback);
                          
 % check if last run altered default divIC parameters, and use altered values if so
-switch gui.inputParameters.divisive
+switch gui.disc_parameters.divisive
     case {'AIC-GMM' 'AIC_GMM'}
         set(popup_divisiveIC,'Value',1)
     case {'BIC-GMM' 'BIC_GMM'}
@@ -79,14 +79,14 @@ end
 popup_divisiveIC.Visible = 'on';
 
 % create agglomerative IC label and popup
-uicontrol(rpanel,'Style','text','Position',[7 85 140 20],...
+uicontrol(rpanel,'Style','text','Position',[7 90 140 20],...
     'String','Agglomerative IC','HorizontalAlignment','left');
-popup_agglomerativeIC = uicontrol(rpanel,'Style','popup','Position',[7 65 100 20],...
+popup_agglomerativeIC = uicontrol(rpanel,'Style','popup','Position',[7 70 100 20],...
     'String',{'AIC-GMM';'BIC-GMM';'BIC-RSS';'HQC-GMM';'MDL';'none'},'Visible','off',...
     'Callback',@popup_agglomerativeIC_callback);
 
 % check if last run altered default aggIC parameters, and use altered values if so
-switch gui.inputParameters.agglomerative
+switch gui.disc_parameters.agglomerative
     case {'AIC-GMM' 'AIC_GMM'}
         set(popup_agglomerativeIC,'Value',1)
     case {'BIC-GMM' 'BIC_GMM'}
@@ -106,11 +106,11 @@ popup_agglomerativeIC.Visible = 'on';
 % create k states check and edit. check is selected if previous runs had
 % any nonzero values in edit
 uicontrol(rpanel,'style','checkbox','string','Return k States','Position',[7 35 150 20],...
-   'Value',logical(gui.inputParameters.return_k),'callback',@check_return_k_callback);
-edit_return_k = uicontrol(rpanel,'style','edit','string',gui.inputParameters.return_k,'Position',[12 12 60 20],...
+   'Value',logical(gui.disc_parameters.return_k),'callback',@check_return_k_callback);
+edit_return_k = uicontrol(rpanel,'style','edit','string',gui.disc_parameters.return_k,'Position',[12 12 60 20],...
     'Visible','off','HorizontalAlignment','left','callback',@edit_return_k_callback);
 % make edit visible if previous run had check selected
-if gui.inputParameters.return_k
+if gui.disc_parameters.return_k
     edit_return_k.Visible = 'on';
 end
 
@@ -124,31 +124,31 @@ uicontrol('Parent',d,'Position',[185 25 100 30],'String','Go',...
 % values are unchanged
 uiwait(d);
     function edit_threshold_callback(H,~) % called by a custom threshold value
-        gui.inputParameters.input_value = str2double(get(H,'string'));
+        gui.disc_parameters.input_value = str2double(get(H,'string'));
     end
     function thresholdSelection(~,event) % called by a threshold type
         switch event.NewValue.String
             case 'Alpha Value'
-                gui.inputParameters.input_type = 'alpha_value';
+                gui.disc_parameters.input_type = 'alpha_value';
             case 'Critical Value'
-                gui.inputParameters.input_type = 'critical_value';
+                gui.disc_parameters.input_type = 'critical_value';
         end
     end
 
     function edit_iterations_callback(H,~) % called by a custom number of iterations
-        gui.inputParameters.viterbi = str2double(get(H,'string'));
+        gui.disc_parameters.viterbi = str2double(get(H,'string'));
     end
 
     function popup_divisiveIC_callback(popup,~) % called by a change in divIC type
         idx = popup.Value;
         popup_items = popup.String;
-        gui.inputParameters.divisive = char(popup_items(idx,:));
+        gui.disc_parameters.divisive = char(popup_items(idx,:));
     end
 
     function popup_agglomerativeIC_callback(popup,~) % called by a change in aggIC type
         idx = popup.Value;
         popup_items = popup.String;
-        gui.inputParameters.agglomerative = char(popup_items(idx,:));
+        gui.disc_parameters.agglomerative = char(popup_items(idx,:));
     end
     
     function check_return_k_callback(H,~) % called by change in k_states check
@@ -156,29 +156,29 @@ uiwait(d);
             edit_return_k.Visible = 'on';
         else
             edit_return_k.Visible = 'off';
-            gui.inputParameters.return_k = 0;
+            gui.disc_parameters.return_k = 0;
         end
     end
     function edit_return_k_callback(H,~) % called by change in # of states to force
-        gui.inputParameters.return_k = str2double(get(H,'string'));
+        gui.disc_parameters.return_k = str2double(get(H,'string'));
     end
 
     function goAnalyze(~,~) % called by "Go" button to gather parameters to send to runDISC and check for their validity.  
-        if mod(gui.inputParameters.viterbi,1) || gui.inputParameters.viterbi < 0
+        if mod(gui.disc_parameters.viterbi,1) || gui.disc_parameters.viterbi < 0
             msgbox('Number of iterations must be a positive integer','Error','error');
             return
         end
         
-        switch gui.inputParameters.input_type
+        switch gui.disc_parameters.input_type
             case 'alpha_value'
                 % Error check for alpha values not between 0 and 1
-                if gui.inputParameters.input_value > 1 || gui.inputParameters.input_value < 0
+                if gui.disc_parameters.input_value > 1 || gui.disc_parameters.input_value < 0
                     msgbox('Alpha Value must be between 0 and 1', 'Error','error');
                     return
                 end
             case 'critical_value'
                 % Error check for negative critical values 
-                if gui.inputParameters.input_value < 0 
+                if gui.disc_parameters.input_value < 0
                     msgbox('Critical Value must be between greater than 0', 'Error','error');
                     return
                 end
@@ -186,13 +186,13 @@ uiwait(d);
         delete(gcf)
         
         % create disc_input structure from provided paramters 
-        disc_input = struct; 
-        disc_input.input_type = gui.inputParameters.input_type; 
-        disc_input.input_value = gui.inputParameters.input_value;
-        disc_input.divisive = gui.inputParameters.divisive; 
-        disc_input.agglomerative = gui.inputParameters.agglomerative;
-        disc_input.viterbi = gui.inputParameters.viterbi;
-        disc_input.return_k = gui.inputParameters.return_k;
+        disc_input = struct;
+        disc_input.input_type = gui.disc_parameters.input_type;
+        disc_input.input_value = gui.disc_parameters.input_value;
+        disc_input.divisive = gui.disc_parameters.divisive;
+        disc_input.agglomerative = gui.disc_parameters.agglomerative;
+        disc_input.viterbi = gui.disc_parameters.viterbi;
+        disc_input.return_k = gui.disc_parameters.return_k;
         
         % run DISC at current ROI and channel
         if ~analyzeAll

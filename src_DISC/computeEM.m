@@ -27,13 +27,13 @@ function emissions_matrix = computeEM(data,components)
 % Check input variables 
 
 % Check data
-if ~exist('data','var') || isempty(data);
+if ~exist('data','var') || isempty(data)
     disp('Error in computeEM: No data provided.');
     return;
 end
 
 % Check components
-if ~exist('components','var') || isempty(components);
+if ~exist('components','var') || isempty(components)
     disp('Error in computeEM: No components provided.');
     return;
 end

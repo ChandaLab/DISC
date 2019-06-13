@@ -40,22 +40,22 @@ default.return_k = 0;
 % Run check on all fields. Should not need to modify this section. 
 
 % Input Type
-if ~isfield(disc_input,'input_type')|| isempty(disc_input.input_type);
+if ~isfield(disc_input,'input_type')|| isempty(disc_input.input_type)
     disc_input.input_type = default.input_type; 
 end
 
 % Input Value
-if ~isfield(disc_input,'input_value') || isempty(disc_input.input_value);
+if ~isfield(disc_input,'input_value') || isempty(disc_input.input_value)
     disc_input.input_value = default.input_value; % 95 % confidence interval
 end
 
 % Divisive Information Criterion
-if ~isfield(disc_input, 'divisive') || isempty(disc_input.divisive);
+if ~isfield(disc_input, 'divisive') || isempty(disc_input.divisive)
     disc_input.divisive = default.divisive;
 end
 
 % Agglomerative Information Criterion
-if ~isfield(disc_input, 'agglomerative') || isempty(disc_input.agglomerative);
+if ~isfield(disc_input, 'agglomerative') || isempty(disc_input.agglomerative)
    disc_input.agglomerative = default.agglomerative; 
 end
 
@@ -67,6 +67,6 @@ elseif isempty(disc_input.viterbi)
 end
 
 % Number of States to return
-if ~isfield(disc_input,'return_k') || isempty(disc_input.return_k);
+if ~isfield(disc_input,'return_k') || isempty(disc_input.return_k)
     disc_input.return_k = default.return_k;  % Do not use.
 end

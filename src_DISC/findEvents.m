@@ -35,7 +35,9 @@ if n_states == 1
 end
 
 % find Events
-event_start = 1; % event_start 
+if ~exist('event_start', 'var')
+    event_start = 1;
+end
 while event_start < duration
     current_state = data_fit(event_start);
     remaining = find(data_fit(event_start:end) ~= current_state);

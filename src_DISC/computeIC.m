@@ -48,24 +48,23 @@ function [metrics,n_states] = computeIC(data, all_data_fits, information_criteri
 
 %% Run computeIC
 % Check data
-if ~exist('data','var') || isempty(data);
+if ~exist('data','var') || isempty(data)
     disp('Error in computeIC: No data provided.');
     return;
 end
 % check all_data_fits
-if ~exist('all_data_fits','var') || isempty(all_data_fits);
+if ~exist('all_data_fits','var') || isempty(all_data_fits)
     disp('Error in computeIC: No all_data_fits provided.');
     return;
 end
 
 % check information_criterion
-if ~exist('information_criterion','var') || isempty(information_criterion);
-    information_criterion = 'BIC_GMM'; 
-    return;
+if ~exist('information_criterion','var') || isempty(information_criterion)
+    information_criterion = 'BIC_GMM';
 end
 
 % check normalize
-if ~exist('normalize','var') || isempty(normalize);
+if ~exist('normalize','var') || isempty(normalize)
     normalize = 1; 
 end
 

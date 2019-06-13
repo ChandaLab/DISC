@@ -24,7 +24,7 @@ function transitions_matrix = computeTM(data_fit)
 
 
 % Check data
-if ~exist('data_fit','var') || isempty(data_fit);
+if ~exist('data_fit','var') || isempty(data_fit)
     disp('Error in computeEM: No data_fit provided.');
     return;
 end
@@ -44,7 +44,7 @@ end
 
 % create empty transitions_matrix
 transitions_matrix = zeros(n_states,n_states);
-for n = 1:n_data_points-1;
+for n = 1:n_data_points-1
     % Add 1 for each transition between data_fit(n) and data_fit(n+1)
     transitions_matrix(data_fit(n),data_fit(n+1)) = transitions_matrix(data_fit(n),data_fit(n+1)) + 1;
 end

@@ -50,18 +50,18 @@ function ic_value = gmmIC(data, data_fit, information_criterion)
 %
 % Check arguments: sequence or components
 ic_value = []; % make sure there is an output 
-if ~exist('data','var'); 
+if ~exist('data','var')
     disp('Error in gmmIC: Need Data to Analyze'); 
-    return; 
+    return
 end
-if ~exist('information_criterion','var') || isempty(information_criterion);
+if ~exist('information_criterion','var') || isempty(information_criterion)
     disp('Error in gmmIC: Need an information criterion'); 
-    return; 
+    return
 end
 
 n_data = length(data);     
 [n_rows,n_columns] = size(data_fit); 
-if n_data == n_rows & n_columns == 1
+if n_data == n_rows && n_columns == 1
     % must have a provided idealized sequence. Compute Components 
     [components] = computeCenters(data,data_fit); 
 elseif n_data ~= n_rows && n_columns == 3
@@ -83,7 +83,7 @@ for i = 1:n_components
         ((data - components(i,2))./components(i,3)).^2) ./ (sqrt(2*pi) .* components(i,3));
 end
 P = sum(P,2);
-P = P(find(P ~= 0));            % avoid taking log of zero
+P = P(P ~= 0);            % avoid taking log of zero
 loglikelihood = sum(log(P));    
 
 degrees_of_freedom = 3 * n_components - 1; 

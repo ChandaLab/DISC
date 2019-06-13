@@ -49,7 +49,6 @@ end
 % Check max_iter
 if ~exist('max_iter','var') || isempty(max_iter)
     max_iter = 1;
-    return;
 end
 
 % intialize variables

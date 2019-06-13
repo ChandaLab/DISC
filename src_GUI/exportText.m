@@ -39,20 +39,16 @@ end
 switch opt.data_type
     case 'Ideal'
         % allocate
-        temp = zeros(size(data.rois(1,1).disc_fit.ideal,1),...
-            size(idx,1));
+        temp = zeros(size(data.rois(1,1).disc_fit.ideal,1), size(idx,1));
         for ii = idx'
             % align column index of matrix to relative index of
             % selection
-            temp(:,find(idx==ii)) = ...
-                data.rois(ii,gui.channelIdx).disc_fit.ideal;
+            temp(:,idx==ii) = data.rois(ii,gui.channelIdx).disc_fit.ideal;
         end
     case 'Class'
-        temp = zeros(size(data.rois(1,1).disc_fit.class,1),...
-            size(idx,1));
+        temp = zeros(size(data.rois(1,1).disc_fit.class,1), size(idx,1));
         for ii = idx'
-            temp(:,find(idx==ii)) = ...
-                data.rois(ii,gui.channelIdx).disc_fit.class;
+            temp(:,idx==ii) = data.rois(ii,gui.channelIdx).disc_fit.class;
         end
 end
 % replace whitespaces with an underscore, as importdata cannot

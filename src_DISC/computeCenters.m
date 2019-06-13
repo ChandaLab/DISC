@@ -28,11 +28,11 @@ function [components,mu_data_fit,state_data_fit] = computeCenters(data,data_fit)
 % state_data_fit = cluster assignment for datapoints using mean of cluster (i.e 100,200,300)
 
 % Check Input Varables 
-if ~exist('data','var') | isempty(data)
+if ~exist('data','var') || isempty(data)
     disp('Error in computeCenters: Need Data to Analyze'); 
     return; 
 end
-if ~exist('data_fit','var') | isempty(data_fit)
+if ~exist('data_fit','var') || isempty(data_fit)
     disp('Error in computeCenter: Need data_fit'); 
     return; 
 end

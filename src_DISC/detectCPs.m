@@ -1,4 +1,4 @@
-function [change_point_sequence, n_change_points,first_change_point] = detectCPs(data,input_type,input_value, min_data_points);
+function [change_point_sequence, n_change_points,first_change_point] = detectCPs(data,input_type,input_value, min_data_points)
 %% Change Point Detection using Binary Segmentation and Student's T-test
 % Author: David S. White
 % Contact: dwhite7@wisc.edu
@@ -68,22 +68,22 @@ function [change_point_sequence, n_change_points,first_change_point] = detectCPs
 % ----------------
 % Check Arguments, set defult values or print error
 % Data provided
-if ~exist('data','var') | isempty(data);
+if ~exist('data','var') || isempty(data)
     disp('Error in changePoint: No data provided');
     return;
 end
 
 % Input Type
-if ~exist('input_type','var') || isempty(input_type);
+if ~exist('input_type','var') || isempty(input_type)
     input_type = 'critical_value';
 end
 
 % Input Value
-if ~exist('input_value','var') || isempty(input_value);
+if ~exist('input_value','var') || isempty(input_value)
     input_value = 1.96; % 95 % confidence interval (alpha_value = 0.05)
 end
 
-if ~exist('min_data_points','var') || isempty(min_data_points);
+if ~exist('min_data_points','var') || isempty(min_data_points)
     min_data_points = 2; 
 end
 
@@ -122,7 +122,7 @@ while current_change_point < n_data_points % when not every change points are fo
         data_idx = data(current_change_point+1:next_change_point);
         
         % Determine significance with a T-Test. Function nested below. 
-        [T CP] = tTestCP(data_idx,sigma_noise); 
+        [T, CP] = tTestCP(data_idx,sigma_noise);
         
         if T > critical_value
             % Accept the change-point 
@@ -178,7 +178,7 @@ end
 end
 
 %% Run T-Tests on the segment to determine most likely break point
-function [T CP] = tTestCP(data_segment,sigma_noise)
+function [T, CP] = tTestCP(data_segment,sigma_noise)
 % See "Overview" above for more information on the T-Test 
 %
 % Input Variables:

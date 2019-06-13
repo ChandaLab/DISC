@@ -30,8 +30,13 @@ function BIC = BIC_RSS(data,data_fit)
 
 %% Compute BIC_RSS
 % initalize and check variables
-if ~exist('data','var'); disp('Error in BIC_RSS: Need Data to Analyze'); return; end
-if ~exist('data_fit','var') | isempty(data_fit); data_fit = ones(length(data),1); end
+if ~exist('data','var')
+    disp('Error in BIC_RSS: Need Data to Analyze');
+    return;
+end
+if ~exist('data_fit','var') || isempty(data_fit)
+    data_fit = ones(length(data),1);
+end
 if length(data) ~= length(data_fit); disp('Error in BIC_RSS: Inputs must be the same length'); return; end
 
 n_data_points = length(data);

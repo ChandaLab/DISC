@@ -1,4 +1,4 @@
-function [all_data_fits] = aggCluster(data, data_fit);
+function [all_data_fits] = aggCluster(data, data_fit)
 %% 1D Hierarchical Agglomerative Clustering (Bottom-up) using Ward's Distance
 % Author: David S. White
 % Contact: dwhite7@wisc.edu
@@ -53,13 +53,13 @@ function [all_data_fits] = aggCluster(data, data_fit);
 all_data_fits = [];
 
 % Check data
-if ~exist('data','var') || isempty(data);
+if ~exist('data','var') || isempty(data)
     disp('Error in divSegment: No data provided.');
     return;
 end
 
 % Check data_fit
-if ~exist('data_fit','var') || isempty(data_fit);
+if ~exist('data_fit','var') || isempty(data_fit)
     disp('Error in divSegment: No data_fit provided.');
     return;
 end
@@ -114,7 +114,7 @@ while n_centers > 0
         
         % Find data points from each of the two clusters that are going to
         % be merged
-        merge_index = find(all_data_fits(:,n_centers) == centers(min_ward_dist) | all_data_fits(:,n_centers) == centers(min_ward_dist+1));
+        merge_index = all_data_fits(:,n_centers) == centers(min_ward_dist) | all_data_fits(:,n_centers) == centers(min_ward_dist+1);
         
         % store new mean value from merge into the locations of the 2
         % clusters that were merged

@@ -42,12 +42,12 @@ function sigma_noise = estimateNoise(data, option)
 
 %% Run
 % input variables
-if ~exist('data','var') | isempty(data)
+if ~exist('data','var') || isempty(data)
     sigma_noise = []; 
     disp('Error in estimateNoise: X not provided');
     return; 
 end
-if ~exist('option','var') | isempty(option); 
+if ~exist('option','var') || isempty(option)
     option = 1; 
 end
 

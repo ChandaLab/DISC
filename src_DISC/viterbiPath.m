@@ -78,7 +78,7 @@ end
 % Find Most probable state path
 path = zeros(1,N);   
 % loop backwards from data points N-1 to end  
-[p, path(N)] = max(delta(:,N)); % Last data point 
+[~, path(N)] = max(delta(:,N)); % Last data point
 for n = N-1:-1:1
     path(n) = psi(path(n+1),n+1);
 end
