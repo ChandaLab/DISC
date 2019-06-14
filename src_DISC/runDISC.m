@@ -65,7 +65,7 @@ function disc_fit = runDISC(data, disc_input)
 %   * Default = 'BIC_GMM'
 %
 % disc_fit.viterbi_iter = Number of times to run the Viterbi algorithm.
-%   % Deault = 2 (diminishing returns observed beyond 2)
+%   % Default = 2 (diminishing returns observed beyond 2)
 %
 % disc_fit.return_k = return k states regardless of information_criterion
 %   result. If return_k_states > total states found by divSegment.m, the
@@ -182,6 +182,6 @@ if disc_input.viterbi > 0 && n_states > 1
 end
 
 %% Store Final Output
-[disc_fit.components, disc_fit.ideal,disc_fit.class] = computeCenters(data, data_fit);
+[disc_fit.components, disc_fit.ideal, disc_fit.class] = computeCenters(data, data_fit);
 
 end

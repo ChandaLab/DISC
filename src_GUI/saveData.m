@@ -21,7 +21,7 @@ if exist('selected_reload', 'var') && selected_reload
     if ~file
         return
     end
-    disp('Saving Data...');
+    disp('Saving Data ...');
     fp = fullfile(path, file);
     % loop over rois backwards so as to not affect indices
     for ii = fliplr(1:(size(data.rois, 1)))
@@ -38,7 +38,7 @@ else
     if ~file
         return
     end
-    disp('Saving Data...');
+    disp('Saving Data ...');
     fp = fullfile(path, file);
     save(fp, 'data');
     disp('Data Saved.');

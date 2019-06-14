@@ -1,4 +1,3 @@
-function DISCO()
 % DISC GUI -> DISCO
 % Authors: David S. White  & Owen Rafferty
 % contact: dwhite7@wisc.edu
@@ -43,5 +42,3 @@ gui.figure = roiViewerGUI();
 
 % init DISC paramters 
 initDISC();
-
-end

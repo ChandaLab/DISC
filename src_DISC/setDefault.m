@@ -18,9 +18,9 @@ default = struct;
 % Change-Point Detection:
 % -----------------------
 default.input_type = 'alpha_value'; % Can be "alpha_value" or "critical_value" 
-default.input_value = 0.05; % either alpha value (1 - confidence interaval) or crtical value 
+default.input_value = 0.05; % either alpha value (1 - confidence interaval) or critical value 
 %
-% Objective Functions/ Information Criterions.
+% Objective Functions/ Information Criteria:
 % --------------------------------------------
 default.divisive = 'BIC_GMM'; 
 default.agglomerative = 'BIC_GMM'; 

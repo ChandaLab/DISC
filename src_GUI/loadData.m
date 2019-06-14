@@ -22,7 +22,7 @@ function loadData(fp)
 % input variables
 global data gui
 
-disp('Loading Data...')
+disp('Loading Data ...')
 if ~exist('fp','var')
     [file, path] = uigetfile({'*.mat;*.dat;*.csv','Data files (*.mat,*.dat,*.csv)'},...
         'Open data file.'); % open file picker
@@ -61,22 +61,24 @@ end
 clear temp;
 disp('Data Loaded.')
 
-% Init fields in data and rois for DISC analysis
-initChannels();
+% init and rename fields if necessary
 initFields();
 
-% if the GUI is open and has a handle stored, begin plotting.
-if ~isempty(gui.figure) && ishghandle(gui.figure)
+% if the GUI is open and has a handle stored, init GUI-only vars and begin
+% plotting.
+if isfield(gui, 'figure')
+    initChannels();
+    if ~isempty(gui.figure) && ishghandle(gui.figure)
+        gui.channelIdx = 1;
+        goToROI(1);
+        % adjust popup labels to new channels and reset filter strings
+        gui_objects = guidata(gui.figure);
+        gui_objects.popupmenu_channelSelect.String = data.names;
+        gui_objects.popupmenu_channelSelect.Value = 1;
+        gui_objects.text_snr_filt.String = 'any';
+        gui_objects.text_numstates_filt.String = 'any';
+    end
+    % start at roi 1;
+    gui.roiIdx = 1;
     gui.channelIdx = 1;
-    goToROI(1);
-    % adjust popup labels to new channels and reset filter strings
-    gui_objects = guidata(gui.figure);
-    gui_objects.popupmenu_channelSelect.String = data.names;
-    gui_objects.popupmenu_channelSelect.Value = 1;
-    gui_objects.text_snr_filt.String = 'any';
-    gui_objects.text_numstates_filt.String = 'any';
 end
-
-% start at roi 1;
-gui.roiIdx = 1;
-gui.channelIdx = 1;

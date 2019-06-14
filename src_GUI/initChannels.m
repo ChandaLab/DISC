@@ -28,7 +28,7 @@ if ~isfield(data,'names')
     % create empty field 
     data.names = {}; 
     for n = 1:n_channels
-        % assign arbitrary names
+        % assign names based on index
         data.names{n} = ['Channel ', num2str(n)];
     end
 end
