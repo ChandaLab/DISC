@@ -71,7 +71,7 @@ Once DISCO is executed, it will open a window with a prompt to load a data set. 
 
 Once a data set is loaded, the GUI will initialize and display the first trajectory (Figure 1). 
 
-<a><img src="docs/assets/disc_param_dialog.png"></a>
+<a><img src="assets/disc_param_dialog.png"></a>
 **Figure 1**: DISC GUI Overview
 
 If DISC is already open and you wish to load a different data set: File  Load Data
@@ -97,7 +97,7 @@ Navigate to previous `'selected trajectory
 
 Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `figure1_WindowKeyPressFcn`.
 
-<a><img src="docs/assets/disc_param_dialog.png"></a>
+<a><img src="assets/disc_param_dialog.png"></a>
 
 <a id="analyzing_disco"></a>
 ## Analyzing Trajectories with DISCO
