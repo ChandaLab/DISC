@@ -71,8 +71,11 @@ Once DISCO is executed, it will open a window with a prompt to load a data set. 
 
 Once a data set is loaded, the GUI will initialize and display the first trajectory (Figure 1). 
 
-<a><img src="assets/disc_param_dialog.png"></a>
+<p align="center">
+<a><img src="assets/disco_diagram.png"></a>
+
 **Figure 1**: DISC GUI Overview
+</p>
 
 If DISC is already open and you wish to load a different data set: File  Load Data
 
@@ -97,7 +100,11 @@ Navigate to previous `'selected trajectory
 
 Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `figure1_WindowKeyPressFcn`.
 
+<p align="center">
 <a><img src="assets/disc_param_dialog.png"></a>
+
+**Figure 2**: DISC Parameters window
+</p>
 
 <a id="analyzing_disco"></a>
 ## Analyzing Trajectories with DISCO
@@ -158,6 +165,7 @@ N = number of data points
 
 Data is formatted in data structures with the following required fields: 
 
+| --- | --- |
 | `data` | Data structure to describe the entire data set |
 | `data.rois` | Data structure for a specific region of interest (roi) |
 | `data.names` | Cell to name the channels (strings) |
@@ -202,7 +210,7 @@ At the data.rois level, we can include information such as DISC fits, signal to 
 runDISC.m (which DISCO calls) returns the structure disc_fit for each roi in data.rois.
 
 For example:
-
+```
 >> data.rois(1,1).disc_fit
 
 ans = 
@@ -216,6 +224,7 @@ ans =
        metrics: [2x1 double]
      all_ideal: [2000x2 double]
     parameters: [1x1 struct]
+```
 
 where: 
 
