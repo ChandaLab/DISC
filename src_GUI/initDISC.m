@@ -12,11 +12,11 @@ function initDISC()
 
 global gui
 
-% define default analysis parameters to be called later in dialog
-gui.disc_parameters.input_value = 0.05;            % 95% CI
-gui.disc_parameters.input_type = 'alpha_value';    % or 'critical_value'
-gui.disc_parameters.divisive = 'BIC-GMM';          % lots of options
-gui.disc_parameters.agglomerative = 'BIC-GMM';     % lots of options
-gui.disc_parameters.viterbi = 1;                   % 1-2 recommended
-gui.disc_parameters.return_k = 0;                  % any positive integer,
-                                                   % unused by default in DISC
+% define default analysis parameters to be called later in graphical dialog
+gui.disc_input.input_value = 0.05;            % 95% CI
+gui.disc_input.input_type = 'alpha_value';    % or 'critical_value'
+gui.disc_input.divisive = 'BIC-GMM';          % lots of options
+gui.disc_input.agglomerative = 'BIC-GMM';     % lots of options
+gui.disc_input.viterbi = 1;                   % 1-2 recommended
+gui.disc_input.return_k = 0;                  % any positive integer,
+                                              % unused by default in DISC

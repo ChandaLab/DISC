@@ -114,7 +114,7 @@ uiwait(d); % output when closed
     end
 % export checks only when 'Continue' is pressed
     function traceSel_callback(~,~)
-        gui.filters.contpr = 1; % tell struct continue has been pressed
+        gui.filters.contpr = 1; % tell struct 'continue' has been pressed
         gui.filters.snrEnable = get(snr_check,'Value');
         gui.filters.numstatesEnable = get(numstates_check,'Value');
         delete(gcf);

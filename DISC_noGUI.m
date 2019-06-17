@@ -1,9 +1,7 @@
-% Run DISC without the DISCO GUI. This function will idealize every trace 
+% Run DISC without the DISCO GUI. This script will idealize every trace
 % in the selected channel.
 
 global data
-
-disc_input = struct;
 
 % see src_DISC/setDefault.m for more information on the choices here.
 % ******************** User modification HERE! ****************************
@@ -53,13 +51,12 @@ reverse_str = ''; % no message will need to be deleted on the first run
 for ii = 1:size(data.rois, 1)
     data.rois(ii, ch).disc_fit = runDISC(data.rois(ii, ch).time_series, disc_input);
     % display progress
-    progress_msg = sprintf('Trace %u of %u\n', ii, size(data.rois, 1));
+    progress_msg = sprintf('Idealized %g of %g traces.\n', ii, size(data.rois, 1));
     fprintf([reverse_str, progress_msg]);
-    % construct string to delete old progress message using repeated use of 
-    % the '\b' character, which indicates a backspace
+    % construct string to overwrite old progress message using repeated use
+    % of  the '\b' character, which indicates a backspace
     reverse_str = repmat(sprintf('\b'), 1, length(progress_msg));
 end
-disp('Idealization complete.')
 toc
 
 save = input('Would you like to save your data? y/n [Y]: ','s');

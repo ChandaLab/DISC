@@ -15,7 +15,7 @@ function ic_value = gmmIC(data, data_fit, information_criterion)
 %   Akaike Information Criterion
 %       AIC = -2*ln(L) + 2k 
 %
-%   Baysesian Information Criterion 
+%   Bayesian Information Criterion
 %       BIC = -2*ln(L) + k * ln(N)
 %
 %   Hannan-Quinn Information Criterion

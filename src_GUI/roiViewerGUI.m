@@ -161,7 +161,7 @@ goToROI(gui.roiIdx - 1);
 % --- Executes on button press in pushbutton_customROI.
 function pushbutton_customROI_Callback(hObject, eventdata, handles)
 % jump to any given ROI via a dialog
-goToROI
+goToROI();
 
 
 % --- Executes on button press in pushbutton_analyzeThis.
@@ -228,7 +228,8 @@ for ii = 1:size(data.rois,2)
     data.rois(gui.roiIdx,ii).status = 1;
 end
 ax1 = handles.axes1;
-numsel = nnz(vertcat(data.rois(:,gui.channelIdx).status)==1); % count # of selected
+% count # of selected
+numsel = nnz(vertcat(data.rois(:,gui.channelIdx).status)==1);
 if data.rois(gui.roiIdx,gui.channelIdx).status == 1
     title(ax1, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);
@@ -249,7 +250,8 @@ for ii = 1:size(data.rois, 2)
     data.rois(gui.roiIdx,ii).status = 0;
 end
 ax1 = handles.axes1;
-numsel = nnz(vertcat(data.rois(:,gui.channelIdx).status)==1); % count # of selected
+% count # of selected
+numsel = nnz(vertcat(data.rois(:,gui.channelIdx).status)==1);
 if data.rois(gui.roiIdx,gui.channelIdx).status == 1
     title(ax1, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
         ' - Status: Selected','  (',num2str(numsel),' selected)']);

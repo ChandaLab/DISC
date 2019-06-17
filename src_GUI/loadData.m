@@ -78,7 +78,7 @@ if isfield(gui, 'figure')
         gui_objects.text_snr_filt.String = 'any';
         gui_objects.text_numstates_filt.String = 'any';
     end
-    % start at roi 1;
+    % make sure we start at roi 1
     gui.roiIdx = 1;
     gui.channelIdx = 1;
 end

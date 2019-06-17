@@ -29,12 +29,12 @@ global data gui
 % init data and gui.figure field for loadData
 gui.figure = [];
 if isempty(data)
-    loadData()
+    loadData();
 end
 % check if previous operation cancelled to avoid error msg
 if isempty(data)
     disp('Action Aborted.')
-    return;
+    return
 end
 
 % init GUI

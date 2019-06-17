@@ -62,7 +62,7 @@ for k = 1:n_labels
     mu_data_fit(index) = mu;    % described by mean value
     components(k,1) = weight;   % Proportion of data in the cluster
     components(k,2) = mu;       % mean of the data in the cluster
-    components(k,3) = sigma + 1e-6; % avoid non-zero standard deviations
+    components(k,3) = sigma + 1e-6; % avoid zero-valued standard deviations
     
 end
     
