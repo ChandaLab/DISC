@@ -100,11 +100,9 @@ Navigate to previous `'selected trajectory
 
 Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `figure1_WindowKeyPressFcn`.
 
-<p align="center">
 <a><img src="assets/disc_param_dialog.png"></a>
 
 **Figure 2**: DISC Parameters window
-</p>
 
 <a id="analyzing_disco"></a>
 ## Analyzing Trajectories with DISCO
