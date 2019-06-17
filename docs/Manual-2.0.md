@@ -1,25 +1,25 @@
 # DISC User Manual 
 June 2019
-v1.1.0
+v2.0.0
 
 *Table of Contents*
 
 * [Introduction](#intro)
 * [Getting Started](#getting_started)
-        * [Installing DISC](#installation)
-        * [Sample Data](#sample_data)
+	* [Installing DISC](#installation)
+	* [Sample Data](#sample_data)
 * [Running DISCO](#running_disco)
 * [Loading Data](#loading_data)
 * [Navigation in DISCO](#navigation_disco)
 * [Analyzing Trajectories with DISCO](#analyzing_disco)
-        * [Single Trajectory Analysis](#analyzing_disco_single)
-        * [Analyzing an Entire Data Set](#analyzing_disco_all)
-        * [Clear Analysis](#analyzing_disco_clear)
-        * [Trace Selection / Deselection](#analyzing_disco_selection)
+	* [Single Trajectory Analysis](#analyzing_disco_single)
+	* [Analyzing an Entire Data Set](#analyzing_disco_all)
+	* [Clear Analysis](#analyzing_disco_clear)
+	* [Trace Selection / Deselection](#analyzing_disco_selection)
 * [Saving Data](#saving)
 * [Data Format](#data_format)
-        * [Input Data Format](#data_format_input)
-        * [DISCO Output](#data_format_disco_output)
+	* [Input Data Format](#data_format_input)
+	* [DISCO Output](#data_format_disco_output)
 * [Running DISC without GUI](#disc_no_gui)
 * [Tutorial](#tutorial)
 
@@ -42,12 +42,12 @@ Any questions, comments, or potential bugs can be reported to David S. White at 
 <a id="installation"></a>
 ### Installing DISC
 
-DISC is written entirely in MATLAB (2017B and above) and does not require installation beyond obtaining MATLAB. The MATLAB Statistics and Machine Learning Toolbox is required. 
+DISC is written entirely in MATLAB (R2017B and above) and does not require installation beyond obtaining MATLAB. The MATLAB Statistics and Machine Learning Toolbox is required. 
 
 <a id="sample_data"></a>
 ### Sample Data 
 
-For this guide, we will be using the simulated sample data provided in DISC/sample_data/sample_data.mat. 
+For this guide, we will be using the simulated sample data provided in `sample_data/sample_data.mat`.
 
 <a id="running_disco"></a>
 ## Running DISCO
@@ -62,22 +62,24 @@ To open DISCO:
 
 or right click  run DISCO.m in MATLAB's file viewer. 
 
-DISC can be run outside of the GUI using runDISC.m. See section 8. 
+DISC can be run outside of the GUI using runDISC.m. See [section 8](#disc_no_gui). 
 
 <a id="loading_data"></a>
 ## Loading Data 
 
-Once DISCO is executed, it will open a window with a prompt to load a data set. Navigate to DISC/sample_data and load sample_data.mat. See 7.1 for data formats.
+Once DISCO is executed, it will open a window with a prompt to load a data set. Navigate to `DISC/sample_data` and load `sample_data.mat`. See 7.1 for data formats.
 
 Once a data set is loaded, the GUI will initialize and display the first trajectory (Figure 1). 
 
-Figure 1: DISC GUI Overview
+<a><img src="docs/assets/disc_param_dialog.png"></a>
+**Figure 1**: DISC GUI Overview
+
 If DISC is already open and you wish to load a different data set: File  Load Data
 
 <a id="navigation_disco"></a>
 ## Navigation in DISCO 
 
-Trajectories can be navigated by either arrow clicks in the GUI (i.e. "Next ROI ()) or by the keyboard. 
+Trajectories can be navigated by either arrow clicks in the GUI (i.e. "Next ROI (→)) or by the keyboard. 
 
 Right arrow
 Navigate to next trajectory
@@ -93,8 +95,9 @@ Comma / <
 Navigate to previous `'selected trajectory
 
 
-Adding or modifying existing keys can be done in /src_GUI/roiViewerGUI.m via figure1_WindowKeyPressFcn.
+Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `figure1_WindowKeyPressFcn`.
 
+<a><img src="docs/assets/disc_param_dialog.png"></a>
 
 <a id="analyzing_disco"></a>
 ## Analyzing Trajectories with DISCO
@@ -155,23 +158,17 @@ N = number of data points
 
 Data is formatted in data structures with the following required fields: 
 
-data
-Data structure to describe the entire data set 
-
-data.rois
-Data structure for a specific region of interest (roi)
-
-data.names 
-Cell to name the channels (strings)
-data.rois.time_series
-Array[N,1] of observed time series for the roi to be analyzed by DISC
+| `data` | Data structure to describe the entire data set |
+| `data.rois` | Data structure for a specific region of interest (roi) |
+| `data.names` | Cell to name the channels (strings) |
+| `data.rois.time_series` | Array[N,1] of observed time series for the roi to be analyzed by DISC |
 
 For example, in our simulated data there are 100 trajectories each with 2000 data points. Therefore,
 
-size(data.rois) = [100 2]
-size(data.rois(1,1).time_series) = [2000 1]
+`size(data.rois) = [100 2]`
+`size(data.rois(1,1).time_series) = [2000 1]`
 
-where data.rois(1,1) indexes the first trajectory of the first channel 
+where `data.rois(1,1)` indexes the first trajectory of the first channel 
 
 In our simulated data, we have 2 channels, shown by: 
 
@@ -182,6 +179,7 @@ This allows different trajectories to be collected from the same roi. For exampl
 
 Any other fields in either data or rois is acceptable and will not have an effect on DISC. We find this to be a useful format for including information about our data at various levels. For example, in our sample data, we can retain information about how our data was simulated: 
 
+```
 >> data = 
 
   struct with fields:
@@ -195,7 +193,7 @@ Any other fields in either data or rois is acceptable and will not have an effec
           duration_s: 200
         frame_rate_s: 0.1000
                names: {'Simulated Sample'  'Simulated Sample with True Fits'}
-
+```
 At the data.rois level, we can include information such as DISC fits, signal to noise ratio (SNR), selection status, etc... 
 
 <a id="data_format_disco_output"></a>
@@ -221,68 +219,28 @@ ans =
 
 where: 
 
-
-components 
-[weight, mean, standard deviation] of each identified state
-ideal
-time_series fit described by the mean value of each state
-class 
-time_ series fit described by the integer of unique states
-n_states
-number of states identified 
-metrics
-all computed information criterion (i.e. BIC) values from agglomerative clustering. 
-all_ideal
-all possible state sequences from the initial results of divisive segmentation and grouped by agglomerative clustering: 
-all_ideal(:,1) = 1 state fit; all_ideal(:,2) = 2 state fit, etc...
-parameters
-all input values used for analysis in DISC (Figure 2)
+| `components` | `[weight, mean, standard deviation]` of each identified state |
+| `ideal` | `time_series` fit described by the mean value of each state |
+| `class` | `time_series` fit described by the integer of unique states |
+| `n_states` | number of states identified |
+| `metrics` | all computed information criterion (i.e. BIC) values from agglomerative clustering. |
+| `all_ideal` | all possible state sequences from the initial results of divisive segmentation and grouped by agglomerative clustering: 
+`all_ideal(:,1)` = 1 state fit; `all_ideal(:,2)` = 2 state fit, etc... |
+| `parameters` | all input values used for analysis in DISC (**Figure 2**) |
 
 <a id="disc_no_gui"></a>
 ## Running DISC outside of the GUI  
 
-DISC can easily be called outside of the GUI using the runDISC.m function. This will be a faster since MATLAB uses quite a bit of memory to render the GUI. 
-
-To perform this analysis with default DISC values across a data set, one can simply write:
-
-for i = 1:length(data.rois)
-    data.rois(i,1).disc_fit = ...
-        runDISC(data.rois(i,1).time_series);
-end
- 
-Default values easily modifiable in setDefault.m. 
-
-Alternatively, one can input their own values outside of setDefault.m via: 
-
-disc_input = struct; 
-disc_input.input_type = 'alpha_value'; 
-disc_input.input_value 0.05; 
-disc_input.divisive = 'BIC_GMM'; 
-disc_input.agglomerative = 'BIC_GMM'; 
-disc_input.viterbi = 1; 
-disc_input.return_k = 0; 
-
-for i = 1:length(data.rois)
-    data.rois(i,1).disc_fit = ...
-        runDISC(data.rois(i,1).time_series, disc_input);
-end
-
 where: 
 
-input_type 
-Either `alpha_value' or `critical_value' for use in change-point detection 
-Input_value
-Value corresponding to input_type. i.e. 0.05 = 95% confidence interval when used with `alpha_value'
-divisive 
-Information criterion/ objective function for identifying states during the divisive phase (see computeIC.m for a list of available options). This value determines the max number of states possible for agglomerative clustering. 
-agglomerative
-Information criterion/ objective function for identifying states during the agglomerative phase (see computeIC.m for a list of available options). This value determines the final number of states returned for fitting by Viterbi
-viterbi
-Iterations of the Viterbi algorithm to identify the most likely hidden state sequence. We recommend 1 or 2 iterations. 
-0  = do no run Viterbi. 
-return_k
-Force the number of states you want runDISC.m to return. If return_k > # states identified, then the # of states identified will be returned. 
-Note: This is not the suggested use of DISC and is not an option in DISCO currently.
+| `input_type` | Either `'alpha_value'` or `'critical_value'` for use in change-point detection |
+| `input_value` | Value corresponding to `input_type`. e.g. 0.05 = 95% confidence interval when used with `'alpha_value'`
+| `divisive` | Information criterion/objective function for identifying states during the divisive phase (see `computeIC.m` for a list of available options). This value determines the max number of states possible for agglomerative clustering. |
+| `agglomerative` | Information criterion/ objective function for identifying states during the agglomerative phase (see `computeIC.m` for a list of available options). This value determines the final number of states returned for fitting by Viterbi. |
+| `viterbi` | Iterations of the Viterbi algorithm to identify the most likely hidden state sequence. We recommend 1 or 2 iterations.
+0  = do no run Viterbi. |
+| `return_k` | Force the number of states you want runDISC.m to return. If `return_k` > # states identified, then the # of states identified will be returned. 
+*Note: This is not the suggested use of DISC.* |
 
 <a id="tutorial"></a>
 ## Tutorial 
