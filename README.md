@@ -13,7 +13,7 @@ DISCO is the graphical user interface (GUI) for DISC. We aimed to make DISCO as 
 
 ### Installation 
 
-DISC is written entirely in MATLAB (using MATLAB2017b or later). No installation beyond obtaining MATLAB is required. The MATLAB Statistics and Machine Learning Toolbox is required.  
+DISC is written entirely in MATLAB (using R2017b or later). No installation beyond obtaining MATLAB is required. The MATLAB Statistics and Machine Learning Toolbox is required.  
 
 ### System Requirements 
 
