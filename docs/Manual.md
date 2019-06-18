@@ -38,7 +38,7 @@ DISC (divisive segmentation and clustering) is an open source MATLAB package for
 
 Please cite "White, D.S., Goldschen-Ohm, M.P., Goldsmith, R.H., Chanda, B.C., "High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering"  if using this software. 
 
-To ensure you have the most up-to-date version of DISC (of which this manual should be reflective of) please see https://github.com/ChandaLab/DISC. 
+To ensure you have the most up-to-date version of DISC (of which this manual should be reflective of), please see https://github.com/ChandaLab/DISC. 
 If you'd like to try a version in development, try the `trunk` branch with 
 ```
 git checkout trunk
@@ -71,9 +71,9 @@ To open DISCO:
 2. Add DISC folder to your file path
 3. Type DISCO into the Command Window
 
-or right click  run DISCO.m in MATLAB's file viewer. 
+or right click→`Run` DISCO.m in MATLAB's file viewer. 
 
-DISC can be [run outside of the GUI](#disc_no_gui) using runDISC.m. 
+DISC can also be [run outside of the GUI](#disc_no_gui) using `DISC_noGUI.m`. 
 
 <a id="loading_data"></a>
 ## Loading Data 
@@ -102,7 +102,7 @@ See also: how to [export to this form](#saving_export_dat).
 <a id="navigation_disco"></a>
 ## Navigation in DISCO 
 
-Trajectories can be navigated by either arrow clicks in the GUI (i.e. "Next ROI (→)) or by the keyboard. 
+Trajectories can be navigated by either arrow clicks in the GUI (e.g. `Next ROI (→)`) or by the keyboard. 
 
 | Key | Function |
 | --- | --- |
@@ -110,18 +110,18 @@ Trajectories can be navigated by either arrow clicks in the GUI (i.e. "Next ROI 
 | Left arrow | Navigate to previous trajectory |
 | Up arrow | Select trajectory |
 | Down arrow | Deselect trajectory |
-| Period/> | Navigate to next 'selected' trajectory |
-| Comma/< | Navigate to previous 'selected' trajectory |
+| Period / > | Navigate to next 'selected' trajectory |
+| Comma / < | Navigate to previous 'selected' trajectory |
 
 
 Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `figure1_WindowKeyPressFcn`.
 
+<a id="analyzing_disco"></a>
+## Analyzing Trajectories with DISCO
+
 <a><img src="assets/disc_param_dialog.png"></a>
 
 **Figure 2**: DISC Parameters window
-
-<a id="analyzing_disco"></a>
-## Analyzing Trajectories with DISCO
 
 <a id="analyzing_disco_single"></a>
 ### Single Trajectory Analysis
@@ -134,7 +134,7 @@ Figure 2: DISC Parameters window
 
 The trajectory will be analyzed. Black lines appear on the time-trajectory and the histogram plot showing the fit by DISC. In addition, a plot to the right will appear showing the total number of states found and the overall best number of states. 
 
-Note: Deciding which parameters to use will depend on the sort of data you are analyzing. We will provide better benchmarks as DISC gains more use. For now, it is valuable to try different parameters and see what appears to work best. 
+*Note: Deciding which parameters to use will depend on the sort of data you are analyzing. We will provide better benchmarks as DISC gains more use. For now, it is valuable to try different parameters and see what appears to work best.*
 
 <a id="analyzing_disco_all"></a>
 ### Analyzing an Entire Data Set
@@ -147,7 +147,7 @@ Now let's analyze all 100 traces:
 
 A wait-bar will pop up during this process. Once it closes, the analysis is complete. 
 
-Note: This is our suggested method of use for DISC, as this scheme analyzes all trajectories with the same statistical assumptions, rather than changing confidence intervals or objective functions per trace to get a desired answer. 
+*Note: This is our suggested method of use for DISC, as this scheme analyzes all trajectories with the same statistical assumptions, rather than changing confidence intervals or objective functions per trace to get a desired answer.*
 
 <a id="analyzing_disco_clear"></a>
 ### Clear Analysis
@@ -222,10 +222,10 @@ Data is formatted in data structures with the following required fields:
 | `data.rois.time_series` | Column array (N x 1) of observed time series for the roi to be analyzed by DISC |
 
 For example, in our simulated data there are 100 trajectories each with 2000 data points. Therefore,
-
-                 `size(data.rois) = [100 2]`
-`size(data.rois(1,1).time_series) = [2000 1]`
-
+```
+                 size(data.rois) = [100 2]
+size(data.rois(1,1).time_series) = [2000 1]
+```
 where `data.rois(1,1)` indexes the first trajectory of the first channel 
 
 In our simulated data, we have 2 channels, shown by: 
@@ -257,7 +257,7 @@ At the data.rois level, we can include information such as DISC fits, signal to 
 <a id="data_format_disco_output"></a>
 ### Analysis Output 
 
-runDISC.m (which DISCO calls) returns the structure `disc_fit` for each roi in `data.rois`.
+`runDISC.m` (which `DISCO` and `DISC_noGUI` call) returns the structure `disc_fit` for each roi in `data.rois`.
 
 For example:
 ```
