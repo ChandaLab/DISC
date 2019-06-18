@@ -10,17 +10,23 @@ v2.0.0
 	* [Sample Data](#sample_data)
 * [Running DISCO](#running_disco)
 * [Loading Data](#loading_data)
+	* [Importing from .dat](#loading_data_dat)
 * [Navigation in DISCO](#navigation_disco)
 * [Analyzing Trajectories with DISCO](#analyzing_disco)
 	* [Single Trajectory Analysis](#analyzing_disco_single)
 	* [Analyzing an Entire Data Set](#analyzing_disco_all)
 	* [Clear Analysis](#analyzing_disco_clear)
 	* [Trace Selection / Deselection](#analyzing_disco_selection)
+	* [Automatic filtering](#analyzing_disco_filtering)
+	* [Additional plotting](#analyzing_disco_plotting)
 * [Saving Data](#saving)
+	* [Exporting to .dat](#saving_export_dat)
+	* [Exporting and reimporting selected traces](#saving_export_selected)
+	* [Exporting figures](#saving_export_figs)
 * [Data Format](#data_format)
 	* [Input Data Format](#data_format_input)
 	* [DISCO Output](#data_format_disco_output)
-* [Running DISC without GUI](#disc_no_gui)
+* [Running DISC outside of the GUI](#disc_no_gui)
 * [Tutorial](#tutorial)
 
 <a id="intro"></a>
@@ -33,6 +39,11 @@ DISC (divisive segmentation and clustering) is an open source MATLAB package for
 Please cite "White, D.S., Goldschen-Ohm, M.P., Goldsmith, R.H., Chanda, B.C., "High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering"  if using this software. 
 
 To ensure you have the most up-to-date version of DISC (of which this manual should be reflective of) please see https://github.com/ChandaLab/DISC. 
+If you'd like to try a version in development, try the `trunk` branch with 
+```
+git checkout trunk
+```
+from the `DISC` directory. Of course, this version will be more bug-prone.
 
 Any questions, comments, or potential bugs can be reported to David S. White at dwhite7@wisc.edu. 
 
@@ -77,7 +88,16 @@ Once a data set is loaded, the GUI will initialize and display the first traject
 **Figure 1**: DISC GUI Overview
 </p>
 
-If DISC is already open and you wish to load a different data set: File  Load Data
+If DISC is already open and you wish to load a different data set: `File`→`Load Data`
+
+<a id="loading_data_dat"></a>
+### Importing from .dat
+DISCO is also capable of loading tabular data as in HaMMy or vbFRET.
+In this case, each trajectory is a column in the table, with the column header labeling the channel. For multiple traces on a channel, each column corresponding to a trace will have a header with the name of that channel.
+
+Data formatted as such via comma-separated values instead of tabs can also be imported. It is expected that Excel formats will also work, but this has yet to be fully implemented or tested. 
+
+See also: how to [export to this form](#saving_export_dat).
 
 <a id="navigation_disco"></a>
 ## Navigation in DISCO 
@@ -131,12 +151,12 @@ Now let's analyze all 100 traces:
 
 A wait-bar will pop up during this process. Once it closes, the analysis is complete. 
 
-Note: This is our suggested method of use for DISC, as this scheme analyzes all trajectories with the statistical assumptions, rather than changing confidence intervals or objective functions per trace to get a desired answer. 
+Note: This is our suggested method of use for DISC, as this scheme analyzes all trajectories with the same statistical assumptions, rather than changing confidence intervals or objective functions per trace to get a desired answer. 
 
 <a id="analyzing_disco_clear"></a>
 ### Clear Analysis
 
-The results of DISC can be removed either per trace using "Clear Analysis" or for every trajectory using "Clear all Analyses". 
+The results of DISC can be removed either per trace using "Clear Analysis" or for every trajectory using "Clear All Analyses". 
 
 <a id="analyzing_disco_selection"></a>
 ### Trace Selection / Deselection 
@@ -145,11 +165,46 @@ Trajectories can be selected by pressing the up arrow or click the "select" butt
 
 By default, all traces are "Unselected" (data.rois(1,1).status == 0). Once traces are selected, you can navigated between only the selected traces using "," or "." on the keyboard or by clicking "Next Selected (>)"  or "Prev Selected (<)" in the GUI. 
 
+<a id="analyzing_disco_filtering"></a>
+### Automatic filtering
+By clicking `Filter by ...`, the traces that have been idealized can be sorted by signal-to-noise ratio, number of identified states, or both. The button will open a graphical dialog from which you can enter minima and/or maxima for either parameter. Leaving a maximum empty will default to infinity, leaving a minimum empty will default to -infinity for SNR and 0 for number of identified states.
+
+See `computeSNR.m` to see find these values.
+
+Filtering will deselect any currently selected ROIs and select those that satisfy the filter.
+
+<a id="analyzing_disco_plotting"></a>
+### Additional plotting
+Histograms of SNR, number of identified states, and dwell times can be created via the `Plots` menu. In each case, only idealized traces are accounted for. 
+
+The dwell time histogram will have plots for each state across the entire channel, and each plot will have an ideal (exponential) fit superposed on it.
+
 <a id="saving"></a>
 ## Saving Data 
 
-Simply click File  Save Data. See 7.2 for information on DISC output.
+Simply click `File`→`Save Data`. See 7.2 for information on DISC output.
 
+<a id="saving_export_dat"></a>
+### Exporting to .dat
+After analysis, you may wish to export your idealized trajectories. This can be accomplished in the form of relative intensity (`ideal` field of `data.rois`) or relative state index (`class` field of `data.rois`).
+
+To do so, click `File`→`Export Channel to .dat ...`. This will open a dialog, where choose between ideal and class, as well as whether you'd like to export every analyzed trace in the channel or just the ones that have been marked `Selected`.
+
+The resulting `.dat` file will be of the form aforementioned in [Importing from .dat](#loading_data_dat).
+
+<a id="saving_export_selected"></a>
+### Exporting (and reimporting) selected traces
+Once some amount of traces have been Selected, you may wish to trim the unused traces from the current data set and view only those Selected. 
+
+To do so, click `File`→`Export and Reload Selected ...`. This will open a dialog to save the selected traces into its own `.mat` file (default name `selected.mat`) and automatically reload that file into DISCO.
+
+<a id="saving_export_figs"></a>
+### Exporting figures
+To easily export the current ROI to a MATLAB figure, click `File`→`Export Figures ...`. This will open a dialog to select which channels you would like to be in the figure. 
+
+The resulting figure will be a series of subplots that will mirror the state of the traces in the GUI. For example, if channels 1 and 2 have been selected to be exported, but only channel 1 has been idealized, the figure will display the trajectory and idealization, histogram, and metric plots of the channel 1 trace, but only the raw trajectory and histogram of the channel 2 trace.
+
+Once the figure is open, you will probably want to `File`→`Save As` etc.
 
 <a id="data_format"></a>
 ## Data Format
@@ -157,29 +212,29 @@ Simply click File  Save Data. See 7.2 for information on DISC output.
 <a id="data_format_input"></a>
 ### Input Data Format
 
-Notation:
+*Notation:
 "rois" = regions of interest. 
-N = number of data points
+N = number of data points*
 
-Data is formatted in data structures with the following required fields: 
-
+Data is formatted in data structures with the following required fields:
+| Variable | Description |
 | --- | --- |
 | `data` | Data structure to describe the entire data set |
 | `data.rois` | Data structure for a specific region of interest (roi) |
 | `data.names` | Cell to name the channels (strings) |
-| `data.rois.time_series` | Array[N,1] of observed time series for the roi to be analyzed by DISC |
+| `data.rois.time_series` | Column array (N x 1) of observed time series for the roi to be analyzed by DISC |
 
 For example, in our simulated data there are 100 trajectories each with 2000 data points. Therefore,
 
-`size(data.rois) = [100 2]`
+                 `size(data.rois) = [100 2]`
 `size(data.rois(1,1).time_series) = [2000 1]`
 
 where `data.rois(1,1)` indexes the first trajectory of the first channel 
 
 In our simulated data, we have 2 channels, shown by: 
 
-data.names{1} = `Simulated Sampled'
-data.names{2} = `Simulated Sampled with True Fits'
+data.names{1} = `Simulated Sample'
+data.names{2} = `Simulated Sample with True Fits'
 
 This allows different trajectories to be collected from the same roi. For example, in smFRET experiments, it is common to collect the emission time-trajectories of the acceptor, the donor, and the calculated FRET efficiency. If data.names is not provided, default channel names will be given. 
 
@@ -205,7 +260,7 @@ At the data.rois level, we can include information such as DISC fits, signal to 
 <a id="data_format_disco_output"></a>
 ### Analysis Output 
 
-runDISC.m (which DISCO calls) returns the structure disc_fit for each roi in data.rois.
+runDISC.m (which DISCO calls) returns the structure `disc_fit` for each roi in `data.rois`.
 
 For example:
 ```
@@ -226,6 +281,8 @@ ans =
 
 where: 
 
+| Field | Description |
+| --- | --- |
 | `components` | `[weight, mean, standard deviation]` of each identified state |
 | `ideal` | `time_series` fit described by the mean value of each state |
 | `class` | `time_series` fit described by the integer of unique states |
@@ -238,21 +295,24 @@ where:
 <a id="disc_no_gui"></a>
 ## Running DISC outside of the GUI  
 
-where: 
+We've also provided a script (`DISC_noGUI.m`) to run the algorithm without the DISCO GUI. This is useful if you only want to idealize and perform no further analysis, as DISCO takes quite a bit of memory to render. This script includes data loading and saving, channel select, and a progress display during idealization. Once a channel is selected, every trace on the selected channel will be idealized.
 
-| `input_type` | Either `'alpha_value'` or `'critical_value'` for use in change-point detection |
-| `input_value` | Value corresponding to `input_type`. e.g. 0.05 = 95% confidence interval when used with `'alpha_value'`
+You can alter DISC's statistical parameters at the clearly marked area at the beginning of the file, where: 
+
+| Field | Description |
+| --- | --- |
+| `input_type` | Either `'alpha_value'` or `'critical_value'` for use in change-point detection. |
+| `input_value` | Value corresponding to `input_type`. e.g. 0.05 = 95% confidence interval when used with `'alpha_value'` |
 | `divisive` | Information criterion/objective function for identifying states during the divisive phase (see `computeIC.m` for a list of available options). This value determines the max number of states possible for agglomerative clustering. |
 | `agglomerative` | Information criterion/ objective function for identifying states during the agglomerative phase (see `computeIC.m` for a list of available options). This value determines the final number of states returned for fitting by Viterbi. |
-| `viterbi` | Iterations of the Viterbi algorithm to identify the most likely hidden state sequence. We recommend 1 or 2 iterations.
-0  = do no run Viterbi. |
-| `return_k` | Force the number of states you want runDISC.m to return. If `return_k` > # states identified, then the # of states identified will be returned. 
-*Note: This is not the suggested use of DISC.* |
+| `viterbi` | Iterations of the Viterbi algorithm to identify the most likely hidden state sequence. We recommend 1 or 2 iterations. |
+0  = do no run Viterbi.
+|`return_k` | Force the number of states you want runDISC.m to return. If `return_k` > # states identified, then the # of states identified will be returned. *Note: This is not the suggested use of DISC.* |
 
 <a id="tutorial"></a>
 ## Tutorial 
 
-1. Click "File"  "Load Data" 
+1. Click `File`→`Load Data` 
 2. Select data set you would like to load 
 3. Click "Analyze All" 
 4. Enter the analysis parameters for DISC you would like to use.
@@ -260,6 +320,6 @@ where:
 7. Check the fits of the data and either "Select" or "Unselect" traces as desired. 
 8. If more than one channel is present, switch channels with the drop-down box.
 9. Repeat 3-8 as needed. 
-10. Click "File"  "Save Data"
+10. Click `File`→`Save Data`
 11. Save the data in the location with the name you want. 
 12. DONE!

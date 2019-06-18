@@ -9,7 +9,7 @@ White, D., Goldschen-Ohm, M., Goldsmith, R. & Chanda, B. High-Throughput Single-
 
 ## DISCO
 
-DISCO is the graphical user interface (GUI) for DISC. We aimed to make DISCO as user friendly as possible and welcome feedback on how we can improve. Please see the provided DISC_user_manual.pdf for full instructions. As DISCO gains more use, we can make other requested features available (i.e. dwell time analysis, automated trace selection, etc...). All updates will be made available on https://github.com/ChandaLab/DISC pending manuscript acceptance. Stay tuned!
+DISCO is the graphical user interface (GUI) for DISC. We aimed to make DISCO as user friendly as possible and welcome feedback on how we can improve. Please see the provided docs/Manual.md for full instructions. As DISCO gains more use, we can make other requested features available (i.e. dwell time analysis, automated trace selection, etc...). All updates will be made available on https://github.com/ChandaLab/DISC pending manuscript acceptance. Stay tuned!
 
 ### Installation 
 
@@ -31,12 +31,15 @@ Add the DISC folder to your file path. DISC can be run in a GUI from the command
 DISCO
 ```
 
-or run outside of the GUI using the runDISC.m function. See DISC_user_manual.pdf for more information. 
-
+or run outside of the GUI with
+```
+DISC_noGUI
+```
+See docs/Manual.md for more information.
 
 ### Demo
 
-A sample set of simulated data is provided /sample_data/sample_data.mat. True values of simulation results are provided within this sample. This analysis took < 10 seconds to complete on a personal MacBook Air (1.6 GHz Intel Core i5) in MATLAB 2018b. Detailed instructions for analyzing this sample to reproduce these results are provided in DISC_user_manual.pdf with the analysis results found in sample_data/sample_data_idealized.mat.
+A sample set of simulated data is provided /sample_data/sample_data.mat. True values of simulation results are provided within this sample. This analysis took < 10 seconds to complete on a personal MacBook Air (1.6 GHz Intel Core i5) in MATLAB 2018b. Detailed instructions for analyzing this sample to reproduce these results are provided in docs/Manual.md with the analysis results found in sample_data/sample_data_idealized.mat.
 
 
 ### Simulate Data
