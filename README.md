@@ -28,12 +28,12 @@ To our knowledge, as long as your system is capable of running MATLAB (2017b or 
 Add the DISC folder to your file path. DISC can be run in a GUI from the command line of MATLAB via
 
 ```
-DISCO
+>> DISCO
 ```
 
 or run outside of the GUI with
 ```
-DISC_noGUI
+>> DISC_noGUI
 ```
 See docs/Manual.md for more information.
 

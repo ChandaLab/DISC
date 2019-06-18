@@ -42,7 +42,7 @@ Please cite "White, D.S., Goldschen-Ohm, M.P., Goldsmith, R.H., Chanda, B.C., "H
 To ensure you have the most up-to-date version of DISC (of which this manual should be reflective of), please see https://github.com/ChandaLab/DISC. 
 If you'd like to try a version in development, try the `trunk` branch with 
 ```
-git checkout trunk
+$ git checkout trunk
 ```
 from the `DISC` directory. Of course, this version will be more bug-prone.
 
@@ -239,7 +239,7 @@ This allows different trajectories to be collected from the same roi. For exampl
 Any other fields in either data or rois is acceptable and will not have an effect on DISC. We find this to be a useful format for including information about our data at various levels. For example, in our sample data, we can retain information about how our data was simulated: 
 
 ```
->> data = 
+>> data
 
   struct with fields:
 
