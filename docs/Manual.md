@@ -73,12 +73,12 @@ To open DISCO:
 
 or right click  run DISCO.m in MATLAB's file viewer. 
 
-DISC can be run outside of the GUI using runDISC.m. See [section 8](#disc_no_gui). 
+DISC can be [run outside of the GUI](#disc_no_gui) using runDISC.m. 
 
 <a id="loading_data"></a>
 ## Loading Data 
 
-Once DISCO is executed, it will open a window with a prompt to load a data set. Navigate to `DISC/sample_data` and load `sample_data.mat`. See 7.1 for data formats.
+Once DISCO is executed, it will open a window with a prompt to load a data set. Navigate to `sample_data/` and load `sample_data.mat`. See [input data formats](#data_format_input).
 
 Once a data set is loaded, the GUI will initialize and display the first trajectory (Figure 1). 
 
@@ -104,18 +104,14 @@ See also: how to [export to this form](#saving_export_dat).
 
 Trajectories can be navigated by either arrow clicks in the GUI (i.e. "Next ROI (→)) or by the keyboard. 
 
-Right arrow
-Navigate to next trajectory
-Left arrow
-Navigate to previous trajectory
-Up arrow
-Select trajectory
-Down arrow
-Deselect trajectory
-Period /  >
-Navigate to next `selected' trajectory
-Comma / <
-Navigate to previous `'selected trajectory
+| Key | Function |
+| --- | --- |
+| Right arrow | Navigate to next trajectory |
+| Left arrow | Navigate to previous trajectory |
+| Up arrow | Select trajectory |
+| Down arrow | Deselect trajectory |
+| Period/> | Navigate to next 'selected' trajectory |
+| Comma/< | Navigate to previous 'selected' trajectory |
 
 
 Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `figure1_WindowKeyPressFcn`.
@@ -161,7 +157,7 @@ The results of DISC can be removed either per trace using "Clear Analysis" or fo
 <a id="analyzing_disco_selection"></a>
 ### Trace Selection / Deselection 
 
-Trajectories can be selected by pressing the up arrow or click the "select" button in the GUI. This will add a field to the rois structure (see 7.1) to be indexed by further analysis by DISC. For example, ROI #24 has a low signal-to-noise ratio and you may not be confident in the analysis results, unlike ROI #22 which has a very high signal-to-noise. Therefore, you may want to Select ROI #24 and Unselect ROI #22 for further analysis. 
+Trajectories can be selected by pressing the up arrow or click the "select" button in the GUI. This will add a field to the rois structure (see [input data formats](#data_format_input)) to be indexed by further analysis by DISC. For example, ROI #24 has a low signal-to-noise ratio and you may not be confident in the analysis results, unlike ROI #22 which has a very high signal-to-noise. Therefore, you may want to Select ROI #24 and Unselect ROI #22 for further analysis. 
 
 By default, all traces are "Unselected" (data.rois(1,1).status == 0). Once traces are selected, you can navigated between only the selected traces using "," or "." on the keyboard or by clicking "Next Selected (>)"  or "Prev Selected (<)" in the GUI. 
 
@@ -169,7 +165,7 @@ By default, all traces are "Unselected" (data.rois(1,1).status == 0). Once trace
 ### Automatic filtering
 By clicking `Filter by ...`, the traces that have been idealized can be sorted by signal-to-noise ratio, number of identified states, or both. The button will open a graphical dialog from which you can enter minima and/or maxima for either parameter. Leaving a maximum empty will default to infinity, leaving a minimum empty will default to -infinity for SNR and 0 for number of identified states.
 
-See `computeSNR.m` to see find these values.
+See `src_GUI/computeSNR.m` for more info.
 
 Filtering will deselect any currently selected ROIs and select those that satisfy the filter.
 
@@ -217,6 +213,7 @@ Once the figure is open, you will probably want to `File`→`Save As` etc.
 N = number of data points*
 
 Data is formatted in data structures with the following required fields:
+
 | Variable | Description |
 | --- | --- |
 | `data` | Data structure to describe the entire data set |
@@ -232,10 +229,10 @@ For example, in our simulated data there are 100 trajectories each with 2000 dat
 where `data.rois(1,1)` indexes the first trajectory of the first channel 
 
 In our simulated data, we have 2 channels, shown by: 
-
-data.names{1} = `Simulated Sample'
-data.names{2} = `Simulated Sample with True Fits'
-
+```
+data.names{1} = 'Simulated Sample'
+data.names{2} = 'Simulated Sample with True Fits'
+```
 This allows different trajectories to be collected from the same roi. For example, in smFRET experiments, it is common to collect the emission time-trajectories of the acceptor, the donor, and the calculated FRET efficiency. If data.names is not provided, default channel names will be given. 
 
 Any other fields in either data or rois is acceptable and will not have an effect on DISC. We find this to be a useful format for including information about our data at various levels. For example, in our sample data, we can retain information about how our data was simulated: 
@@ -288,8 +285,7 @@ where:
 | `class` | `time_series` fit described by the integer of unique states |
 | `n_states` | number of states identified |
 | `metrics` | all computed information criterion (i.e. BIC) values from agglomerative clustering. |
-| `all_ideal` | all possible state sequences from the initial results of divisive segmentation and grouped by agglomerative clustering: 
-`all_ideal(:,1)` = 1 state fit; `all_ideal(:,2)` = 2 state fit, etc... |
+| `all_ideal` | all possible state sequences from the initial results of divisive segmentation and grouped by agglomerative clustering: `all_ideal(:,1)` = 1 state fit; `all_ideal(:,2)` = 2 state fit, etc... |
 | `parameters` | all input values used for analysis in DISC (**Figure 2**) |
 
 <a id="disc_no_gui"></a>
@@ -305,12 +301,11 @@ You can alter DISC's statistical parameters at the clearly marked area at the be
 | `input_value` | Value corresponding to `input_type`. e.g. 0.05 = 95% confidence interval when used with `'alpha_value'` |
 | `divisive` | Information criterion/objective function for identifying states during the divisive phase (see `computeIC.m` for a list of available options). This value determines the max number of states possible for agglomerative clustering. |
 | `agglomerative` | Information criterion/ objective function for identifying states during the agglomerative phase (see `computeIC.m` for a list of available options). This value determines the final number of states returned for fitting by Viterbi. |
-| `viterbi` | Iterations of the Viterbi algorithm to identify the most likely hidden state sequence. We recommend 1 or 2 iterations. |
-0  = do no run Viterbi.
+| `viterbi` | Iterations of the Viterbi algorithm to identify the most likely hidden state sequence. We recommend 1 or 2 iterations. 0 = do not run Viterbi. |
 |`return_k` | Force the number of states you want runDISC.m to return. If `return_k` > # states identified, then the # of states identified will be returned. *Note: This is not the suggested use of DISC.* |
 
 <a id="tutorial"></a>
-## Tutorial 
+## Basic Tutorial
 
 1. Click `File`→`Load Data` 
 2. Select data set you would like to load 
@@ -319,7 +314,7 @@ You can alter DISC's statistical parameters at the clearly marked area at the be
 6. Click "Go"
 7. Check the fits of the data and either "Select" or "Unselect" traces as desired. 
 8. If more than one channel is present, switch channels with the drop-down box.
-9. Repeat 3-8 as needed. 
-10. Click `File`→`Save Data`
-11. Save the data in the location with the name you want. 
-12. DONE!
+9. Repeat 3-8 as needed.
+12. Click `File`→`Save Data`
+13. Save the data in the location with the name you want. 
+14. DONE!
