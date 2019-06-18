@@ -1,5 +1,6 @@
 # DISC User Manual 
 June 2019
+
 v2.0.0
 
 *Table of Contents*
@@ -27,7 +28,7 @@ v2.0.0
 	* [Input Data Format](#data_format_input)
 	* [DISCO Output](#data_format_disco_output)
 * [Running DISC outside of the GUI](#disc_no_gui)
-* [Tutorial](#tutorial)
+* [Summary](#summary)
 
 <a id="intro"></a>
 ## Introduction
@@ -159,7 +160,7 @@ The results of DISC can be removed either per trace using "Clear Analysis" or fo
 
 Trajectories can be selected by pressing the up arrow or click the "select" button in the GUI. This will add a field to the rois structure (see [input data formats](#data_format_input)) to be indexed by further analysis by DISC. For example, ROI #24 has a low signal-to-noise ratio and you may not be confident in the analysis results, unlike ROI #22 which has a very high signal-to-noise. Therefore, you may want to Select ROI #24 and Unselect ROI #22 for further analysis. 
 
-By default, all traces are "Unselected" (data.rois(1,1).status == 0). Once traces are selected, you can navigated between only the selected traces using "," or "." on the keyboard or by clicking "Next Selected (>)"  or "Prev Selected (<)" in the GUI. 
+By default, all traces are "Unselected" (`data.rois(1,1).status = 0`). Once traces are selected, you can navigated between only the selected traces using "," or "." on the keyboard or by clicking "Next Selected (>)"  or "Prev Selected (<)" in the GUI. 
 
 <a id="analyzing_disco_filtering"></a>
 ### Automatic filtering
@@ -178,7 +179,7 @@ The dwell time histogram will have plots for each state across the entire channe
 <a id="saving"></a>
 ## Saving Data 
 
-Simply click `File`→`Save Data`. See 7.2 for information on DISC output.
+Simply click `File`→`Save Data`. See [DISCO output](#data_format_disco_output) for information.
 
 <a id="saving_export_dat"></a>
 ### Exporting to .dat
@@ -304,17 +305,17 @@ You can alter DISC's statistical parameters at the clearly marked area at the be
 | `viterbi` | Iterations of the Viterbi algorithm to identify the most likely hidden state sequence. We recommend 1 or 2 iterations. 0 = do not run Viterbi. |
 |`return_k` | Force the number of states you want runDISC.m to return. If `return_k` > # states identified, then the # of states identified will be returned. *Note: This is not the suggested use of DISC.* |
 
-<a id="tutorial"></a>
-## Basic Tutorial
+<a id="summary"></a>
+## Summary
 
 1. Click `File`→`Load Data` 
 2. Select data set you would like to load 
 3. Click "Analyze All" 
 4. Enter the analysis parameters for DISC you would like to use.
-6. Click "Go"
-7. Check the fits of the data and either "Select" or "Unselect" traces as desired. 
-8. If more than one channel is present, switch channels with the drop-down box.
-9. Repeat 3-8 as needed.
-12. Click `File`→`Save Data`
-13. Save the data in the location with the name you want. 
-14. DONE!
+5. Click "Go"
+6. Check the fits of the data and either "Select" or "Unselect" traces as desired. 
+7. If more than one channel is present, switch channels with the drop-down box.
+8. Repeat 3-8 as needed.
+9. Click `File`→`Save Data`
+10. Save the data in the location with the name you want. 
+11. DONE!
