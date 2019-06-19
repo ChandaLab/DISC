@@ -7,7 +7,7 @@ global data gui
 [file, path] = uiputfile({'*.dat','Data files (*.dat)'},...
     'Export data to plain text (.dat)');
 if ~file
-    return;
+    return
 end
 
 % store path and ext

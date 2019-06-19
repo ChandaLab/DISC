@@ -15,9 +15,9 @@ events = cell(length(idx), 1);
 % use DISC function
 for ii = idx'
     events{ii} = findEvents(data.rois(ii, gui.channelIdx).disc_fit.class);
-    % events = [start frame, stop frame, duration, label]
+    % returns events = [start frame, stop frame, duration, label]
 end
-% concatenate all 'events' matrices. on large data sets, this will likely
+% concatenate all 'events' matrices. on larger data sets, this will
 % create an enormous matrix (and so use lots of memory).
 events = vertcat(events{:});
 
@@ -26,36 +26,130 @@ num_states = max(events(:,4));
 
 durations = cell(1, num_states); % allocate
 % store durations in column 3 that correspond to each label in column 4.
-% dimensions are generally different, so a cell is a good choice here.
+% dimensions are generally different, so we're using a cell
 for ii = 1:num_states
     durations{ii} = events(events(:,4)==ii,3);
 end
+clear events
 
 % allocate and create axes depending on num states
-figure();
+f = figure('units','normalized','outerposition',[0 0 1 1], 'Visible','off'); % fullscreen
 ax = gobjects(round(num_states/2),2);
 for ii = 1:round(num_states/2)
     ax(ii,1) = subplot(round(num_states/2), 2, 2*(ii-1) + 1);
     ax(ii,2) = subplot(round(num_states/2), 2, 2*(ii-1) + 2);
 end
-% plot histograms. binning is currently fixed at 50, but there may be better
-% options
+
+export = dwellTimeExportDialog();
+f.Visible = 'on';
+
+% allocate
+muhat = zeros(1, num_states);
+muci = zeros(2, num_states);
+% declare function
+f = @(b,x) b(1).*exp(b(2).*x);
 for ii = 1:num_states
-    % create histogram and fit
-    f = histfit(durations{ii}, 50, 'exponential');
-    % reset axes
-    f(1).Parent = ax(ii);
-    f(2).Parent = ax(ii);
+    % find mu and convidence interval
+    [muhat(ii), muci(:,ii)] = expfit(durations{ii});
+    
+    % create histograms and extract bar heights and bin locations
+    h = histogram(durations{ii}, 'Parent', ax(ii));
+    x = h.BinEdges(1:end-1)';
+    y = h.Values';
+    
     % set xmin to 0
     xlims = xlim(ax(ii)); xmax = xlims(2);
+    ylims = ylim(ax(ii)); ymax = ylims(2);
     xlim(ax(ii), [0 xmax]);
+    
+    % fit by minimizing distance between top of hist bars and function
+    % max(y) as estimate for function coefficient, -0.1 as estimate for
+    % power coefficient. this fit is only for visual purposes, and will not
+    % contribute to the displayed mu and CI values.
+    coeffs = fminsearch(@(b) norm(y - f(b,x)), [max(y); -0.1]);
+    hold(ax(ii), 'on')
+    plot(ax(ii), x, f(coeffs,x), '-r', 'linewidth', 1.7);
+    hold(ax(ii), 'off');
+    
     % set labels
     title(ax(ii), ['State ' num2str(ii)]);
     xlabel(ax(ii), 'Duration (Frames)');
     ylabel(ax(ii), 'Counts');
+    
+    % print fitted mu and CI onto axes
+    text(ax(ii), 0.6*xmax, 0.5*ymax, ...
+        sprintf("\\mu = %.2f\nCI = %.2f, %.2f", muhat(ii), muci(1,ii), muci(2,ii)))
 end
 % if the number of states is odd, make the last set of axes invisible
 if mod(num_states,2)
     ax(end).Visible = 0;
 end
+if export
+    [file, path] = uiputfile({'*.csv','Comma-separated value files (*.csv)'},...
+        'Export dwell analysis to .csv');
+    if ~file
+        return
+    end
+    % store path and ext
+    fp = fullfile(path, file);
+    
+    % allocate (and make padding so the arrays of different sizes can be
+    % concatenated)
+    alldurations = cell(max(cellfun('size', durations, 1)), size(durations, 2));
+    for ii = 1:size(durations, 2)
+        alldurations(1:length(durations{ii}), ii) = num2cell(durations{ii});
+        alldurations(1, size(durations,2) + 1 + ii) = num2cell(muhat(ii));
+        alldurations(2:3, size(durations,2) + 1 + ii) = num2cell(muci(:,ii));
+    end
+    
+    alldurations{1, size(durations,2) + 1} = 'mu';
+    alldurations{2, size(durations,2) + 1} = 'CI';
+    alldurations{3, size(durations,2) + 1} = 'CI';
+    
+    % equivalent to writecell. keeping this for compatibility with older
+    % matlabs.
+    T = table(alldurations);
+    writetable(T,fp,'WriteVariableNames', false, 'WriteRowNames', false);
+    
+    % format matrix into comma-separated value string, replace NaN with
+    % empty chars and remove unnecessary commas
+%     txtmat = sprintf([repmat('%u,', 1, size(alldurations, 2)), '%s,',...
+%         repmat('%.4f,', 1, size(alldurations,2)-1), '%.4f\n'],...
+%         alldurations(1:3,:)', ['mu';'CI';'CI'], comps');
+%     txtmat = regexprep(txtmat, 'NaN', '');
+%     txtmat = regexprep(txtmat, repmat(',', 1, num_states+1), '');
+%     
+%     % open file, print string to file, close file
+%     fid = fopen(fp, 'wt');
+%     fprintf(fid, txtmat);
+%     fclose(fid);
+    
+end
+
+end
+
+function export = dwellTimeExportDialog
+% create dialog
+dspyinfo = get(0,'screensize');
+dwidth = 280;
+dheight = 120;
+d = dialog('Position',[0.5*(dspyinfo(3)-dwidth) 0.5*(dspyinfo(4)-dheight) dwidth dheight],...
+           'Name','Dwell Time Export');
+
+uicontrol(d,'style','text','string','Would you like to export dwell data to .csv?',...
+    'Position',[(dwidth-230) 60 180 40]);
+uicontrol(d,'string','No','Position',...
+    [0.5*dwidth-115 25 100 30],'callback',@exportDwellNo_callback);
+uicontrol(d,'string','Yes','Position',...
+    [0.5*dwidth+15 25 100 30],'callback',@exportDwellYes_callback);
+uiwait(d);
+
+    function exportDwellNo_callback(~,~)
+        export = 0;
+        delete(gcf);
+    end
+    function exportDwellYes_callback(~,~)
+        export = 1;
+        delete(gcf);
+    end
 end
