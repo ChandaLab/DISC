@@ -2,7 +2,7 @@ function getDwellTimes
 global data gui
 
 % find indices of analyzed traces and put them into a vector
-idx = zeros(1, length(vertcat(data.rois(:, gui.channelIdx).disc_fit)));
+idx = zeros(length(vertcat(data.rois(:, gui.channelIdx).disc_fit)), 1);
 for ii = 1:size(data.rois, 1)
     if ~isempty(data.rois(ii, gui.channelIdx).disc_fit)
         idx(ii) = ii;
@@ -13,8 +13,8 @@ idx = nonzeros(idx);
 
 events = cell(1, length(idx));
 % use DISC function
-for ii = idx
-    events{ii} = findEvents(data.rois(ii, gui.channelIdx).disc_fit.class);
+for ii = idx'
+    events{1, ii} = findEvents(data.rois(ii, gui.channelIdx).disc_fit.class);
     % returns events = [start frame, stop frame, duration, label]
 end
 % concatenate all 'events' matrices. on larger data sets, this will
@@ -33,7 +33,7 @@ end
 clear events
 
 % allocate and create axes depending on num states
-f = figure('units','normalized','outerposition',[0 0 1 1], 'Visible','off'); % fullscreen
+f = figure('units','normalized','position',[0 0 1 1], 'Visible','off'); % fullscreen
 ax = gobjects(round(num_states/2),2);
 for ii = 1:round(num_states/2)
     ax(ii,1) = subplot(round(num_states/2), 2, 2*(ii-1) + 1);
@@ -84,8 +84,9 @@ end
 if mod(num_states,2)
     ax(end).Visible = 0;
 end
+
 if export
-    [file, path] = uiputfile({'*.csv','Comma-separated value files (*.csv)'},...
+    [file, path] = uiputfile({'*.csv','Comma-separated values (*.csv)'},...
         'Export dwell analysis to .csv');
     if ~file
         return
@@ -93,9 +94,10 @@ if export
     % store path and ext
     fp = fullfile(path, file);
     
-    % allocate (and make padding so the arrays of different sizes can be
+    % allocate (and make padding so arrays of different sizes can be
+    % vertically concatenated, and so mu and CI can be horizontally 
     % concatenated)
-    alldurations = cell(max(cellfun('size', durations, 1)), size(durations, 2));
+    alldurations = cell(max(cellfun('size', durations, 1)), 1 + 2*size(durations, 2));
     for ii = 1:size(durations, 2)
         alldurations(1:length(durations{ii}), ii) = num2cell(durations{ii});
         alldurations(1, size(durations,2) + 1 + ii) = num2cell(muhat(ii));
@@ -109,20 +111,8 @@ if export
     % equivalent to writecell. keeping this for compatibility with older
     % matlabs.
     T = table(alldurations);
+    clear alldurations
     writetable(T,fp,'WriteVariableNames', false, 'WriteRowNames', false);
-    
-    % format matrix into comma-separated value string, replace NaN with
-    % empty chars and remove unnecessary commas
-%     txtmat = sprintf([repmat('%u,', 1, size(alldurations, 2)), '%s,',...
-%         repmat('%.4f,', 1, size(alldurations,2)-1), '%.4f\n'],...
-%         alldurations(1:3,:)', ['mu';'CI';'CI'], comps');
-%     txtmat = regexprep(txtmat, 'NaN', '');
-%     txtmat = regexprep(txtmat, repmat(',', 1, num_states+1), '');
-%     
-%     % open file, print string to file, close file
-%     fid = fopen(fp, 'wt');
-%     fprintf(fid, txtmat);
-%     fclose(fid);
     
 end
 
