@@ -167,13 +167,13 @@ goToROI();
 % --- Executes on button press in pushbutton_analyzeThis.
 function pushbutton_analyzeThis_Callback(hObject, eventdata, handles)
 % sets condition to run DISC on the current ROI and brings up param dialog
-analyzeDialog(0);
+analyzeFromGUI(0);
 
 
 % --- Executes on button press in pushbutton_analyzeAll.
 function pushbutton_analyzeAll_Callback(hObject, eventdata, handles)
 % sets condition to run DISC on all ROIs and brings up param dialog
-analyzeDialog(1);
+analyzeFromGUI(1);
 
 
 % --- Executes on key press with focus on figure1 or any of its controls.

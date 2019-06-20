@@ -24,6 +24,7 @@ v2.0.0
 	* [Exporting to .dat](#saving_export_dat)
 	* [Exporting and reimporting selected traces](#saving_export_selected)
 	* [Exporting figures](#saving_export_figs)
+	* [Exporting dwell analysis](#saving_export_dwell)
 * [Data Format](#data_format)
 	* [Input Data Format](#data_format_input)
 	* [DISCO Output](#data_format_disco_output)
@@ -174,7 +175,7 @@ Filtering will deselect any currently selected ROIs and select those that satisf
 ### Additional plotting
 Histograms of SNR, number of identified states, and dwell times can be created via the `Plots` menu. In each case, only idealized traces are accounted for. 
 
-The dwell time histogram will have plots for each state across the entire channel, and each plot will have an ideal (exponential) fit superposed on it.
+The dwell time histogram will have plots for each state across the entire channel, and each plot will have an ideal (exponential) fit superposed on it. The data from these histograms can be exported, as is optioned in a dialog that opens when the histograms are. See [Exporting dwell analysis](#saving_export_dwell) for more info.
 
 <a id="saving"></a>
 ## Saving Data 
@@ -202,6 +203,10 @@ To easily export the current ROI to a MATLAB figure, click `File`→`Export Figu
 The resulting figure will be a series of subplots that will mirror the state of the traces in the GUI. For example, if channels 1 and 2 have been selected to be exported, but only channel 1 has been idealized, the figure will display the trajectory and idealization, histogram, and metric plots of the channel 1 trace, but only the raw trajectory and histogram of the channel 2 trace.
 
 Once the figure is open, you will probably want to `File`→`Save As` etc.
+
+<a id="saving_export_dwell"></a>
+### Exporting dwell analysis
+After clicking `Plots`→`Dwell Time Analysis`, a dialog will open asking if you'd like to export the dwell analysis data to a .csv file for easy importing into Excel or a similar program. The data will be formatted as such: the first n columns correspond to the n states identified in every trace across the entire channel. These will generally have several thousand rows. To the right (beginning at column n+2) is a 3xn matrix consisting of exponential fit data: row 1 = mu for each state, rows 2 and 3 = confidence interval for each state. 
 
 <a id="data_format"></a>
 ## Data Format

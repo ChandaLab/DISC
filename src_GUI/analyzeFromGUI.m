@@ -1,4 +1,4 @@
-function analyzeDialog(analyzeAll)
+function analyzeFromGUI(analyze_all)
 % Operate the Analyze & Analyze All Buttons & runDISC with provided input
 %
 % Authors: Owen Rafferty & David S. White
@@ -13,7 +13,9 @@ function analyzeDialog(analyzeAll)
 
 
 
-% input variables 
+% input variables
+% analyze_all = 0 -> this trace only
+%             = 1 -> all traces in channel
 global data gui 
 
 % init dialog window
@@ -186,7 +188,7 @@ uiwait(d);
         delete(gcf)
         
         % run DISC at current ROI and channel
-        if ~analyzeAll
+        if ~analyze_all
             % runDISC
             data.rois(gui.roiIdx, gui.channelIdx).disc_fit =  ...
                 runDISC(data.rois(gui.roiIdx, gui.channelIdx).time_series, ...
@@ -194,9 +196,9 @@ uiwait(d);
             goToROI(gui.roiIdx);
       
         % run DISC on all ROIs for current channel
-        elseif analyzeAll
+        elseif analyze_all
             waitName = sprintf('Running DISC on ''%s'' ...', ...
-                char(data.names(gui.channelIdx))); % waitbar title
+                data.names{gui.channelIdx}); % waitbar title
             f = waitbar(0,'1','Name',waitName, ...
                 'CreateCancelBtn','setappdata(gcbf,''canceling'',1)'); % init waitbar
             setappdata(f,'canceling',0);
