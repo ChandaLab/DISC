@@ -1,8 +1,8 @@
-function plotDwellTime
+function getDwellTimes
 global data gui
 
 % find indices of analyzed traces and put them into a vector
-idx = zeros(length(vertcat(data.rois(:, gui.channelIdx).disc_fit)),1);
+idx = zeros(1, length(vertcat(data.rois(:, gui.channelIdx).disc_fit)));
 for ii = 1:size(data.rois, 1)
     if ~isempty(data.rois(ii, gui.channelIdx).disc_fit)
         idx(ii) = ii;
@@ -11,9 +11,9 @@ end
 % remove zeros inserted between nonconsecutive roi analyses
 idx = nonzeros(idx);
 
-events = cell(length(idx), 1);
+events = cell(1, length(idx));
 % use DISC function
-for ii = idx'
+for ii = idx
     events{ii} = findEvents(data.rois(ii, gui.channelIdx).disc_fit.class);
     % returns events = [start frame, stop frame, duration, label]
 end
@@ -40,7 +40,7 @@ for ii = 1:round(num_states/2)
     ax(ii,2) = subplot(round(num_states/2), 2, 2*(ii-1) + 2);
 end
 
-export = dwellTimeExportDialog();
+export = dwellTimeExportDialog(); % boolean
 f.Visible = 'on';
 
 % allocate

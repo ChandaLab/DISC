@@ -26,8 +26,8 @@ disp('Loading Data ...')
 if ~exist('fp','var')
     [file, path] = uigetfile({'*.mat;*.dat;*.csv','Data files (*.mat,*.dat,*.csv)'},...
         'Open data file.'); % open file picker
-    if isequal(file, 0)
-        return;
+    if ~file
+        return
     end
     fp = fullfile(path, file);
 end
