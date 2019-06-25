@@ -1,4 +1,4 @@
-function plotTrajectory(axes)
+function plotTrajectory(axes, channel_colors, font)
 % Plot the Time Series Trajectory data (rois.time_series) with fit (rois.ideal)
 %
 % Authors: Owen Rafferty & David S. White 
@@ -19,7 +19,7 @@ cla(axes);
 
 % plot time series data 
 plot(axes, data.rois(gui.roiIdx, gui.channelIdx).time_series, ...
-     'color', gui.channelColors(gui.channelIdx, :))
+     'color', channel_colors(gui.channelIdx, :))
  
 % draw title based on selection or lack thereof
 % determine num of selected traces
@@ -37,8 +37,8 @@ end
 title(axes, title_txt);
 xlabel(axes, 'Frames'); 
 ylabel(axes, 'Intensity (AU)');
-set(axes, 'fontsize', gui.fontSize);
-set(axes, 'fontname', gui.fontName);
+set(axes, 'fontsize', font.size);
+set(axes, 'fontname', font.name);
 
 % draw fit if analysis is completed for the current ROI
 if ~isempty(data.rois(gui.roiIdx, gui.channelIdx).disc_fit)

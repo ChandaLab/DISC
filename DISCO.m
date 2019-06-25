@@ -28,6 +28,7 @@ global data gui
 
 % init data and gui.figure field for loadData
 gui.figure = [];
+
 if isempty(data)
     loadData();
 else
@@ -42,6 +43,3 @@ end
 
 % init GUI
 gui.figure = roiViewerGUI();
-
-% init DISC paramters 
-initDISC();

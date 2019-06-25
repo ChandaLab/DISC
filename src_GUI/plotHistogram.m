@@ -1,4 +1,4 @@
-function plotHistogram(axes, alignaxes)
+function plotHistogram(axes, alignaxes, channel_colors, font)
 % Histogram fitting figure for time series data
 %
 % Author: David S. White & Owen Rafferty
@@ -18,7 +18,7 @@ global data gui
 cla(axes); 
 
 % grab plot color
-bin_color = gui.channelColors(gui.channelIdx,:);
+bin_color = channel_colors(gui.channelIdx,:);
 
 % grab data to plot 
 time_series = data.rois(gui.roiIdx, gui.channelIdx).time_series;
@@ -93,7 +93,7 @@ else
     title_txt = sprintf('SNR: %.1f   Number of States: %u', snr, n_components);
 end
 title(axes, title_txt, 'HorizontalAlignment','left');
-set(axes, 'fontsize', gui.fontSize);
-set(axes, 'fontname', gui.fontName);
+set(axes, 'fontsize', font.size);
+set(axes, 'fontname', font.name);
 
 end

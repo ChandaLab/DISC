@@ -1,4 +1,4 @@
-function initChannels()
+function [channel_names, channel_colors] = initChannels()
 % Ensure Channels are Made and Assign Color Schemes
 %
 % Authors: Owen Rafferty & David S. White
@@ -10,12 +10,7 @@ function initChannels()
 % 19-02-21  DSW     Added data.names check; expanded color option in a loop
 %                   Name change to initChannels from init Colors    
 
-% Input Variables 
-global data gui
-
-% Let's set fontsize and fontname here temporarily 
-gui.fontSize = 12; 
-gui.fontName = 'arial';
+global data
 
 % check the size of the data.rois.
 n_channels = size(data.rois, 2);
@@ -23,11 +18,13 @@ n_channels = size(data.rois, 2);
 % 1. Does data.names exist? 
 if ~isfield(data,'names')
     % create empty field 
-    data.names = {}; 
+    channel_names = cell(1, n_channels); 
     for n = 1:n_channels
         % assign names based on index
-        data.names{n} = ['Channel ', num2str(n)];
+        channel_names{n} = sprintf('Channel %u', n);
     end
+else
+    channel_names = data.names;
 end
 
 % 2. Assign colors to each channel 
@@ -42,5 +39,5 @@ color_scheme = [0.4660, 0.6740, 0.1880   % green
                 0.9290, 0.6940, 0.1250]; % yellow
 
 % assign colors as needed
-gui.channelColors = color_scheme(1:n_channels,:);
+channel_colors = color_scheme(1:n_channels,:);
 
