@@ -22,18 +22,19 @@ plot(axes, data.rois(gui.roiIdx, gui.channelIdx).time_series, ...
      'color', gui.channelColors(gui.channelIdx, :))
  
 % draw title based on selection or lack thereof
-% determind num of selected traces
+% determine num of selected traces
 numsel = nnz(vertcat(data.rois(:, gui.channelIdx).status)==1); 
 if data.rois(gui.roiIdx, gui.channelIdx).status == 1
-    title(axes, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: Selected','  (',num2str(numsel),' selected)']);
+    title_txt = sprintf('ROI # %u of %u - Status: Selected  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
 elseif data.rois(gui.roiIdx, gui.channelIdx).status == 0
-    title(axes, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: Unselected','  (',num2str(numsel),' selected)']);
+    title_txt = sprintf('ROI # %u of %u - Status: Unselected  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
 else
-    title(axes, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: null','  (',num2str(numsel),' selected)']);
+    title_txt = sprintf('ROI # %u of %u - Status: null  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
 end
+title(axes, title_txt);
 xlabel(axes, 'Frames'); 
 ylabel(axes, 'Intensity (AU)');
 set(axes, 'fontsize', gui.fontSize);

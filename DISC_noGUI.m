@@ -38,23 +38,24 @@ if ~isfield(data,'names')
 end
 
 % disp all channels and their indices and let user pick index.
-disp('Please enter the index of the channel you wish to idealize: ')
+fprintf('Please enter the index of the channel you''d like to idealize:\n')
 for ii = 1:n_channels
-    disp(['(', num2str(ii), ') ', data.names{ii}]);
+    fprintf('(%g) %s\n', ii, data.names{ii});
 end
 ch = input('> '); % get channel index from user input
 
 % run DISC on the selected channel
-disp(['Idealizing ', data.names{ch}, ' ...']);
+fprintf('Idealizing %s ...\n', data.names{ch});
 tic
 reverse_str = ''; % no message will need to be deleted on the first run
+num_traces = size(data.rois,1);
 for ii = 1:size(data.rois, 1)
     data.rois(ii, ch).disc_fit = runDISC(data.rois(ii, ch).time_series, disc_input);
     % display progress
-    progress_msg = sprintf('Idealized %g of %g traces.\n', ii, size(data.rois, 1));
+    progress_msg = sprintf('Idealized %g of %g traces.\n', ii, num_traces);
     fprintf([reverse_str, progress_msg]);
     % construct string to overwrite old progress message using repeated use
-    % of  the '\b' character, which indicates a backspace
+    % of  the '\b' ascii character, which indicates a backspace
     reverse_str = repmat(sprintf('\b'), 1, length(progress_msg));
 end
 toc

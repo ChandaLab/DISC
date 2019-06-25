@@ -74,8 +74,6 @@ switch gui.disc_input.divisive
         set(popup_divisiveIC,'Value',4)
     case 'MDL'
         set(popup_divisiveIC,'Value',5)
-    case 'none'
-        set(popup_divisiveIC,'Value',6)
 end
 % and make the group visible
 popup_divisiveIC.Visible = 'on';

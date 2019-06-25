@@ -30,6 +30,9 @@ global data gui
 gui.figure = [];
 if isempty(data)
     loadData();
+else
+    initChannels();
+    initFields();
 end
 % check if previous operation cancelled to avoid error msg
 if isempty(data)

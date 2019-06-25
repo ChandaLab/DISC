@@ -227,19 +227,20 @@ global data gui
 for ii = 1:size(data.rois,2)
     data.rois(gui.roiIdx,ii).status = 1;
 end
-ax1 = handles.axes1;
+
 % count # of selected
 numsel = nnz(vertcat(data.rois(:,gui.channelIdx).status)==1);
-if data.rois(gui.roiIdx,gui.channelIdx).status == 1
-    title(ax1, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: Selected','  (',num2str(numsel),' selected)']);
-elseif data.rois(gui.roiIdx,gui.channelIdx).status == 0
-    title(ax1, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: Unselected','  (',num2str(numsel),' selected)']);
+if data.rois(gui.roiIdx, gui.channelIdx).status == 1
+    title_txt = sprintf('ROI # %u of %u - Status: Selected  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
+elseif data.rois(gui.roiIdx, gui.channelIdx).status == 0
+    title_txt = sprintf('ROI # %u of %u - Status: Unselected  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
 else
-    title(ax1, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: null','  (',num2str(numsel),' selected)']);
+    title_txt = sprintf('ROI # %u of %u - Status: null  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
 end
+title(handles.axes1, title_txt);
 
 % --- Executes on button press in pushbutton_toggleDeselect.
 function pushbutton_toggleDeselect_Callback(hObject, eventdata, handles)
@@ -249,19 +250,20 @@ global data gui
 for ii = 1:size(data.rois, 2)
     data.rois(gui.roiIdx,ii).status = 0;
 end
-ax1 = handles.axes1;
+
 % count # of selected
 numsel = nnz(vertcat(data.rois(:,gui.channelIdx).status)==1);
-if data.rois(gui.roiIdx,gui.channelIdx).status == 1
-    title(ax1, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: Selected','  (',num2str(numsel),' selected)']);
-elseif data.rois(gui.roiIdx,gui.channelIdx).status == 0
-    title(ax1, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: Unselected','  (',num2str(numsel),' selected)']);
+if data.rois(gui.roiIdx, gui.channelIdx).status == 1
+    title_txt = sprintf('ROI # %u of %u - Status: Selected  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
+elseif data.rois(gui.roiIdx, gui.channelIdx).status == 0
+    title_txt = sprintf('ROI # %u of %u - Status: Unselected  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
 else
-    title(ax1, ['ROI # ',num2str(gui.roiIdx),' of ',num2str(size(data.rois,1)),...
-        ' - Status: null','  (',num2str(numsel),' selected)']);
+    title_txt = sprintf('ROI # %u of %u - Status: null  (%u selected)',...
+        gui.roiIdx, size(data.rois,1), numsel);
 end
+title(handles.axes1, title_txt);
 
 % --- Executes on button press in pushbutton_nextSelected.
 function pushbutton_nextSelected_Callback(hObject, eventdata, handles)
@@ -318,8 +320,8 @@ end
 % sort by SNR only
 if gui.filters.snrEnable && ~gui.filters.numstatesEnable
     % change corresponding text in GUI
-    handles.text_snr_filt.String = [num2str(gui.filters.snr_min),...
-        ' → ', num2str(gui.filters.snr_max)];
+    handles.text_snr_filt.String = sprintf('%u → %u',...
+        gui.filter.snr_min, gui.filters.snr_max);
     handles.text_numstates_filt.String = 'any';
     computeSNR(0); % fill field in data struct
     % adjust trace status if parameters are met
@@ -337,8 +339,8 @@ if gui.filters.snrEnable && ~gui.filters.numstatesEnable
 % sort by # of states only
 elseif gui.filters.numstatesEnable && ~gui.filters.snrEnable
     % change corresponding text in GUI
-    handles.text_numstates_filt.String = [num2str(gui.filters.numstates_min),...
-        ' → ', num2str(gui.filters.numstates_max)];
+    handles.text_numstates_filt.String = sprintf('%u → %u',...
+        gui.filters.numstates_min, gui.filters.numstates_max);
     handles.text_snr_filt.String = 'any';
     % adjust trace status if parameters are met
     for ii = 1:size(data.rois, 1)
@@ -355,11 +357,11 @@ elseif gui.filters.numstatesEnable && ~gui.filters.snrEnable
 % sort by SNR and # of states
 elseif gui.filters.numstatesEnable && gui.filters.snrEnable
     % change corresponding text in GUI
-    handles.text_snr_filt.String = [num2str(gui.filters.snr_min),...
-        ' → ', num2str(gui.filters.snr_max)];
+    handles.text_snr_filt.String = sprintf('%u → %u',...
+        gui.filters.snr_min, gui.filters.snr_max);
     computeSNR(0);
-    handles.text_numstates_filt.String = [num2str(gui.filters.numstates_min),...
-        ' → ', num2str(gui.filters.numstates_max)];
+    handles.text_numstates_filt.String = sprintf('%u → %u',...
+        gui.filters.numstates_min, gui.filters.numstates_max);
     % adjust trace status if parameters are met
     for ii = 1:size(data.rois, 1)
         if ~isempty(data.rois(ii,gui.channelIdx).disc_fit)

@@ -22,7 +22,7 @@ function varargout = simulationsGUI(varargin)
 
 % Edit the above text to modify the response to help simulationsGUI
 
-% Last Modified by GUIDE v2.5 21-Jun-2019 11:28:27
+% Last Modified by GUIDE v2.5 25-Jun-2019 13:14:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -47,10 +47,12 @@ end
 % --- Executes just before simulationsGUI is made visible.
 function simulationsGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+
 % varargin   command line arguments to simulationsGUI (see VARARGIN)
+
+% init fields
+handles.num_states = 2;
+handles.kin_mat = [];
 
 % Choose default command line output for simulationsGUI
 handles.output = hObject;
@@ -58,591 +60,146 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes simulationsGUI wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
-
 
 % --- Outputs from this function are returned to the command line.
 function varargout = simulationsGUI_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
 
+function edit_kinMat_Callback(obj, evd, h)
+% this callback is called by all of the kinetic matrix edit boxes in the
+% gui
+val = str2double(get(obj, 'String'));
+set(obj, 'String', num2str(val));
 
-function edit_tab_11_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_11 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% update stored matrix upon any change in table values
+h.kin_mat = getkinMat(h.figure_main);
+no_states = get(h.popupmenu_numstates, 'Value') + 1;
 
-% Hints: get(hObject,'String') returns contents of edit_tab_11 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_11 as a double
+% resize to appropriate dimension (NxN) for number of states (N) chosen
+h.kin_mat = h.kin_mat(1:no_states, 1:no_states);
+guidata(h.figure_main, h); % store matrix in gui
 
+function kin_mat = getkinMat(fig)
+% get handles
+h = guidata(fig);
 
-% --- Executes during object creation, after setting all properties.
-function edit_tab_11_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_11 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
+% construct matrix from handles
+kin_mat = [str2double(get(h.edit_tab_11,'String')) str2double(get(h.edit_tab_12,'String')) ...
+           str2double(get(h.edit_tab_13,'String')) str2double(get(h.edit_tab_14,'String')) ...
+           str2double(get(h.edit_tab_15,'String'))
+           str2double(get(h.edit_tab_21,'String')) str2double(get(h.edit_tab_22,'String')) ...
+           str2double(get(h.edit_tab_23,'String')) str2double(get(h.edit_tab_24,'String')) ...
+           str2double(get(h.edit_tab_25,'String'))
+           str2double(get(h.edit_tab_31,'String')) str2double(get(h.edit_tab_32,'String')) ...
+           str2double(get(h.edit_tab_33,'String')) str2double(get(h.edit_tab_34,'String')) ...
+           str2double(get(h.edit_tab_35,'String'))
+           str2double(get(h.edit_tab_41,'String')) str2double(get(h.edit_tab_42,'String')) ...
+           str2double(get(h.edit_tab_43,'String')) str2double(get(h.edit_tab_44,'String')) ...
+           str2double(get(h.edit_tab_45,'String'))
+           str2double(get(h.edit_tab_51,'String')) str2double(get(h.edit_tab_52,'String')) ...
+           str2double(get(h.edit_tab_53,'String')) str2double(get(h.edit_tab_54,'String')) ...
+           str2double(get(h.edit_tab_55,'String'))];
 
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+function popupmenu_numstates_Callback(hObject, eventdata, handles)
+
+% in addition to updating the matrix with entered values, we also need it
+% to update with the popup
+handles.kin_mat = getkinMat(handles.figure_main);
+% num states will be one greater than popup index
+handles.num_states = get(handles.popupmenu_numstates, 'Value') + 1;
+
+% resize to appropriate dimension (NxN) for number of states (N) chosen
+handles.kin_mat = handles.kin_mat(1:handles.num_states, 1:handles.num_states);
+guidata(handles.figure_main, handles); % store values in gui
+
+popup_sel_index = get(hObject, 'Value');
+% disable certain parts of the table depending on how many states have been
+% selected for simulation
+switch popup_sel_index
+    case 1 % num states = 2
+        set(handles.edit_tab_13, 'Enable', 'off')
+        set(handles.edit_tab_14, 'Enable', 'off')
+        set(handles.edit_tab_15, 'Enable', 'off')
+        set(handles.edit_tab_23, 'Enable', 'off')
+        set(handles.edit_tab_24, 'Enable', 'off')
+        set(handles.edit_tab_25, 'Enable', 'off')
+        set(handles.edit_tab_31, 'Enable', 'off')
+        set(handles.edit_tab_32, 'Enable', 'off')
+        set(handles.edit_tab_34, 'Enable', 'off')
+        set(handles.edit_tab_35, 'Enable', 'off')
+        set(handles.edit_tab_41, 'Enable', 'off')
+        set(handles.edit_tab_42, 'Enable', 'off')
+        set(handles.edit_tab_43, 'Enable', 'off')
+        set(handles.edit_tab_45, 'Enable', 'off')
+        set(handles.edit_tab_51, 'Enable', 'off')
+        set(handles.edit_tab_52, 'Enable', 'off')
+        set(handles.edit_tab_53, 'Enable', 'off')
+        set(handles.edit_tab_54, 'Enable', 'off')
+    case 2 % num states = 3
+        set(handles.edit_tab_13, 'Enable', 'on')
+        set(handles.edit_tab_14, 'Enable', 'off')
+        set(handles.edit_tab_15, 'Enable', 'off')
+        set(handles.edit_tab_23, 'Enable', 'on')
+        set(handles.edit_tab_24, 'Enable', 'off')
+        set(handles.edit_tab_25, 'Enable', 'off')
+        set(handles.edit_tab_31, 'Enable', 'on')
+        set(handles.edit_tab_32, 'Enable', 'on')
+        set(handles.edit_tab_34, 'Enable', 'off')
+        set(handles.edit_tab_35, 'Enable', 'off')
+        set(handles.edit_tab_41, 'Enable', 'off')
+        set(handles.edit_tab_42, 'Enable', 'off')
+        set(handles.edit_tab_43, 'Enable', 'off')
+        set(handles.edit_tab_45, 'Enable', 'off')
+        set(handles.edit_tab_51, 'Enable', 'off')
+        set(handles.edit_tab_52, 'Enable', 'off')
+        set(handles.edit_tab_53, 'Enable', 'off')
+        set(handles.edit_tab_54, 'Enable', 'off')
+    case 3 % num states = 4
+        set(handles.edit_tab_13, 'Enable', 'on')
+        set(handles.edit_tab_14, 'Enable', 'on')
+        set(handles.edit_tab_15, 'Enable', 'off')
+        set(handles.edit_tab_23, 'Enable', 'on')
+        set(handles.edit_tab_24, 'Enable', 'on')
+        set(handles.edit_tab_25, 'Enable', 'off')
+        set(handles.edit_tab_31, 'Enable', 'on')
+        set(handles.edit_tab_32, 'Enable', 'on')
+        set(handles.edit_tab_34, 'Enable', 'on')
+        set(handles.edit_tab_35, 'Enable', 'off')
+        set(handles.edit_tab_41, 'Enable', 'on')
+        set(handles.edit_tab_42, 'Enable', 'on')
+        set(handles.edit_tab_43, 'Enable', 'on')
+        set(handles.edit_tab_45, 'Enable', 'off')
+        set(handles.edit_tab_51, 'Enable', 'off')
+        set(handles.edit_tab_52, 'Enable', 'off')
+        set(handles.edit_tab_53, 'Enable', 'off')
+        set(handles.edit_tab_54, 'Enable', 'off')
+    case 4 % num states = 5
+        set(handles.edit_tab_13, 'Enable', 'on')
+        set(handles.edit_tab_14, 'Enable', 'on')
+        set(handles.edit_tab_15, 'Enable', 'on')
+        set(handles.edit_tab_23, 'Enable', 'on')
+        set(handles.edit_tab_24, 'Enable', 'on')
+        set(handles.edit_tab_25, 'Enable', 'on')
+        set(handles.edit_tab_31, 'Enable', 'on')
+        set(handles.edit_tab_32, 'Enable', 'on')
+        set(handles.edit_tab_34, 'Enable', 'on')
+        set(handles.edit_tab_35, 'Enable', 'on')
+        set(handles.edit_tab_41, 'Enable', 'on')
+        set(handles.edit_tab_42, 'Enable', 'on')
+        set(handles.edit_tab_43, 'Enable', 'on')
+        set(handles.edit_tab_45, 'Enable', 'on')
+        set(handles.edit_tab_51, 'Enable', 'on')
+        set(handles.edit_tab_52, 'Enable', 'on')
+        set(handles.edit_tab_53, 'Enable', 'on')
+        set(handles.edit_tab_54, 'Enable', 'on')
 end
 
+function popupmenu_numstates_CreateFcn(hObject, eventdata, handles)
 
-
-function edit_tab_12_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_12 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_12 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_12 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_12_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_12 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_13_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_13 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_13 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_13 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_13_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_13 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_14_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_14 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_14 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_14 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_14_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_14 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_21_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_21 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_21 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_21 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_21_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_21 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_22_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_22 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_22 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_22 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_22_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_22 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_23_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_23 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_23 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_23 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_23_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_23 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_24_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_24 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_24 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_24 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_24_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_24 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_25_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_25 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_25 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_25 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_25_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_25 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_31_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_31 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_31 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_31 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_31_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_31 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_32_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_32 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_32 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_32 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_32_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_32 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_33_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_33 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_33 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_33 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_33_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_33 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_34_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_34 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_34 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_34 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_34_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_34 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_35_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_35 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_35 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_35 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_35_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_35 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_15_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_15 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_15 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_15 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_15_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_15 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_41_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_41 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_41 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_41 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_41_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_41 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_51_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_51 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_51 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_51 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_51_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_51 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_42_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_42 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_42 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_42 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_42_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_42 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_52_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_52 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_52 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_52 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_52_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_52 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_43_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_43 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_43 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_43 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_43_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_43 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_53_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_53 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_53 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_53 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_53_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_53 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_44_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_44 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_44 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_44 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_44_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_44 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_54_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_54 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_54 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_54 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_54_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_54 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_45_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_45 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_45 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_45 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_45_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_45 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit_tab_55_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_tab_55 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of edit_tab_55 as text
-%        str2double(get(hObject,'String')) returns contents of edit_tab_55 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit_tab_55_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_tab_55 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end

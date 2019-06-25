@@ -88,12 +88,11 @@ xlim(axes, get(alignaxes,'Ylim'))
 % draw number of states and SNR (if it exists) in the title
 snr = data.rois(gui.roiIdx, gui.channelIdx).SNR;
 if isempty(snr)
-    title(axes, ['Number of States: ', num2str(n_components)],...
-        'HorizontalAlignment','left');
+    title_txt = sprintf('Number of States: %u', n_components);
 else
-    title(axes, ['SNR: ', num2str(round(snr,1)),'   ','Number of States: ',...
-        num2str(n_components)], 'HorizontalAlignment','left');
+    title_txt = sprintf('SNR: %.1f   Number of States: %u', snr, n_components);
 end
+title(axes, title_txt, 'HorizontalAlignment','left');
 set(axes, 'fontsize', gui.fontSize);
 set(axes, 'fontname', gui.fontName);
 
