@@ -1,4 +1,4 @@
-function saveData(selected_reload)
+function saveData(data, selected_reload, hObject)
 % Save Data in the .mat format. selected_reload input parameter trims
 % unselected traces from the current data set, lets the user save the file,
 % and then reloads that file in the GUI.
@@ -11,9 +11,6 @@ function saveData(selected_reload)
 % 2019-12-01    OR      Wrote the code; Adapted from code intially written
 %                       by Dr. Marcel Goldschen-Ohm
 % 2019-02-20    DSW     Comments added
-%
-
-global data
 
 if exist('selected_reload', 'var') && selected_reload
     [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
@@ -31,7 +28,7 @@ if exist('selected_reload', 'var') && selected_reload
     end
     save(fp, 'data');
     disp('Data Saved.');
-    loadData(fp);
+    roiViewerGUI('menuFile_loadData_Callback', hObject, [], guidata(hObject), fp);
 else
     [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
         'Save data to file.');

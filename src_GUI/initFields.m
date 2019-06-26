@@ -1,4 +1,4 @@
-function initFields()
+function data = initFields(data)
 % Initialize the fields in data.rois for DISC anaysis upon loading 
 %
 % Authors: Owen Rafferty & David S. White 
@@ -10,8 +10,6 @@ function initFields()
 %                       by Dr. Marcel Goldschen-Ohm (UW-Madison, 2016)
 % 2019-02-20    DSW     Comments added
 % 2019-04-10    DSW     Updated for DISCO v1.1.0 format changes
-
-global data
 
 % check for format converions form roi.zproj to roi.ts 
 if isfield(data.rois,'zproj')

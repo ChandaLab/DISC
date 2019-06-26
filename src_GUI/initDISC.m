@@ -17,4 +17,4 @@ disc_input.input_type = 'alpha_value';    % or 'critical_value'
 disc_input.divisive = 'BIC-GMM';          % lots of options
 disc_input.agglomerative = 'BIC-GMM';     % lots of options
 disc_input.viterbi = 1;                   % 1-2 recommended
-disc_input.return_k = 0;                  % any positive integer, unused by default in DISC
+disc_input.return_k = 0;                  % any integer >=0, unused by default in DISC

@@ -1,12 +1,10 @@
-function exportFigs
-global gui
-% store channel idx so proper value is returned after FOR loop
-channel = gui.channelIdx;
+function exportFigs(data, indices, channel_colors, font)
+
 % close the figure if it is already open
 if exist('f','var')
     clf(f);
 end
-checked = channelSelectDialog;
+checked = channelSelectDialog(data.names);
 % allocate
 ax = gobjects(length(checked),3);
 figure('units','normalized','outerposition',[0 0 1 1]); % fullscreen
@@ -18,29 +16,32 @@ for jj=1:length(checked)
 end
 % fill the subplots based on indices determined in dialog
 for ii = checked
-    gui.channelIdx = ii;
+    indices(2) = ii;
     row = find(checked==ii);
-    plotTrajectory(ax(row,1));
-    plotHistogram(ax(row,2), ax(row,1));
-    plotMetric(ax(row,3));
+    roi = data.rois(indices(1), indices(2));
+    plotTrajectory(ax(row,1), roi, channel_colors(indices(2),:));
+    xlabel(ax(row,1), 'Frames'); 
+    ylabel(ax(row,1), 'Intensity (AU)');
+    set(ax(row,1), 'fontsize', font.size);
+    set(ax(row,1), 'fontname', font.name);
+    plotHistogram(ax(row,2), ax(row,1), roi, channel_colors(indices(2),:), font);
+    plotMetric(ax(row,3), roi, font);
 end
-gui.channelIdx = channel; % restore original channel idx
     
 end
 
 % dialog to select which channels to place in figure
-function checked = channelSelectDialog
-global data
+function checked = channelSelectDialog(names)
 % create dialog
 dspyinfo = get(0,'screensize');
 dwidth = 350;
-dheight = 100 + 20*length(data.names);
+dheight = 100 + 20*length(names);
 d = dialog('Position',[0.5*(dspyinfo(3)-dwidth) 0.5*(dspyinfo(4)-dheight) dwidth dheight],...
            'Name','Channels to export to figure at current ROI ...');
 % dialog adjusts to number of channels in data set
-channelCheck = gobjects(length(data.names),1);
-for ii=1:length(data.names)
-    channelCheck(ii) = uicontrol(d,'style','checkbox','string',data.names(ii),'Position',[0.5*dwidth-115 dheight-(ii+1)*20 300 20]);
+channelCheck = gobjects(length(names),1);
+for ii=1:length(names)
+    channelCheck(ii) = uicontrol(d,'style','checkbox','string',names(ii),'Position',[0.5*dwidth-115 dheight-(ii+1)*20 300 20]);
 end
 % create cancel and export buttons
 uicontrol(d,'string','Cancel','Position',...

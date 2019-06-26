@@ -22,7 +22,7 @@ function varargout = roiViewerGUI(varargin)
 
 % Edit the above text to modify the response to help roiViewerGUI
 
-% Last Modified by GUIDE v2.5 25-Jun-2019 16:24:52
+% Last Modified by GUIDE v2.5 26-Jun-2019 12:25:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -48,24 +48,30 @@ function roiViewerGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % varargin   command line arguments to roiViewerGUI (see VARARGIN)
 
-global gui
+handles.data = varargin{:};
 
 handles.font.size = 12; 
 handles.font.name = 'arial';
 
+% init indices
+% idx(1) = roi idx, idx(2) = ch idx
+handles.idx(1) = 1;
+handles.idx(2) = 1;
+
 % init channel names and colors from function
-[handles.vars.channel_names, handles.vars.channel_colors] = initChannels();
+[handles.vars.channel_names, handles.vars.channel_colors] = initChannels(handles.data);
+set(handles.popupmenu_channelSelect, 'String', handles.vars.channel_names);
 
 % init disc_input from function
 handles.vars.disc_input = initDISC();
 
 % init variables for filter values
-handles.vars.filters.enableSNR = 0;
-handles.vars.filters.enablenumStates = 0;
-handles.vars.filters.snr_min = [];
-handles.vars.filters.snr_max = [];
-handles.vars.filters.numstates_min = [];
-handles.vars.filters.numstates_max = [];
+handles.filters.enableSNR = 0;
+handles.filters.enablenumStates = 0;
+handles.filters.snr_min = [];
+handles.filters.snr_max = [];
+handles.filters.numstates_min = [];
+handles.filters.numstates_max = [];
 
 % Choose default command line output for roiViewerGUI
 handles.output = hObject;
@@ -77,9 +83,9 @@ guidata(hObject, handles);
 % so window can get raised using roiViewerGUI.
 % initial load of ROI 1 at channel 1
 if strcmp(get(hObject,'Visible'),'off')
-    gui.channelIdx = 1;
-    goToROI(1, handles.axes1, handles.axes2, handles.axes3,...
+    goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
         handles.vars.channel_colors, handles.font);
+    guidata(hObject, handles);
 end
 
 
@@ -89,6 +95,29 @@ function varargout = roiViewerGUI_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+
+
+function menuFile_loadData_Callback(hObject, eventdata, handles, fp)
+if ~exist('fp', 'var')
+    handles.data = loadData();
+else
+    handles.data = loadData(fp);
+end
+handles.idx = [1 1];
+
+[handles.vars.channel_names, handles.vars.channel_colors] = initChannels(handles.data);
+% reset channel popup and filter strings
+handles.popupmenu_channelSelect.String = handles.vars.channel_names;
+handles.popupmenu_channelSelect.Value = 1;
+handles.text_snr_filt.String = 'any';
+handles.text_numstates_filt.String = 'any';
+
+% recall font and axes from gui to send to goToROI
+font = handles.font;
+ax1 = handles.axes1; ax2 = handles.axes2; ax3 = handles.axes3;
+guidata(handles.figure_main, handles);
+handles.idx = goToROI(handles.data, handles.idx, ax1, ax2, ax3, handles.vars.channel_colors, font);
+
 
 % --------------------------------------------------------------------
 function OpenMenuItem_Callback(hObject, eventdata, handles)
@@ -120,15 +149,16 @@ delete(handles.figure_main)
 function popupmenu_channelSelect_Callback(hObject, eventdata, handles)
 % changes the channel selected via popup, and remains on the current ROI.
 % Supports an arbitrary number of channels
-global data gui 
 
 popup_sel_index = get(handles.popupmenu_channelSelect, 'Value');
-for ii = 1:size(data.rois,2)
+for ii = 1:size(handles.data.rois,2)
     switch popup_sel_index
         case ii
-            gui.channelIdx = ii;
-            goToROI(gui.roiIdx, handles.axes1, handles.axes2, handles.axes3,...
+            handles.idx(2) = ii;
+            handles.idx = goToROI(handles.data, handles.idx,...
+                handles.axes1, handles.axes2, handles.axes3,...
                 handles.vars.channel_colors, handles.font);
+            guidata(hObject, handles);
     end
 end
 
@@ -138,14 +168,14 @@ function popupmenu_channelSelect_CreateFcn(hObject, eventdata, handles)
 % creates popup and fetches channel names
 % Supports an arbitrary number of channels (though colors would need to be
 % adapted as such in initChannels)
-global data
+
 % create menu with default colors
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
      set(hObject,'BackgroundColor','white');
 end
 
 % set popup values based on channel names
-set(hObject, 'String', data.names);
+%set(hObject, 'String', handles.vars.channel_names);
 set(hObject, 'Value', 1);
 set(hObject, 'fontsize', 12);
 set(hObject, 'fontname', 'SansSerif');
@@ -154,35 +184,39 @@ set(hObject, 'fontname', 'SansSerif');
 % --- Executes on button press in pushbutton_nextROI.
 function pushbutton_nextROI_Callback(hObject, eventdata, handles)
 % go to the next ROI, stops at end of channel
-global gui
-goToROI(gui.roiIdx + 1, handles.axes1, handles.axes2, handles.axes3,...
+handles.idx(1) = handles.idx(1) + 1;
+handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
     handles.vars.channel_colors, handles.font);
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_prevROI.
 function pushbutton_prevROI_Callback(hObject, eventdata, handles)
 % go to the previous ROI, stops at 1
-global gui
-goToROI(gui.roiIdx - 1, handles.axes1, handles.axes2, handles.axes3,...
+handles.idx(1) = handles.idx(1) - 1;
+handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
     handles.vars.channel_colors, handles.font);
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_customROI.
 function pushbutton_customROI_Callback(hObject, eventdata, handles)
 % jump to any given ROI via a dialog
-goToROI(0, handles.axes1, handles.axes2, handles.axes3,...
+handles.idx(1) = -1;
+handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
     handles.vars.channel_colors, handles.font);
+guidata(hObject, handles);
 
 
 % --- Executes on button press in pushbutton_analyzeThis.
 function pushbutton_analyzeThis_Callback(hObject, eventdata, handles)
 % sets condition to run DISC on the current ROI and brings up param dialog
 % will also return params, as they may have been changed in the dialog
-global gui
-handles.vars.disc_input = analyzeFromGUI(handles.vars.disc_input, 0);
+[handles.data, handles.vars.disc_input] = analyzeFromGUI(handles.data,...
+    handles.vars.disc_input, handles.idx, 0);
 guidata(hObject, handles); % update gui
 % display ROI selected before analysis
-goToROI(gui.roiIdx, handles.axes1, handles.axes2, handles.axes3,...
+handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
     handles.vars.channel_colors, handles.font);
 
 
@@ -190,11 +224,11 @@ goToROI(gui.roiIdx, handles.axes1, handles.axes2, handles.axes3,...
 function pushbutton_analyzeAll_Callback(hObject, eventdata, handles)
 % sets condition to run DISC on all ROIs and brings up param dialog
 % will also return params, as they may have been changed in the dialog
-global gui
-handles.vars.disc_input = analyzeFromGUI(handles.vars.disc_input, 1);
+[handles.data, handles.vars.disc_input] = analyzeFromGUI(handles.data,...
+    handles.vars.disc_input, handles.idx, 1);
 guidata(hObject, handles); % update gui
 % display ROI selected before analysis
-goToROI(gui.roiIdx, handles.axes1, handles.axes2, handles.axes3,...
+handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
     handles.vars.channel_colors, handles.font);
 
 
@@ -227,87 +261,93 @@ end
 % --- Executes on button press in pushbutton_clearThis.
 function pushbutton_clearThis_Callback(hObject, eventdata, handles)
 % clears analysis fields for current ROI
-global data gui
-data.rois(gui.roiIdx,gui.channelIdx).disc_fit = [];
-data.rois(gui.roiIdx,gui.channelIdx).SNR = [];
-goToROI(gui.roiIdx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font)
+data = handles.data;
+data.rois(handles.idx(1), handles.idx(2)).disc_fit = [];
+data.rois(handles.idx(1), handles.idx(2)).SNR = [];
+guidata(hObject, handles);
+handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
+    handles.vars.channel_colors, handles.font);
 
 % --- Executes on button press in pushbutton_clearAll.
 function pushbutton_clearAll_Callback(hObject, eventdata, handles)
 % clears analysis fields for all ROIs
-global data gui
-[data.rois(:,gui.channelIdx).disc_fit] = deal([]);
-[data.rois(:,gui.channelIdx).SNR] = deal([]);
-goToROI(gui.roiIdx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font)
+data = handles.data;
+[data.rois(:, handles.idx(2)).disc_fit] = deal([]);
+[data.rois(:, handles.idx(2)).SNR] = deal([]);
+guidata(hObject, handles);
+handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
+    handles.vars.channel_colors, handles.font);
 
 
 % --- Executes on button press in pushbutton_toggleSelect.
 function pushbutton_toggleSelect_Callback(hObject, eventdata, handles)
-% change "status" field for ROI and title if necessary
-global data gui
+% change "status" field for ROI (and title if necessary)
 % change status on all channels
-for ii = 1:size(data.rois,2)
-    data.rois(gui.roiIdx,ii).status = 1;
+for ii = 1:size(handles.data.rois,2)
+    handles.data.rois(handles.idx(1),ii).status = 1;
 end
+guidata(hObject, handles);
 
-% count # of selected
-numsel = nnz(vertcat(data.rois(:,gui.channelIdx).status)==1);
-if data.rois(gui.roiIdx, gui.channelIdx).status == 1
+% count # of selected, update trajectory title
+numsel = nnz(vertcat(handles.data.rois(:,handles.idx(2)).status)==1);
+if handles.data.rois(handles.idx(1), handles.idx(2)).status == 1
     title_txt = sprintf('ROI # %u of %u - Status: Selected  (%u selected)',...
-        gui.roiIdx, size(data.rois,1), numsel);
-elseif data.rois(gui.roiIdx, gui.channelIdx).status == 0
+        handles.idx(1), size(handles.data.rois,1), numsel);
+elseif handles.data.rois(handles.idx(1), handles.idx(2)).status == 0
     title_txt = sprintf('ROI # %u of %u - Status: Unselected  (%u selected)',...
-        gui.roiIdx, size(data.rois,1), numsel);
+        handles.idx(1), size(handles.data.rois,1), numsel);
 else
     title_txt = sprintf('ROI # %u of %u - Status: null  (%u selected)',...
-        gui.roiIdx, size(data.rois,1), numsel);
+        handles.idx(1), size(handles.data.rois,1), numsel);
 end
 title(handles.axes1, title_txt);
 
 % --- Executes on button press in pushbutton_toggleDeselect.
 function pushbutton_toggleDeselect_Callback(hObject, eventdata, handles)
-% change "status" field for ROI and title if necessary
-global data gui
+% change "status" field for ROI (and title if necessary)
 % change status on all channels
-for ii = 1:size(data.rois, 2)
-    data.rois(gui.roiIdx,ii).status = 0;
+for ii = 1:size(handles.data.rois, 2)
+    handles.data.rois(handles.idx(1), ii).status = 0;
 end
+guidata(hObject, handles);
 
-% count # of selected
-numsel = nnz(vertcat(data.rois(:,gui.channelIdx).status)==1);
-if data.rois(gui.roiIdx, gui.channelIdx).status == 1
+% count # of selected, update trajectory title
+numsel = nnz(vertcat(handles.data.rois(:,handles.idx(2)).status)==1);
+if handles.data.rois(handles.idx(1), handles.idx(2)).status == 1
     title_txt = sprintf('ROI # %u of %u - Status: Selected  (%u selected)',...
-        gui.roiIdx, size(data.rois,1), numsel);
-elseif data.rois(gui.roiIdx, gui.channelIdx).status == 0
+        handles.idx(1), size(handles.data.rois,1), numsel);
+elseif handles.data.rois(handles.idx(1), handles.idx(2)).status == 0
     title_txt = sprintf('ROI # %u of %u - Status: Unselected  (%u selected)',...
-        gui.roiIdx, size(data.rois,1), numsel);
+        handles.idx(1), size(handles.data.rois,1), numsel);
 else
     title_txt = sprintf('ROI # %u of %u - Status: null  (%u selected)',...
-        gui.roiIdx, size(data.rois,1), numsel);
+        handles.idx(1), size(handles.data.rois,1), numsel);
 end
 title(handles.axes1, title_txt);
 
 % --- Executes on button press in pushbutton_nextSelected.
 function pushbutton_nextSelected_Callback(hObject, eventdata, handles)
 % finds next ROI with "selected" status and goes to it in the GUI
-global data gui  
-    j = find(vertcat(data.rois(gui.roiIdx+1:end,gui.channelIdx).status) == 1);
-    if ~isempty(j) 
-        goToROI(gui.roiIdx + j(1), handles.axes1, handles.axes2, handles.axes3,...
-            handles.vars.channel_colors, handles.font); 
-    end
+j = find(vertcat(handles.data.rois(handles.idx(1)+1:end, handles.idx(2)).status) == 1);
+if ~isempty(j)
+    handles.idx(1) = handles.idx(1) + j(1);
+    handles.idx = goToROI(handles.data, handles.idx,...
+        handles.axes1, handles.axes2, handles.axes3,...
+        handles.vars.channel_colors, handles.font);
+    guidata(hObject, handles);
+end
 
 % --- Executes on button press in pushbutton_prevSelected.
 function pushbutton_prevSelected_Callback(hObject, eventdata, handles)
 % finds previous ROI with "selected" status and goes to it in the GUI
-global data gui
-    j = find(vertcat(data.rois(1:gui.roiIdx-1,gui.channelIdx).status) == 1);
-    if ~isempty(j) 
-        goToROI(j(end), handles.axes1, handles.axes2, handles.axes3,...
-            handles.vars.channel_colors, handles.font); 
-    end
+j = find(vertcat(handles.data.rois(1:handles.idx(1)-1, handles.idx(2)).status) == 1);
+if ~isempty(j)
+    handles.idx(1) = j(end);
+    handles.idx = goToROI(handles.data, handles.idx,...
+        handles.axes1, handles.axes2, handles.axes3,...
+        handles.vars.channel_colors, handles.font);
+    guidata(hObject, handles);
+end
 
     
 % --- Executes on button press in pushbutton_filter.
@@ -315,12 +355,11 @@ function pushbutton_filter_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_filter (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global data gui
 
-handles.vars.filters = traceSelection(handles.vars.filters);
-filters = handles.vars.filters;
+handles.filters = traceSelection(handles.filters);
+
 % cancel if continue is not pressed
-if ~filters.contpr
+if ~handles.filters.contpr
     handles.text_snr_filt.String = 'any';
     handles.text_numstates_filt.String = 'any';
     return
@@ -329,86 +368,109 @@ end
 % previous filtering will still be selected.
 
 % assign min and max values if entry boxes are left empty
-if filters.enableSNR && isempty(filters.snr_max)
-    filters.snr_max = Inf;
+if handles.filters.enableSNR && isempty(handles.filters.snr_max)
+    handles.filters.snr_max = Inf;
 end
-if filters.enableSNR && isempty(filters.snr_min)
-    filters.snr_min = -Inf;
+if handles.filters.enableSNR && isempty(handles.filters.snr_min)
+    handles.filters.snr_min = -Inf;
 end
-if filters.enablenumStates && isempty(filters.numstates_max)
-    filters.numstates_max = Inf;
+if handles.filters.enablenumStates && isempty(handles.filters.numstates_max)
+    handles.filters.numstates_max = Inf;
 end
-if filters.enablenumStates && isempty(filters.numstates_min)
-    filters.numstates_min = 0;
+if handles.filters.enablenumStates && isempty(handles.filters.numstates_min)
+    handles.filters.numstates_min = 0;
 end
 guidata(hObject, handles);
 
-[data.rois.status] = deal(0); % clear any existing selections
+[handles.data.rois.status] = deal(0); % clear any existing selections
 
 % sort by SNR only
-if filters.snrEnable && ~filters.numstatesEnable
+if handles.filters.snrEnable && ~handles.filters.numstatesEnable
     % change corresponding text in GUI
     handles.text_snr_filt.String = sprintf('%.1f → %.1f',...
-        filters.snr_min, filters.snr_max);
+        handles.filters.snr_min, handles.filters.snr_max);
     handles.text_numstates_filt.String = 'any';
     % adjust trace status if parameters are met
-    computeSNR(0); % fill field in data struct    
-    for ii = 1:size(data.rois, 1)
-        if ~isempty(data.rois(ii,gui.channelIdx).SNR)
-            trace_snr = data.rois(ii,gui.channelIdx).SNR;
-            if trace_snr <= filters.snr_max && ...
-                    trace_snr >= filters.snr_min
-                for jj = 1:size(data.rois,2)
-                    data.rois(ii,jj).status = 1;
+    handles.data = computeSNR(handles.data, handles.idx(2), 0); % fill field in data struct    
+    for ii = 1:size(handles.data.rois, 1)
+        if ~isempty(handles.data.rois(ii,handles.idx(2)).SNR)
+            trace_snr = handles.data.rois(ii,handles.idx(2)).SNR;
+            if trace_snr <= handles.filters.snr_max && ...
+                    trace_snr >= handles.filters.snr_min
+                for jj = 1:size(handles.data.rois,2)
+                    handles.data.rois(ii,jj).status = 1;
                 end
             end
         end
     end
 % sort by # of states only
-elseif filters.numstatesEnable && ~filters.snrEnable
+elseif handles.filters.numstatesEnable && ~handles.filters.snrEnable
     % change corresponding text in GUI
     handles.text_numstates_filt.String = sprintf('%.0f → %.0f',...
-        filters.numstates_min, filters.numstates_max);
+        handles.filters.numstates_min, handles.filters.numstates_max);
     handles.text_snr_filt.String = 'any';
     % adjust trace status if parameters are met
-    for ii = 1:size(data.rois, 1)
-        if ~isempty(data.rois(ii,gui.channelIdx).disc_fit)
-            n_components = size(data.rois(ii,gui.channelIdx).disc_fit.components,1);
-            if n_components <= round(filters.numstates_max) && ...
-                    n_components >= round(filters.numstates_min)
-                for jj = 1:size(data.rois,2)
-                    data.rois(ii,jj).status = 1;
+    for ii = 1:size(handles.data.rois, 1)
+        if ~isempty(handles.data.rois(ii,handles.idx(2)).disc_fit)
+            n_components = size(handles.data.rois(ii,handles.idx(2)).disc_fit.components, 1);
+            if n_components <= round(handles.filters.numstates_max) && ...
+                    n_components >= round(handles.filters.numstates_min)
+                for jj = 1:size(handles.data.rois,2)
+                    handles.data.rois(ii,jj).status = 1;
                 end
             end
         end
     end
 % sort by SNR and # of states
-elseif filters.numstatesEnable && filters.snrEnable
+elseif handles.filters.numstatesEnable && handles.filters.snrEnable
     % change corresponding text in GUI
     handles.text_snr_filt.String = sprintf('%.1f → %.1f',...
-        filters.snr_min, filters.snr_max);
+        handles.filters.snr_min, handles.filters.snr_max);
     handles.text_numstates_filt.String = sprintf('%.0f → %.0f',...
-        filters.numstates_min, filters.numstates_max);
+        handles.filters.numstates_min, handles.filters.numstates_max);
     % adjust trace status if parameters are met
-    computeSNR(0);
-    for ii = 1:size(data.rois, 1)
-        if ~isempty(data.rois(ii,gui.channelIdx).disc_fit)
-            n_components = size(data.rois(ii,gui.channelIdx).disc_fit.components,1);
-            trace_snr = data.rois(ii,gui.channelIdx).SNR;
-            if n_components <= round(filters.numstates_max) && ...
-                    n_components >= round(filters.numstates_min) && ...
-                    trace_snr <= filters.snr_max && ...
-                    trace_snr >= filters.snr_min
-                for jj = 1:size(data.rois,2)
-                    data.rois(ii,jj).status = 1;
+    handles.data = computeSNR(handles.data, handles.idx(2), 0);
+    for ii = 1:size(handles.data.rois, 1)
+        if ~isempty(handles.data.rois(ii, handles.idx(2)).disc_fit)
+            n_components = size(handles.data.rois(ii,handles.idx(2)).disc_fit.components, 1);
+            trace_snr = handles.data.rois(ii, handles.idx(2)).SNR;
+            if n_components <= round(handles.filters.numstates_max) && ...
+                    n_components >= round(handles.filters.numstates_min) && ...
+                    trace_snr <= handles.filters.snr_max && ...
+                    trace_snr >= handles.filters.snr_min
+                for jj = 1:size(handles.data.rois,2)
+                    handles.data.rois(ii,jj).status = 1;
                 end
             end
         end
     end
 end
+guidata(hObject, handles);
 % redraw titles
-goToROI(gui.roiIdx, handles.axes1, handles.axes2, handles.axes3,...
+handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
     handles.vars.channel_colors, handles.font);
+
+function menuPlots_dwellAnalysis_Callback(hObject, eventdata, handles)
+getDwellTimes(handles.data, handles.idx(2));
+
+function menuPlots_numStatesHist_Callback(hObject, eventdata, handles)
+numStatesHist(handles.data, handles.idx(2), 1);
+
+function menuPlots_snrHist_Callback(hObject, eventdata, handles)
+handles.data = computeSNR(handles.data, handles.idx(2), 1);
+guidata(hObject, handles);
+
+function menuFile_exportFigs_Callback(hObject, eventdata, handles)
+exportFigs(handles.data, handles.idx, handles.vars.channel_colors, handles.font);
+
+function menuFile_exportDat_Callback(hObject, eventdata, handles)
+exportText(handles.data, handles.idx(2));
+
+function menuFile_saveData_Callback(hObject, eventdata, handles)
+saveData(handles.data);
+
+function menuFile_expRelSel_Callback(hObject, eventdata, handles)
+saveData(handles.data, 1, hObject);
 
 % unused
 function menuFile_Callback(~, ~, ~)

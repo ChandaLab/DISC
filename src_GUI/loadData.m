@@ -1,4 +1,4 @@
-function loadData(fp)
+function data = loadData(fp)
 % Load Data
 %
 % Authors: Owen Rafferty & David S. White
@@ -18,9 +18,6 @@ function loadData(fp)
 %    [number of rois, number of channels] = size(data.rois)
 % data.rois.time_series = time series data to be analyzed
 
-
-% input variables
-global data gui
 
 disp('Loading Data ...')
 if ~exist('fp','var')
@@ -62,29 +59,6 @@ clear temp;
 disp('Data Loaded.')
 
 % init and rename fields if necessary
-initFields();
+data = initFields(data);
 
-% if the GUI is open and has a handle stored, init GUI-only vars and begin
-% plotting.
-if isfield(gui, 'figure')
-    [channel_names, channel_colors] = initChannels();
-    if ~isempty(gui.figure) && ishghandle(gui.figure)
-        gui.channelIdx = 1;
-        % adjust popup labels to new channels and reset filter strings
-        gui_objects = guidata(gui.figure);
-        gui_objects.popupmenu_channelSelect.String = channel_names;
-        gui_objects.popupmenu_channelSelect.Value = 1;
-        gui_objects.text_snr_filt.String = 'any';
-        gui_objects.text_numstates_filt.String = 'any';
-        gui_objects.vars.channel_names = channel_names;
-        gui_objects.vars.channel_colors = channel_colors;
-        % recall font and axes from gui to send to goToROI
-        font = gui_objects.font;
-        ax1 = gui_objects.axes1; ax2 = gui_objects.axes2; ax3 = gui_objects.axes3;
-        guidata(gui_objects.figure_main, gui_objects);
-        goToROI(1, ax1, ax2, ax3, channel_colors, font);
-    end
-    % make sure we start at roi 1
-    gui.roiIdx = 1;
-    gui.channelIdx = 1;
 end

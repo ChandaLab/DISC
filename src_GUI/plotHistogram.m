@@ -1,4 +1,4 @@
-function plotHistogram(axes, alignaxes, channel_colors, font)
+function plotHistogram(axes, alignaxes, roi, bin_color, font)
 % Histogram fitting figure for time series data
 %
 % Author: David S. White & Owen Rafferty
@@ -11,17 +11,11 @@ function plotHistogram(axes, alignaxes, channel_colors, font)
 %                       plotHistogram.m
 % 2019-04-10    DSW     updated to new disc_fit structure
 
-% input variables
-global data gui
-
 % clear out anything in the previous plot 
 cla(axes); 
 
-% grab plot color
-bin_color = channel_colors(gui.channelIdx,:);
-
 % grab data to plot 
-time_series = data.rois(gui.roiIdx, gui.channelIdx).time_series;
+time_series = roi.time_series;
 
 % init histogram stuff
 bins = 100; 
@@ -35,7 +29,7 @@ data_counts = histcounts(time_series, edges);
 data_range = edges(1:end-1);
 
 % Does data.rois.components (i.e. "data fit") exist?
-if isempty(data.rois(gui.roiIdx, gui.channelIdx).disc_fit)
+if isempty(roi.disc_fit)
     
     % Lets just plot out the data by itself and exit
     bar(axes,data_range,data_counts,'FaceColor',bin_color,'EdgeColor',bin_color,'BarWidth',1);
@@ -54,7 +48,7 @@ bar(axes,data_range,data_counts,'FaceColor',bin_color,'EdgeColor',bin_color,'Bar
 hold(axes,'on');
 
 % grab components
-components = data.rois(gui.roiIdx, gui.channelIdx).disc_fit.components; 
+components = roi.disc_fit.components; 
 n_components = size(components,1); 
 
 % Evalute and plot each component individually
@@ -85,12 +79,11 @@ plot(axes, data_range, gauss_fit_all, '-k', 'linewidth', 1.7);
 hold(axes,'off'); set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90])
 xlim(axes, get(alignaxes,'Ylim'))
 
-% draw number of states and SNR (if it exists) in the title
-snr = data.rois(gui.roiIdx, gui.channelIdx).SNR;
-if isempty(snr)
+% write number of states and SNR (if it exists) in the title
+if isempty(roi.SNR)
     title_txt = sprintf('Number of States: %u', n_components);
 else
-    title_txt = sprintf('SNR: %.1f   Number of States: %u', snr, n_components);
+    title_txt = sprintf('SNR: %.1f   Number of States: %u', roi.SNR, n_components);
 end
 title(axes, title_txt, 'HorizontalAlignment','left');
 set(axes, 'fontsize', font.size);

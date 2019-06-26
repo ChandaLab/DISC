@@ -1,10 +1,9 @@
-function getDwellTimes
-global data gui
+function getDwellTimes(data, ch_idx)
 
 % find indices of analyzed traces and put them into a vector
-idx = zeros(length(vertcat(data.rois(:, gui.channelIdx).disc_fit)), 1);
+idx = zeros(length(vertcat(data.rois(:, ch_idx).disc_fit)), 1);
 for ii = 1:size(data.rois, 1)
-    if ~isempty(data.rois(ii, gui.channelIdx).disc_fit)
+    if ~isempty(data.rois(ii, ch_idx).disc_fit)
         idx(ii) = ii;
     end
 end
@@ -14,7 +13,7 @@ idx = nonzeros(idx);
 events = cell(1, length(idx));
 % use DISC function
 for ii = idx'
-    events{1, ii} = findEvents(data.rois(ii, gui.channelIdx).disc_fit.class);
+    events{1, ii} = findEvents(data.rois(ii, ch_idx).disc_fit.class);
     % returns events = [start frame, stop frame, duration, label]
 end
 % concatenate all 'events' matrices. on larger data sets, this will

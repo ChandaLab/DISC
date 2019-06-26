@@ -1,4 +1,4 @@
-function [channel_names, channel_colors] = initChannels()
+function [channel_names, channel_colors] = initChannels(data)
 % Ensure Channels are Made and Assign Color Schemes
 %
 % Authors: Owen Rafferty & David S. White
@@ -9,8 +9,6 @@ function [channel_names, channel_colors] = initChannels()
 % 18-12-02  OR      Wrote the code 
 % 19-02-21  DSW     Added data.names check; expanded color option in a loop
 %                   Name change to initChannels from init Colors    
-
-global data
 
 % check the size of the data.rois.
 n_channels = size(data.rois, 2);

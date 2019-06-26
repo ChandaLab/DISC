@@ -1,4 +1,4 @@
-function disc_input = analyzeFromGUI(disc_input, analyze_all)
+function [data, disc_input] = analyzeFromGUI(data, disc_input, indices, analyze_all)
 % Operate the Analyze & Analyze All Buttons & runDISC with provided input
 %
 % Authors: Owen Rafferty & David S. White
@@ -16,7 +16,8 @@ function disc_input = analyzeFromGUI(disc_input, analyze_all)
 % input variables
 % analyze_all = 0 -> this trace only
 %             = 1 -> all traces in channel
-global data gui 
+roi_idx = indices(1);
+ch_idx = indices(2);
 
 % init dialog window
 d = dialog('Position',[620 400 350 260],'Name','DISC Parameters');
@@ -188,14 +189,14 @@ uiwait(d);
         % run DISC at current ROI and channel
         if ~analyze_all
             % runDISC
-            data.rois(gui.roiIdx, gui.channelIdx).disc_fit =  ...
-                runDISC(data.rois(gui.roiIdx, gui.channelIdx).time_series, ...
+            data.rois(roi_idx, ch_idx).disc_fit =  ...
+                runDISC(data.rois(roi_idx, ch_idx).time_series, ...
                 disc_input);
       
         % run DISC on all ROIs for current channel
         elseif analyze_all
             waitName = sprintf('Running DISC on ''%s'' ...', ...
-                data.names{gui.channelIdx}); % waitbar title
+                data.names{ch_idx}); % waitbar title
             f = waitbar(0,'1','Name',waitName, ...
                 'CreateCancelBtn','setappdata(gcbf,''canceling'',1)'); % init waitbar
             setappdata(f,'canceling',0);
@@ -205,10 +206,10 @@ uiwait(d);
                 end
                 % recall waitbar and display progress
                 waitbar(ii/size(data.rois,1), f, ...
-                    sprintf("ROI %g of %g", ii, size(data.rois, 1)))
+                    sprintf("ROI %u of %u", ii, size(data.rois, 1)))
                 % runDISC
-                [data.rois(ii, gui.channelIdx).disc_fit] = ...
-                runDISC(data.rois(ii, gui.channelIdx).time_series, ...
+                [data.rois(ii, ch_idx).disc_fit] = ...
+                runDISC(data.rois(ii, ch_idx).time_series, ...
                 disc_input);
             end
             delete(f); % close waitbar

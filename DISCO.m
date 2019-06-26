@@ -24,16 +24,11 @@
 % -----------
 % White et al., 2019, (in preparation)
 
-global data gui
 
-% init data and gui.figure field for loadData
-gui.figure = [];
-
-if isempty(data)
-    loadData();
+if ~exist('data', 'var')
+    data = loadData();
 else
-    initChannels();
-    initFields();
+    data = initFields(data);
 end
 % check if previous operation cancelled to avoid error msg
 if isempty(data)
@@ -42,4 +37,4 @@ if isempty(data)
 end
 
 % init GUI
-gui.figure = roiViewerGUI();
+roiViewerGUI(data);

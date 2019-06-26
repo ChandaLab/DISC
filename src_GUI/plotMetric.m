@@ -1,4 +1,4 @@
-function plotMetric(axes, font)
+function plotMetric(axes, roi, font)
 % Plot the Metric from agglomerative clustering (rois.Metric)
 %
 % Authors: Owen Rafferty & David S. White
@@ -11,21 +11,18 @@ function plotMetric(axes, font)
 % 2019-04-09    DSW     Added plotting best value in red. Updated to new
 %                       disc_fit strucure;
 
-% input variables
-global data gui
-
 cla(axes);
 
 % draw only if analysis is completed
-if ~isempty(data.rois(gui.roiIdx, gui.channelIdx).disc_fit) && isfield(data.rois(gui.roiIdx, gui.channelIdx).disc_fit,'metrics')
-    metric = data.rois(gui.roiIdx, gui.channelIdx).disc_fit.metrics;
+if ~isempty(roi.disc_fit) && isfield(roi.disc_fit,'metrics')
+    metric = roi.disc_fit.metrics;
     if ~isempty(metric)
         % plot 
         set(axes, 'Visible','on');
         cla(axes);
         plot(axes, metric,'-o','MarkerSize',10);
         hold(axes, 'on')
-        best = size(data.rois(gui.roiIdx, gui.channelIdx).disc_fit.components,1);
+        best = size(roi.disc_fit.components, 1);
         scatter(axes, best, metric(best),100,'filled', 'MarkerFaceColor','r', 'MarkerEdgeColor','r');
         hold(axes, 'off')
         ylim(axes,[-0.1,1.1])
