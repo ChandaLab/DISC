@@ -1,4 +1,4 @@
-function plotMetric(axes, roi, font)
+function plotMetric(axes, roi)
 % Plot the Metric from agglomerative clustering (rois.Metric)
 %
 % Authors: Owen Rafferty & David S. White
@@ -39,7 +39,7 @@ else
 end
 
 xlabel(axes, 'Number of States'); set(axes,'ytick',[]);
-set(axes, 'fontsize', font.size);
-set(axes, 'fontname', font.name);
+set(axes, 'fontsize', 12);
+set(axes, 'fontname', 'arial');
 
 end

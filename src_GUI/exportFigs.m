@@ -1,4 +1,4 @@
-function exportFigs(data, indices, channel_colors, font)
+function exportFigs(data, indices, channel_colors)
 
 % close the figure if it is already open
 if exist('f','var')
@@ -16,16 +16,15 @@ for jj=1:length(checked)
 end
 % fill the subplots based on indices determined in dialog
 for ii = checked
-    indices(2) = ii;
     row = find(checked==ii);
-    roi = data.rois(indices(1), indices(2));
-    plotTrajectory(ax(row,1), roi, channel_colors(indices(2),:));
+    roi = data.rois(indices(1), ii);
+    plotTrajectory(ax(row,1), roi, channel_colors(ii,:));
     xlabel(ax(row,1), 'Frames'); 
     ylabel(ax(row,1), 'Intensity (AU)');
-    set(ax(row,1), 'fontsize', font.size);
-    set(ax(row,1), 'fontname', font.name);
-    plotHistogram(ax(row,2), ax(row,1), roi, channel_colors(indices(2),:), font);
-    plotMetric(ax(row,3), roi, font);
+    set(ax(row,1), 'fontsize', 12);
+    set(ax(row,1), 'fontname', 'arial');
+    plotHistogram(ax(row,2), ax(row,1), roi, channel_colors(ii,:));
+    plotMetric(ax(row,3), roi);
 end
     
 end

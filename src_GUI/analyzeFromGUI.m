@@ -161,14 +161,15 @@ uiwait(d);
         end
     end
     function edit_return_k_callback(H,~) % called by change in # of states to force
-        disc_input.return_k = str2double(get(H,'string'));
+        disc_input.return_k = str2double(get(H, 'String'));
     end
 
-    function goAnalyze(~,~) % called by "Go" button to gather parameters to send to runDISC and check for their validity.  
-        if mod(disc_input.viterbi,1) || disc_input.viterbi < 0
-            msgbox('Number of iterations must be a positive integer','Error','error');
-            return
-        end
+    % called by "Go" button to gather parameters to send to runDISC and check for their validity.
+    function goAnalyze(~,~)
+        
+        % round non-integers and/or set negative values to 0.
+        disc_input.viterbi = uint8(disc_input.viterbi);
+        disc_input.return_k = uint8(disc_input.return_k);
         
         switch disc_input.input_type
             case 'alpha_value'
@@ -188,29 +189,27 @@ uiwait(d);
         
         % run DISC at current ROI and channel
         if ~analyze_all
-            % runDISC
             data.rois(roi_idx, ch_idx).disc_fit =  ...
-                runDISC(data.rois(roi_idx, ch_idx).time_series, ...
-                disc_input);
+                runDISC(data.rois(roi_idx, ch_idx).time_series, disc_input);
       
-        % run DISC on all ROIs for current channel
+        % run DISC on all ROIs at current channel
         elseif analyze_all
-            waitName = sprintf('Running DISC on ''%s'' ...', ...
-                data.names{ch_idx}); % waitbar title
-            f = waitbar(0,'1','Name',waitName, ...
-                'CreateCancelBtn','setappdata(gcbf,''canceling'',1)'); % init waitbar
+            n_rois = size(data.rois,1);
+            % init waitbar and its window name
+            wait_name = sprintf('Running DISC on ''%s'' ...', data.names{ch_idx});
+            f = waitbar(0,'1','Name',wait_name,...
+                'CreateCancelBtn','setappdata(gcbf,''canceling'',1)');
             setappdata(f,'canceling',0);
-            for ii = 1:size(data.rois,1)
-                if getappdata(f,'canceling') % stop analysis if cancel is clicked
+            for ii = 1:n_rois
+                % stop analysis if cancel is clicked
+                if getappdata(f,'canceling')
                     break
                 end
                 % recall waitbar and display progress
-                waitbar(ii/size(data.rois,1), f, ...
-                    sprintf("ROI %u of %u", ii, size(data.rois, 1)))
+                waitbar(ii/n_rois, f, sprintf("ROI %u of %u", ii, n_rois))
                 % runDISC
-                [data.rois(ii, ch_idx).disc_fit] = ...
-                runDISC(data.rois(ii, ch_idx).time_series, ...
-                disc_input);
+                data.rois(ii, ch_idx).disc_fit = ...
+                    runDISC(data.rois(ii, ch_idx).time_series, disc_input);
             end
             delete(f); % close waitbar
         end       

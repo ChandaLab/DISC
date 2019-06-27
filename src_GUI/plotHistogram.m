@@ -1,4 +1,4 @@
-function plotHistogram(axes, alignaxes, roi, bin_color, font)
+function plotHistogram(axes, alignaxes, roi, bin_color)
 % Histogram fitting figure for time series data
 %
 % Author: David S. White & Owen Rafferty
@@ -14,21 +14,17 @@ function plotHistogram(axes, alignaxes, roi, bin_color, font)
 % clear out anything in the previous plot 
 cla(axes); 
 
-% grab data to plot 
-time_series = roi.time_series;
-
 % init histogram stuff
 bins = 100; 
-max_value = round(max(time_series),1);
-min_value = round(min(time_series),-1);
+max_value = round(max(roi.time_series),1);
+min_value = round(min(roi.time_series),-1);
 if isempty(max_value) || isempty(min_value)
-    return;
+    return
 end
-edges = linspace(min_value, max_value, bins);
-data_counts = histcounts(time_series, edges);
-data_range = edges(1:end-1);
+data_range = linspace(min_value, max_value, bins); % edges
+data_counts = histcounts(roi.time_series, [data_range, Inf]);
 
-% Does data.rois.components (i.e. "data fit") exist?
+% only draw bar histogram (and not gaussians) if disc_fit doesn't exist
 if isempty(roi.disc_fit)
     
     % Lets just plot out the data by itself and exit
@@ -38,7 +34,7 @@ if isempty(roi.disc_fit)
     
     % set the axis to match the time series plot (alignaxes) axis.
     xlim(axes, get(alignaxes,'Ylim'))
-    return;
+    return
 end
 
 % If data.rois.components exists, we can plot the histogram fits
@@ -86,7 +82,7 @@ else
     title_txt = sprintf('SNR: %.1f   Number of States: %u', roi.SNR, n_components);
 end
 title(axes, title_txt, 'HorizontalAlignment','left');
-set(axes, 'fontsize', font.size);
-set(axes, 'fontname', font.name);
+set(axes, 'fontsize', 12);
+set(axes, 'fontname', 'arial');
 
 end

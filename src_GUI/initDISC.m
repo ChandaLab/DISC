@@ -11,7 +11,7 @@ function disc_input = initDISC
 % Feel free to update these values for your own convenience!!
 
 
-% define default analysis parameters to be called later in graphical dialog
+% define default analysis parameters to be used in GUI or CLI
 disc_input.input_value = 0.05;            % 95% CI
 disc_input.input_type = 'alpha_value';    % or 'critical_value'
 disc_input.divisive = 'BIC-GMM';          % lots of options

@@ -27,7 +27,9 @@ end
 
 % 2. Assign colors to each channel 
 
-% MATLAB default colors (Feel free to change out codes and/or extend as needed)
+% MATLAB default colors. Feel free to change out codes and/or extend as
+% needed. The index of each row in this matrix corresponds to the channel
+% with the same index.
 color_scheme = [0.4660, 0.6740, 0.1880   % green
                      0, 0.4470, 0.7410   % blue
                 0.6350, 0.0780, 0.1840   % red

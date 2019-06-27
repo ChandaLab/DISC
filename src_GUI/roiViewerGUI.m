@@ -50,8 +50,11 @@ function roiViewerGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.data = varargin{:};
 
-handles.font.size = 12; 
-handles.font.name = 'arial';
+% xlabel(handles.axes1, 'Frames'); 
+% ylabel(handles.axes1, 'Intensity (AU)');
+
+% make axes array to simplify goToROI input
+handles.ax_array = [handles.axes1 handles.axes2 handles.axes3];
 
 % init indices
 % idx(1) = roi idx, idx(2) = ch idx
@@ -59,11 +62,11 @@ handles.idx(1) = 1;
 handles.idx(2) = 1;
 
 % init channel names and colors from function
-[handles.vars.channel_names, handles.vars.channel_colors] = initChannels(handles.data);
-set(handles.popupmenu_channelSelect, 'String', handles.vars.channel_names);
+[handles.channel_names, handles.channel_colors] = initChannels(handles.data);
+set(handles.popupmenu_channelSelect, 'String', handles.channel_names);
 
 % init disc_input from function
-handles.vars.disc_input = initDISC();
+handles.disc_input = initDISC();
 
 % init variables for filter values
 handles.filters.enableSNR = 0;
@@ -83,8 +86,8 @@ guidata(hObject, handles);
 % so window can get raised using roiViewerGUI.
 % initial load of ROI 1 at channel 1
 if strcmp(get(hObject,'Visible'),'off')
-    goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-        handles.vars.channel_colors, handles.font);
+    goToROI(handles.data, handles.idx, handles.ax_array,...
+        handles.channel_colors);
     guidata(hObject, handles);
 end
 
@@ -105,18 +108,17 @@ else
 end
 handles.idx = [1 1];
 
-[handles.vars.channel_names, handles.vars.channel_colors] = initChannels(handles.data);
+[handles.channel_names, handles.channel_colors] = initChannels(handles.data);
 % reset channel popup and filter strings
-handles.popupmenu_channelSelect.String = handles.vars.channel_names;
+handles.popupmenu_channelSelect.String = handles.channel_names;
 handles.popupmenu_channelSelect.Value = 1;
 handles.text_snr_filt.String = 'any';
 handles.text_numstates_filt.String = 'any';
 
-% recall font and axes from gui to send to goToROI
-font = handles.font;
-ax1 = handles.axes1; ax2 = handles.axes2; ax3 = handles.axes3;
+% recall axes from gui to send to goToROI
 guidata(handles.figure_main, handles);
-handles.idx = goToROI(handles.data, handles.idx, ax1, ax2, ax3, handles.vars.channel_colors, font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 
 
 % --------------------------------------------------------------------
@@ -155,9 +157,8 @@ for ii = 1:size(handles.data.rois,2)
     switch popup_sel_index
         case ii
             handles.idx(2) = ii;
-            handles.idx = goToROI(handles.data, handles.idx,...
-                handles.axes1, handles.axes2, handles.axes3,...
-                handles.vars.channel_colors, handles.font);
+            handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+                handles.channel_colors);
             guidata(hObject, handles);
     end
 end
@@ -175,18 +176,18 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 % set popup values based on channel names
-%set(hObject, 'String', handles.vars.channel_names);
+%set(hObject, 'String', handles.channel_names);
 set(hObject, 'Value', 1);
 set(hObject, 'fontsize', 12);
-set(hObject, 'fontname', 'SansSerif');
+set(hObject, 'fontname', 'arial');
 
 
 % --- Executes on button press in pushbutton_nextROI.
 function pushbutton_nextROI_Callback(hObject, eventdata, handles)
 % go to the next ROI, stops at end of channel
 handles.idx(1) = handles.idx(1) + 1;
-handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 guidata(hObject, handles);
 
 
@@ -194,8 +195,8 @@ guidata(hObject, handles);
 function pushbutton_prevROI_Callback(hObject, eventdata, handles)
 % go to the previous ROI, stops at 1
 handles.idx(1) = handles.idx(1) - 1;
-handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 guidata(hObject, handles);
 
 
@@ -203,8 +204,8 @@ guidata(hObject, handles);
 function pushbutton_customROI_Callback(hObject, eventdata, handles)
 % jump to any given ROI via a dialog
 handles.idx(1) = -1;
-handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 guidata(hObject, handles);
 
 
@@ -212,24 +213,24 @@ guidata(hObject, handles);
 function pushbutton_analyzeThis_Callback(hObject, eventdata, handles)
 % sets condition to run DISC on the current ROI and brings up param dialog
 % will also return params, as they may have been changed in the dialog
-[handles.data, handles.vars.disc_input] = analyzeFromGUI(handles.data,...
-    handles.vars.disc_input, handles.idx, 0);
+[handles.data, handles.disc_input] = analyzeFromGUI(handles.data,...
+    handles.disc_input, handles.idx, 0);
 guidata(hObject, handles); % update gui
 % display ROI selected before analysis
-handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 
 
 % --- Executes on button press in pushbutton_analyzeAll.
 function pushbutton_analyzeAll_Callback(hObject, eventdata, handles)
 % sets condition to run DISC on all ROIs and brings up param dialog
 % will also return params, as they may have been changed in the dialog
-[handles.data, handles.vars.disc_input] = analyzeFromGUI(handles.data,...
-    handles.vars.disc_input, handles.idx, 1);
+[handles.data, handles.disc_input] = analyzeFromGUI(handles.data,...
+    handles.disc_input, handles.idx, 1);
 guidata(hObject, handles); % update gui
 % display ROI selected before analysis
-handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 
 
 % --- Executes on key press with focus on figure_main or any of its controls.
@@ -261,22 +262,20 @@ end
 % --- Executes on button press in pushbutton_clearThis.
 function pushbutton_clearThis_Callback(hObject, eventdata, handles)
 % clears analysis fields for current ROI
-data = handles.data;
-data.rois(handles.idx(1), handles.idx(2)).disc_fit = [];
-data.rois(handles.idx(1), handles.idx(2)).SNR = [];
+handles.data.rois(handles.idx(1), handles.idx(2)).disc_fit = [];
+handles.data.rois(handles.idx(1), handles.idx(2)).SNR = [];
 guidata(hObject, handles);
-handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 
 % --- Executes on button press in pushbutton_clearAll.
 function pushbutton_clearAll_Callback(hObject, eventdata, handles)
 % clears analysis fields for all ROIs
-data = handles.data;
-[data.rois(:, handles.idx(2)).disc_fit] = deal([]);
-[data.rois(:, handles.idx(2)).SNR] = deal([]);
+[handles.data.rois(:, handles.idx(2)).disc_fit] = deal([]);
+[handles.data.rois(:, handles.idx(2)).SNR] = deal([]);
 guidata(hObject, handles);
-handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 
 
 % --- Executes on button press in pushbutton_toggleSelect.
@@ -331,9 +330,8 @@ function pushbutton_nextSelected_Callback(hObject, eventdata, handles)
 j = find(vertcat(handles.data.rois(handles.idx(1)+1:end, handles.idx(2)).status) == 1);
 if ~isempty(j)
     handles.idx(1) = handles.idx(1) + j(1);
-    handles.idx = goToROI(handles.data, handles.idx,...
-        handles.axes1, handles.axes2, handles.axes3,...
-        handles.vars.channel_colors, handles.font);
+    handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+        handles.channel_colors);
     guidata(hObject, handles);
 end
 
@@ -343,9 +341,8 @@ function pushbutton_prevSelected_Callback(hObject, eventdata, handles)
 j = find(vertcat(handles.data.rois(1:handles.idx(1)-1, handles.idx(2)).status) == 1);
 if ~isempty(j)
     handles.idx(1) = j(end);
-    handles.idx = goToROI(handles.data, handles.idx,...
-        handles.axes1, handles.axes2, handles.axes3,...
-        handles.vars.channel_colors, handles.font);
+    handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+        handles.channel_colors);
     guidata(hObject, handles);
 end
 
@@ -447,8 +444,8 @@ elseif handles.filters.numstatesEnable && handles.filters.snrEnable
 end
 guidata(hObject, handles);
 % redraw titles
-handles.idx = goToROI(handles.data, handles.idx, handles.axes1, handles.axes2, handles.axes3,...
-    handles.vars.channel_colors, handles.font);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
 
 function menuPlots_dwellAnalysis_Callback(hObject, eventdata, handles)
 getDwellTimes(handles.data, handles.idx(2));
@@ -461,7 +458,7 @@ handles.data = computeSNR(handles.data, handles.idx(2), 1);
 guidata(hObject, handles);
 
 function menuFile_exportFigs_Callback(hObject, eventdata, handles)
-exportFigs(handles.data, handles.idx, handles.vars.channel_colors, handles.font);
+exportFigs(handles.data, handles.idx, handles.channel_colors);
 
 function menuFile_exportDat_Callback(hObject, eventdata, handles)
 exportText(handles.data, handles.idx(2));

@@ -1,4 +1,4 @@
-function indices = goToROI(data, indices, ax1, ax2, ax3, channel_colors, font)
+function indices = goToROI(data, indices, axes_array, channel_colors)
 % Navigate to new ROI
 %
 % Author: Owen Rafferty
@@ -10,15 +10,16 @@ function indices = goToROI(data, indices, ax1, ax2, ax3, channel_colors, font)
 % 2019-02-21    DSW     Addded comments. Updated plotting with new function
 %                       names 
 
-% if input is -1, open dialog
-if indices(1) == -1
-    answer = inputdlg('Go to ROI:','Custom ROI', 1);
-    indices(1) = str2double(answer{1});
-% loop around if index exceeds bounds
-elseif indices(1) == 0
-    indices(1) = size(data.rois, 1);
-elseif indices(1) > size(data.rois, 1)
-    indices(1) = 1;
+switch indices(1)
+    % open dialog w/ -1 input
+    case -1
+        answer = inputdlg('Go to ROI:','Custom ROI');
+        indices(1) = str2double(answer{1});
+    % loop around if index exceeds bounds
+    case 0
+        indices(1) = size(data.rois, 1);
+    case size(data.rois, 1) + 1
+        indices(1) = 1;
 end
 
 roi = data.rois(indices(1), indices(2));
@@ -26,28 +27,28 @@ roi = data.rois(indices(1), indices(2));
 % Update all 3 plots in GUI
 
 % 1. time series data (and fit)
-plotTrajectory(ax1, roi, channel_colors(indices(2),:));
+plotTrajectory(axes_array(1), roi, channel_colors(indices(2),:));
 % draw title based on selection or lack thereof
 % determine num of selected traces
-numsel = nnz(vertcat(data.rois(:, indices(2)).status)==1); 
-if roi.status == 1
-    title_txt = sprintf('ROI # %u of %u - Status: Selected  (%u selected)',...
-        indices(1), size(data.rois,1), numsel);
-elseif roi.status == 0
+numsel = uint32(nnz(vertcat(data.rois(:, indices(2)).status)==1)); 
+if roi.status == 0
     title_txt = sprintf('ROI # %u of %u - Status: Unselected  (%u selected)',...
+        indices(1), size(data.rois,1), numsel);
+elseif roi.status == 1
+    title_txt = sprintf('ROI # %u of %u - Status: Selected  (%u selected)',...
         indices(1), size(data.rois,1), numsel);
 else
     title_txt = sprintf('ROI # %u of %u - Status: null  (%u selected)',...
         indices(1), size(data.rois,1), numsel);
 end
-title(ax1, title_txt);
-xlabel(ax1, 'Frames'); 
-ylabel(ax1, 'Intensity (AU)');
-set(ax1, 'fontsize', font.size);
-set(ax1, 'fontname', font.name);
+title(axes_array(1), title_txt);
+xlabel(axes_array(1), 'Frames'); 
+ylabel(axes_array(1), 'Intensity (AU)');
+set(axes_array(1), 'fontsize', 12);
+set(axes_array(1), 'fontname', 'arial');
 
 % 2. time series histogram (and fit)
-plotHistogram(ax2, ax1, roi, channel_colors(indices(2),:), font)
+plotHistogram(axes_array(2), axes_array(1), roi, channel_colors(indices(2),:))
 
 % 3. information criterion values of the fit
-plotMetric(ax3, roi, font);
+plotMetric(axes_array(3), roi);
