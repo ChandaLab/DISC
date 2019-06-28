@@ -56,15 +56,15 @@ function disc_fit = runDISC(data, disc_input)
 %   parameters controls the sensivity of change-point detection.
 %   * Default = '0.05' (input_type = alpha_value)
 %
-% disc_fit.divisive_IC = {String}. Information Criterion/objective function to use 
+% disc_fit.divisive = {String}. Information Criterion/objective function to use 
 %   for divSegmentation. See computeIC for addtional options.
 %   * Default = 'BIC_GMM'
 %
-% disc_fit.agglomerative_IC = {String}. Information Criterion/ objective function to
+% disc_fit.agglomerative = {String}. Information Criterion/ objective function to
 %   use for aggCluster. See computeIC for addtional options.
 %   * Default = 'BIC_GMM'
 %
-% disc_fit.viterbi_iter = Number of times to run the Viterbi algorithm.
+% disc_fit.viterbi = Number of times to run the Viterbi algorithm.
 %   % Default = 2 (diminishing returns observed beyond 2)
 %
 % disc_fit.return_k = return k states regardless of information_criterion

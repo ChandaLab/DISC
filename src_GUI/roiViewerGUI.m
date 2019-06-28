@@ -50,20 +50,16 @@ function roiViewerGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 
 handles.data = varargin{:};
 
-% xlabel(handles.axes1, 'Frames'); 
-% ylabel(handles.axes1, 'Intensity (AU)');
-
 % make axes array to simplify goToROI input
 handles.ax_array = [handles.axes1 handles.axes2 handles.axes3];
+[handles.channel_names, handles.channel_colors] = initChannels(handles.data);
+
+handles.popupmenu_channelSelect.String = handles.channel_names;
 
 % init indices
 % idx(1) = roi idx, idx(2) = ch idx
 handles.idx(1) = 1;
 handles.idx(2) = 1;
-
-% init channel names and colors from function
-[handles.channel_names, handles.channel_colors] = initChannels(handles.data);
-set(handles.popupmenu_channelSelect, 'String', handles.channel_names);
 
 % init disc_input from function
 handles.disc_input = initDISC();
@@ -106,6 +102,7 @@ if ~exist('fp', 'var')
 else
     handles.data = loadData(fp);
 end
+% reset to channel 1, roi 1
 handles.idx = [1 1];
 
 [handles.channel_names, handles.channel_colors] = initChannels(handles.data);
@@ -175,8 +172,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
      set(hObject,'BackgroundColor','white');
 end
 
-% set popup values based on channel names
-%set(hObject, 'String', handles.channel_names);
+% names set in OpeningFcn, as this function does will not yet have access
+% to handles.data
 set(hObject, 'Value', 1);
 set(hObject, 'fontsize', 12);
 set(hObject, 'fontname', 'arial');

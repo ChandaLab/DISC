@@ -3,6 +3,8 @@ June 2019
 
 v2.0.0
 
+######
+
 *Table of Contents*
 
 * [Introduction](#intro)

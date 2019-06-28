@@ -14,7 +14,7 @@ function [channel_names, channel_colors] = initChannels(data)
 n_channels = size(data.rois, 2);
 
 % 1. Does data.names exist? 
-if ~isfield(data,'names')
+if ~isfield(data,'names') || isempty(data.names)
     % create empty field 
     channel_names = cell(1, n_channels); 
     for n = 1:n_channels

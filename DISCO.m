@@ -27,14 +27,15 @@
 
 if ~exist('data', 'var')
     data = loadData();
-else
-    data = initFields(data);
 end
+
 % check if previous operation cancelled to avoid error msg
 if isempty(data)
     disp('Action Aborted.')
     return
 end
+
+data = initFields(data);
 
 % init GUI
 roiViewerGUI(data);
