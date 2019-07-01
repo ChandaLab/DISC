@@ -52,9 +52,9 @@ handles.data = varargin{:};
 
 % make axes array to simplify goToROI input
 handles.ax_array = [handles.axes1 handles.axes2 handles.axes3];
-[handles.channel_names, handles.channel_colors] = initChannels(handles.data);
+[handles.data.names, handles.channel_colors] = initChannels(handles.data);
 
-handles.popupmenu_channelSelect.String = handles.channel_names;
+handles.popupmenu_channelSelect.String = handles.data.names;
 
 % init indices
 % idx(1) = roi idx, idx(2) = ch idx
@@ -105,9 +105,9 @@ end
 % reset to channel 1, roi 1
 handles.idx = [1 1];
 
-[handles.channel_names, handles.channel_colors] = initChannels(handles.data);
+[handles.data.names, handles.channel_colors] = initChannels(handles.data);
 % reset channel popup and filter strings
-handles.popupmenu_channelSelect.String = handles.channel_names;
+handles.popupmenu_channelSelect.String = handles.data.names;
 handles.popupmenu_channelSelect.Value = 1;
 handles.text_snr_filt.String = 'any';
 handles.text_numstates_filt.String = 'any';
