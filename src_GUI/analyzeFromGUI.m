@@ -201,15 +201,24 @@ uiwait(d);
                 'CreateCancelBtn','setappdata(gcbf,''canceling'',1)');
             setappdata(f,'canceling',0);
             for ii = 1:n_rois
-                % stop analysis if cancel is clicked
-                if getappdata(f,'canceling')
-                    break
+                % if the FOR loop cannot finish for whatever reason, the 
+                % waitbar will remain open without any way of closing it 
+                % besides force killing all MATLAB processes, so we need 
+                % error handling
+                try
+                    % stop analysis if cancel is clicked
+                    if getappdata(f,'canceling')
+                        break
+                    end
+                    % recall waitbar and display progress
+                    waitbar(ii/n_rois, f, sprintf("ROI %u of %u", ii, n_rois))
+                    % run DISC
+                    data.rois(ii, ch_idx).disc_fit = ...
+                        runDISC(data.rois(ii, ch_idx).time_series, disc_input);
+                catch ME
+                    delete(f); % close waitbar if error occurs
+                    rethrow(ME);
                 end
-                % recall waitbar and display progress
-                waitbar(ii/n_rois, f, sprintf("ROI %u of %u", ii, n_rois))
-                % runDISC
-                data.rois(ii, ch_idx).disc_fit = ...
-                    runDISC(data.rois(ii, ch_idx).time_series, disc_input);
             end
             delete(f); % close waitbar
         end       
