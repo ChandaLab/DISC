@@ -17,7 +17,7 @@ DISC is written entirely in MATLAB (using R2017b or later). No installation beyo
 
 ### System Requirements 
 
-To our knowledge, as long as your system is capable of running MATLAB (2017b or later), running DISC should not be a problem. DISC (and DISCO) have been tested on: 
+To our knowledge, as long as your system is capable of running MATLAB (R2017b or later), running DISC should not be a problem. DISC (and DISCO) have been tested on: 
 
 1. Linux
 2. MacOS 
@@ -59,11 +59,15 @@ These are the default values in both runDISC.m and DISCO.
 
 ## Authors
 
-David S. White conceived and wrote the DISC algorithm as part of his PhD work at UW-Madison in the labs of Baron Chanda and Randall Goldsmith. Owen Rafferty contributed to the development of the GUI for running the DISC algorithm.
+David S. White conceived and wrote the DISC algorithm as part of his PhD work at UW-Madison in the labs of Baron Chanda and Randall Goldsmith. 
+Owen Rafferty developed the DISCO GUI and its auxiliary functions.
 
-## Contact 
+## Requests and Contact 
 
-If you have any questions, comments, or bugs to report, we will do our best to address them. Please email David S. White at dwhite7@wisc.edu 
+Please tell us of any **bugs** or **feature requests** through the [issue tracker](https://github.com/ChandaLab/DISC/issues) on Github, and we'll do our best to address them.
+In bug reports, please describe the bug, enumerate steps to reproduce it, paste the error MATLAB reports, describe expected behavior, list system information (OS, MATLAB version, and DISC version), and optionally add screenshots and your email address.
+
+If you have any other questions or comments, please email David S. White at dwhite7@wisc.edu.
 
 ## References 
 

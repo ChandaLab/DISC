@@ -1,5 +1,5 @@
 # DISC User Manual 
-June 2019
+July 2019
 
 v2.0.0
 
