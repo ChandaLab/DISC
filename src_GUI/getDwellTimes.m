@@ -32,14 +32,13 @@ end
 clear events
 
 % allocate and create axes depending on num states
-f = figure('units','normalized','position',[0 0 1 1], 'Visible','off'); % fullscreen
+f = figure('units','normalized','position',[0 0 0.5 0.7],'Visible','off');
 ax = gobjects(round(num_states/2),2);
 for ii = 1:round(num_states/2)
     ax(ii,1) = subplot(round(num_states/2), 2, 2*(ii-1) + 1);
     ax(ii,2) = subplot(round(num_states/2), 2, 2*(ii-1) + 2);
 end
 
-export = dwellTimeExportDialog(); % boolean
 f.Visible = 'on';
 
 % allocate
@@ -71,7 +70,7 @@ for ii = 1:num_states
     hold(ax(ii), 'off');
     
     % set labels
-    title(ax(ii), ['State ' num2str(ii)]);
+    title(ax(ii), sprintf('State %u', ii));
     xlabel(ax(ii), 'Duration (Frames)');
     ylabel(ax(ii), 'Counts');
     
@@ -79,45 +78,52 @@ for ii = 1:num_states
     text(ax(ii), 0.6*xmax, 0.5*ymax, ...
         sprintf("\\mu = %.2f\nCI = %.2f, %.2f", muhat(ii), muci(1,ii), muci(2,ii)))
 end
+
 % if the number of states is odd, make the last set of axes invisible
 if mod(num_states,2)
     ax(end).Visible = 0;
 end
 
-if export
-    [file, path] = uiputfile({'*.csv','Comma-separated values (*.csv)'},...
-        'Export dwell analysis to .csv');
-    if ~file
-        return
-    end
-    % store path and ext
-    fp = fullfile(path, file);
-    
-    % allocate (and make padding so arrays of different sizes can be
-    % vertically concatenated, and so mu and CI can be horizontally 
-    % concatenated)
-    alldurations = cell(max(cellfun('size', durations, 1)), 1 + 2*size(durations, 2));
-    for ii = 1:size(durations, 2)
-        alldurations(1:length(durations{ii}), ii) = num2cell(durations{ii});
-        alldurations(1, size(durations,2) + 1 + ii) = num2cell(muhat(ii));
-        alldurations(2:3, size(durations,2) + 1 + ii) = num2cell(muci(:,ii));
-    end
-    
-    alldurations{1, size(durations,2) + 1} = 'mu';
-    alldurations{2, size(durations,2) + 1} = 'CI';
-    alldurations{3, size(durations,2) + 1} = 'CI';
-    
-    % equivalent to writecell. keeping this for compatibility with older
-    % matlabs.
-    T = table(alldurations);
-    clear alldurations
-    writetable(T,fp,'WriteVariableNames', false, 'WriteRowNames', false);
-    
+pause(3);
+export = dwellTimeExportDialog(); % boolean
+
+% stop here if the user does not wish to export to csv
+if ~export
+    return
 end
+
+% continue to export, pick file
+[file, path] = uiputfile({'*.csv','Comma-separated values (*.csv)'},...
+    'Export dwell analysis to .csv');
+if ~file
+    return
+end
+% store path
+fp = [path file];
+
+% allocate (and make padding so arrays of different sizes can be
+% vertically concatenated, and so mu and CI can be horizontally
+% concatenated)
+alldurations = cell(max(cellfun('size', durations, 1)), 1 + 2*size(durations, 2));
+for ii = 1:size(durations, 2)
+    alldurations(1:length(durations{ii}), ii) = num2cell(durations{ii});
+    alldurations(1, size(durations,2) + 1 + ii) = num2cell(muhat(ii));
+    alldurations(2:3, size(durations,2) + 1 + ii) = num2cell(muci(:,ii));
+end
+
+alldurations{1, size(durations,2) + 1} = 'mu';
+alldurations{2, size(durations,2) + 1} = 'CI';
+alldurations{3, size(durations,2) + 1} = 'CI';
+
+% equivalent to writecell. keeping this for compatibility with older
+% matlabs.
+T = table(alldurations);
+clear alldurations
+writetable(T,fp,'WriteVariableNames', false, 'WriteRowNames', false);
 
 end
 
-function export = dwellTimeExportDialog
+function export = dwellTimeExportDialog()
 % create dialog
 dspyinfo = get(0,'screensize');
 dwidth = 280;

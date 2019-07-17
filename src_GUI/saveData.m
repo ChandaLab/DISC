@@ -13,15 +13,16 @@ function saveData(data, selected_reload, hObject)
 % 2019-02-20    DSW     Comments added
 
 if exist('selected_reload', 'var') && selected_reload
+    % find select rois, save them, and reload into gui
     [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
         'Save data to file.', 'selected.mat');
     if ~file
         return
     end
     disp('Saving Data ...');
-    fp = fullfile(path, file);
+    fp = [path file];
     % loop over rois backwards so as to not affect indices
-    for ii = fliplr(1:(size(data.rois, 1)))
+    for ii = size(data.rois, 1):-1:1
         if ~data.rois(ii,1).status
            data.rois(ii,:) = [];
         end
@@ -30,13 +31,14 @@ if exist('selected_reload', 'var') && selected_reload
     disp('Data Saved.');
     roiViewerGUI('menuFile_loadData_Callback', hObject, [], guidata(hObject), fp);
 else
+    % save as usual in matlab
     [file, path] = uiputfile({'*.mat','MATLAB files (*.mat)'},...
         'Save data to file.');
     if ~file
         return
     end
     disp('Saving Data ...');
-    fp = fullfile(path, file);
+    fp = [path file];
     save(fp, 'data');
     disp('Data Saved.');
 end

@@ -65,7 +65,7 @@ else
     
     % Max decomposition level
     n_data = length(data);
-    level = fix(log2(nx));
+    level = fix(log2(n_data));
     % Haar wavelet tranform
     wave_dec = wavedec(data,level,'haar');
     % median estimator

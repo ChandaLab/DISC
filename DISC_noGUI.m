@@ -7,7 +7,7 @@ disc_input = initDISC();
 if exist('data', 'var')
     loadnew = input('Do you want to load a new data set? y/n [Y]: ','s');
     % unless input is n/N, load new data
-    if strcmp(loadnew, 'N') || strcmp(loadnew, 'n')
+    if strcmpi(loadnew, 'N')
         fprintf('Using existing data set ...\n');
     else
         data = loadData();
@@ -46,7 +46,7 @@ end
 toc
 
 save = input('Would you like to save your data? y/n [Y]: ','s');
-if strcmp(save, 'N') || strcmp(save, 'n')
+if strcmpi(save, 'N')
     return
 else
     saveData(data);

@@ -49,8 +49,6 @@ $ git checkout trunk
 ```
 from the `DISC` directory. Of course, this version will be more bug-prone.
 
-Any questions, comments, or potential bugs can be reported to David S. White at dwhite7@wisc.edu. 
-
 <a id="getting_started"></a>
 ## Getting Started
 

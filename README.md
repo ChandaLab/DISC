@@ -54,7 +54,7 @@ All data sets in White et al., 2019 both simulated and raw were analyzed using r
 2. BIC_GMM for both divisive and agglomerative clustering
 3. 1 iteration of the Viterbi algorithm
 
-These are the default values in both runDISC.m and DISCO.
+These are the default values in both `DISC_noGUI` and `DISCO`, and are established via `src_GUI/initDISC.m`.
 
 
 ## Authors
@@ -64,7 +64,7 @@ Owen Rafferty developed the DISCO GUI and its auxiliary functions.
 
 ## Requests and Contact 
 
-Please tell us of any **bugs** or **feature requests** through the [issue tracker](https://github.com/ChandaLab/DISC/issues) on Github, and we'll do our best to address them.
+Please tell us of any **bugs** or **feature requests** through the [issue tracker](https://github.com/ChandaLab/DISC/issues) on GitHub, and we'll do our best to address them.
 In bug reports, please describe the bug, enumerate steps to reproduce it, paste the error MATLAB reports, describe expected behavior, list system information (OS, MATLAB version, and DISC version), and optionally add screenshots and your email address.
 
 If you have any other questions or comments, please email David S. White at dwhite7@wisc.edu.
@@ -75,10 +75,9 @@ White, D., Goldschen-Ohm, M., Goldsmith, R. & Chanda, B. High-Throughput Single-
 
 ## License 
 
-Currently released under GPLv3
+GNU General Public License v3
 
 ## Acknowledgements 
 
 This project would not be possible without the support of both Dr. Baron Chanda and Dr. Randall H. Goldsmith at UW-Madison. We also thank Dr. Marcel Goldschen-Ohm for helpful feedback on the development of DISC and early GUI code. This project was supported by the NIH grants to B.C (NS-101723, NS-081320, and NS-081293), D.S.W (T32 fellowship GM007507) and R.H.G. (GM127957).
-
 

@@ -26,7 +26,7 @@ if ~exist('fp','var')
     if ~file
         return
     end
-    fp = fullfile(path, file);
+    fp = [path file];
 end
 [~, ~, ext] = fileparts(fp); % get extension, will determine which method
                                % to use for importing

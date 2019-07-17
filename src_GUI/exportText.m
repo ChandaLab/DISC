@@ -9,8 +9,8 @@ if ~file
     return
 end
 
-% store path and ext
-fp = fullfile(path, file);
+% concatenate
+fp = [path file];
 
 opt = typedialog;
 % cancel operation unless export is explicitly pressed
