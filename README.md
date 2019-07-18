@@ -41,6 +41,7 @@ See docs/Manual.md for more information.
 
 A sample set of simulated data is provided /sample_data/sample_data.mat. True values of simulation results are provided within this sample. This analysis took < 10 seconds to complete on a personal MacBook Air (1.6 GHz Intel Core i5) in MATLAB 2018b. Detailed instructions for analyzing this sample to reproduce these results are provided in docs/Manual.md with the analysis results found in sample_data/sample_data_idealized.mat.
 
+We've also provided the same data in plain text (.dat) format, in full (sample_data/sample_data.dat) and truncated (sample_data/sample_data_truncated.dat) forms, the latter for readability. These files are formatted in the same fashion as [HaMMy](http://ha.med.jhmi.edu/resources/#1464200861600-0fad9996-bfd4).
 
 ### Simulate Data
 
