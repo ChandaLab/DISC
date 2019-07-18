@@ -1,4 +1,4 @@
-# DISC User Manual 
+
 July 2019
 
 v2.0.0
@@ -95,11 +95,11 @@ If DISC is already open and you wish to load a different data set: `File`→`Loa
 <a id="loading_data_dat"></a>
 ### Importing from .dat
 DISCO is also capable of loading tabular data as in HaMMy or vbFRET.
-In this case, each trajectory is a column in the table, with the column header labeling the channel. For multiple traces on a channel, each column corresponding to a trace will have a header with the name of that channel.
+In this case, each trajectory is a column in the table, with the column header labeling the channel. For multiple traces on a channel, each column corresponding to a trace will have a header with the name of that channel. Examples of this format can be found in `sample_data/sample_data.dat` and `sample_data/sample_data_truncated.dat`. The former contains the same data as `sample_data/sample_data.mat`, and the latter contains the first two ROIs of the two channels of `sample_data/sample_data.mat` for the sake of readability---If you do not have a side-scrolling text editor/viewer, it would probably be a bit tricky to understand the format of the unabridged version.
 
 Data formatted as such via comma-separated values instead of tabs can also be imported. It is expected that Excel formats will also work, but this has yet to be fully implemented or tested. 
 
-See also: how to [export to this form](#saving_export_dat).
+See also: how to **[export to this form](#saving_export_dat)**.
 
 <a id="navigation_disco"></a>
 ## Navigation in DISCO 
@@ -116,7 +116,7 @@ Trajectories can be navigated by either arrow clicks in the GUI (e.g. `Next ROI 
 | Comma / < | Navigate to previous 'selected' trajectory |
 
 
-Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `figure1_WindowKeyPressFcn`.
+Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `figure_main_WindowKeyPressFcn`.
 
 <a id="analyzing_disco"></a>
 ## Analyzing Trajectories with DISCO
@@ -128,13 +128,12 @@ Adding or modifying existing keys can be done in `src_GUI/roiViewerGUI.m` via `f
 <a id="analyzing_disco_single"></a>
 ### Single Trajectory Analysis
 
-Trajectories can be analyzed either in or individually at once for a given channel. Let's start by analyzing the first trajectory. 
-Figure 2: DISC Parameters window 
+Trajectories can be analyzed either in or individually at once for a given channel. Let's start by analyzing the first trajectory.  
 1. Click "Analyze" 
-2. Input the parameters for the DISC algorithm or used the suggested default values
+2. Enter your own parameters for the DISC algorithm or use the suggested default values.
 3. Click "Go"
 
-The trajectory will be analyzed. Black lines appear on the time-trajectory and the histogram plot showing the fit by DISC. In addition, a plot to the right will appear showing the total number of states found and the overall best number of states. 
+The trajectory will be analyzed. Black lines appear on the time-trajectory and the histogram plot showing the fit by DISC. If any agglomerative clustering was performed, an additional plot will appear to the right of the histogram showing the total number of states found and the overall best number of states. 
 
 *Note: Deciding which parameters to use will depend on the sort of data you are analyzing. We will provide better benchmarks as DISC gains more use. For now, it is valuable to try different parameters and see what appears to work best.*
 
@@ -143,11 +142,11 @@ The trajectory will be analyzed. Black lines appear on the time-trajectory and t
 
 Now let's analyze all 100 traces:
 
-1.Click "Analyze All" 
-2. Input the parameters for the DISC algorithm or used the suggested default values
+1. Click "Analyze All" 
+2. Input the parameters for the DISC algorithm or use the suggested default values
 3. Click "Go"
 
-A wait-bar will pop up during this process. Once it closes, the analysis is complete. 
+A wait-bar will pop up during this process. Once it closes, the analysis is complete. Should you wish to cancel the idealization at any point, simply click 'Cancel' in the wait-bar window.
 
 *Note: This is our suggested method of use for DISC, as this scheme analyzes all trajectories with the same statistical assumptions, rather than changing confidence intervals or objective functions per trace to get a desired answer.*
 
@@ -161,7 +160,7 @@ The results of DISC can be removed either per trace using "Clear Analysis" or fo
 
 Trajectories can be selected by pressing the up arrow or click the "select" button in the GUI. This will add a field to the rois structure (see [input data formats](#data_format_input)) to be indexed by further analysis by DISC. For example, ROI #24 has a low signal-to-noise ratio and you may not be confident in the analysis results, unlike ROI #22 which has a very high signal-to-noise. Therefore, you may want to Select ROI #24 and Unselect ROI #22 for further analysis. 
 
-By default, all traces are "Unselected" (`data.rois(1,1).status = 0`). Once traces are selected, you can navigated between only the selected traces using "," or "." on the keyboard or by clicking "Next Selected (>)"  or "Prev Selected (<)" in the GUI. 
+By default, all traces are "Unselected" (i.e. `data.rois(1,1).status = 0`). Once traces are selected, you can navigated between only the selected traces using "," or "." on the keyboard or by clicking "Next Selected (>)"  or "Prev Selected (<)" in the GUI. 
 
 <a id="analyzing_disco_filtering"></a>
 ### Automatic filtering
@@ -206,7 +205,7 @@ Once the figure is open, you will probably want to `File`→`Save As` etc.
 
 <a id="saving_export_dwell"></a>
 ### Exporting dwell analysis
-After clicking `Plots`→`Dwell Time Analysis`, a dialog will open asking if you'd like to export the dwell analysis data to a .csv file for easy importing into Excel or a similar program. The data will be formatted as such: the first n columns correspond to the n states identified in every trace across the entire channel. These will generally have several thousand rows. To the right (beginning at column n+2) is a 3xn matrix consisting of exponential fit data: row 1 = mu for each state, rows 2 and 3 = confidence interval for each state. 
+After clicking `Plots`→`Dwell Time Analysis`, a dialog will open asking if you'd like to export the dwell analysis data to a .csv file for easy importing into Excel or a similar program. The data will be formatted as such: the first n columns correspond to the n states identified in every trace across the entire channel. Each of these columns will generally have thousands of rows. To the right (beginning at column n + 2) is a 3 x n matrix consisting of exponential fit data: row 1 = mu for each state, rows 2 and 3 = confidence interval for each state. 
 
 <a id="data_format"></a>
 ## Data Format
@@ -222,7 +221,7 @@ Data is formatted in data structures with the following required fields:
 
 | Variable | Description |
 | --- | --- |
-| `data` | Data structure to describe the entire data set |
+| `data` | Data structure to describe the entire<br> data set |
 | `data.rois` | Data structure for a specific region of interest (roi) |
 | `data.names` | Cell to name the channels (strings) |
 | `data.rois.time_series` | Column array (N x 1) of observed time series for the roi to be analyzed by DISC |
@@ -290,8 +289,8 @@ where:
 | `ideal` | `time_series` fit described by the mean value of each state |
 | `class` | `time_series` fit described by the integer of unique states |
 | `n_states` | number of states identified |
-| `metrics` | all computed information criterion (i.e. BIC) values from agglomerative clustering. |
-| `all_ideal` | all possible state sequences from the initial results of divisive segmentation and grouped by agglomerative clustering: `all_ideal(:,1)` = 1 state fit; `all_ideal(:,2)` = 2 state fit, etc... |
+| `metrics` | all computed information criterion (i.e. BIC) values<br> from agglomerative clustering. |
+| `all_ideal` | all possible state sequences from the initial results of divisive segmentation and grouped by agglomerative clustering:<br>`all_ideal(:,1)` = 1 state fit; `all_ideal(:,2)` = 2 state fit, etc... |
 | `parameters` | all input values used for analysis in DISC (**Figure 2**) |
 
 <a id="disc_no_gui"></a>
@@ -303,7 +302,7 @@ You can alter DISC's statistical parameters at the clearly marked area at the be
 
 | Field | Description |
 | --- | --- |
-| `input_type` | Either `'alpha_value'` or `'critical_value'` for use in change-point detection. |
+| `input_type` | Either `'alpha_value'` or `'critical_value'` for use in<br>change-point detection. |
 | `input_value` | Value corresponding to `input_type`. e.g. 0.05 = 95% confidence interval when used with `'alpha_value'` |
 | `divisive` | Information criterion/objective function for identifying states during the divisive phase (see `computeIC.m` for a list of available options). This value determines the max number of states possible for agglomerative clustering. |
 | `agglomerative` | Information criterion/ objective function for identifying states during the agglomerative phase (see `computeIC.m` for a list of available options). This value determines the final number of states returned for fitting by Viterbi. |
