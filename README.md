@@ -11,6 +11,16 @@ White, D., Goldschen-Ohm, M., Goldsmith, R. & Chanda, B. High-Throughput Single-
 
 DISCO is the graphical user interface (GUI) for DISC. We aimed to make DISCO as user friendly as possible and welcome feedback on how we can improve. Please see the provided docs/Manual.md for full instructions. As DISCO gains more use, we can make other requested features available (i.e. dwell time analysis, automated trace selection, etc...). All updates will be made available on https://github.com/ChandaLab/DISC pending manuscript acceptance. Stay tuned!
 
+## New in 2.0
+1. Histograms of SNR and number of identified states
+2. Import data from .dat/.csv (in HaMMy/vbFRET format)
+3. Dwell time analysis - exponential fits, data exportable to .csv
+4. Filtering of analyzed traces by SNR and/or number of identified states
+5. Export selected traces and automatically reload them (effectively trims unselected traces)
+6. Export plots from all channels at the current ROI to a figure
+7. Export ideal (intensity) or class (state index) of analyzed traces on the current channel to .dat; can also export selected traces only
+8. Global variables are gone; debugging should now be significantly easier
+
 ### Installation 
 
 DISC is written entirely in MATLAB (using R2017b or later). No installation beyond obtaining MATLAB is required. The MATLAB Statistics and Machine Learning Toolbox is required.  
