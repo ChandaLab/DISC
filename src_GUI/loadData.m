@@ -35,10 +35,11 @@ switch lower(ext)
         temp = importdata(fp); % load into a convenient cell
         % in case colheaders are not assigned by importdata
         if isfield(temp, 'colheaders')
-            names = temp.colheaders;
+            names = strtrim(temp.colheaders); % remove leading and trailing whitespace
         else
             names = regexp(temp.textdata, '\S+','match'); % pull from textdata
             names = names{:}; % "pull up" in cell hierarchy
+            names = strtrim(names);
         end
         % pull data
         [data.names, ~, ic] = unique(names);
