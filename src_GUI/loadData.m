@@ -24,6 +24,7 @@ if ~exist('fp','var')
     [file, path] = uigetfile({'*.mat;*.dat;*.csv','Data files (*.mat,*.dat,*.csv)'},...
         'Open data file.'); % open file picker
     if ~file
+        data = [];
         return
     end
     fp = [path file];
