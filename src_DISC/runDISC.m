@@ -164,16 +164,19 @@ if n_states > 1 && ~strcmp(disc_input.agglomerative, 'none')
      
      % store output of best_fit 
      data_fit = disc_fit.all_ideal(:,best_fit); 
+else
+     disc_fit.all_ideal = data_fit;% store in output
 end
 
 % Optional: force a best_fit to return_k_states
 if disc_input.return_k
+    return_k = disc_input.return_k;
     % Cannot return a number of states > total number of states found in
     % divSegment.m 
-    if disc_input.return_k > n_states
-        disc_input.return_k = n_states;
+    if return_k > n_states
+        return_k = n_states; 
     end
-    data_fit = disc_fit.all_ideal(:,disc_input.return_k);
+    data_fit = disc_fit.all_ideal(:,return_k);
 end
 
 %% Step 3. Viterbi Algorithm
