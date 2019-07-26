@@ -20,14 +20,14 @@ function [Accuracy,Precision,Recall] = runIdealizationMetrics(data,metric_option
 %   3. overall: state & event detection (recommended)
 %   4. Classification
 
-% metric_option = 3; % see above (1-4)
+metric_option = 3; % see above (1-4)
 state_threshold = 0.1;  % 10% difference in true state value
 event_threshold = 1;    % 1 frame difference in true event
 
 %% Run
 
 % load idealized sample data (need DISC/sample_data in file path)
-% load('sample_data_idealized.mat');
+load('sample_data_idealized.mat');
 
 n_rois = size(data.rois,1);
 
@@ -48,7 +48,7 @@ for n = 1:n_rois
             %                 'states', state_threshold,event_threshold);
             
             [Accuracy(n,1), Precision(n,1), Recall(n,1)] = idealizationMetrics...
-                (data.rois(n,1).time_series, data.rois(n,1).disc_fit.class,data.rois(n,2).disc_fit.state_seq,...
+                (data.rois(n,1).time_series, data.rois(n,1).disc_fit.class,data.rois(n,2).state_seq,...
                 'states', state_threshold,event_threshold);
             
             % 2. event detection ony
@@ -58,7 +58,7 @@ for n = 1:n_rois
             %                 'events', state_threshold,event_threshold);
             
             [Accuracy(n,1), Precision(n,1), Recall(n,1)] = idealizationMetrics...
-                (data.rois(n,1).time_series, data.rois(n,1).disc_fit.class,data.rois(n,2).disc_fit.state_seq,...
+                (data.rois(n,1).time_series, data.rois(n,1).disc_fit.class,data.rois(n,2).state_seq,...
                 'events', state_threshold,event_threshold);
             
             % 3. overall: state & event detection
@@ -67,7 +67,7 @@ for n = 1:n_rois
             %    (data.rois(n,1).time_series, data.rois(n,1).disc_fit.class,data.rois(n,1).state_seq,...
             %    'overall', state_threshold,event_threshold);
             [Accuracy(n,1), Precision(n,1), Recall(n,1)] = idealizationMetrics...
-                (data.rois(n,1).time_series, data.rois(n,1).disc_fit.class,data.rois(n,2).disc_fit.state_seq,...
+                (data.rois(n,1).time_series, data.rois(n,1).disc_fit.class,data.rois(n,2).state_seq,...
                 'overall', state_threshold,event_threshold);
             
             % 4. Classification
