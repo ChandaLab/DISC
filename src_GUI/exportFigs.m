@@ -52,11 +52,11 @@ uiwait(d);
     % selection
     function exportChannelSelect_callback(~,~)
         vals = get(channelCheck,'Value');
-        checked = find([vals{:}]);
-        if isempty(checked)
+        if isempty(vals)
             msgbox('Please select at least one channel to export.','Error','error');
             return
         end
+        checked = find([vals{:}]);
         
         delete(gcf);
     end
