@@ -125,11 +125,10 @@ end
 
 % Does disc_input exist? 
 if ~exist('disc_input','var')
-    disc_input = struct; 
-    disc_input = setDefault(disc_input); 
+    disc_input = initDISC(); 
 else
     % Check each field to ensure values are provided. 
-    disc_input = setDefault(disc_input); 
+    disc_input = initDISC(disc_input); 
 end
 
 % Check each field to ensure values are provided. 

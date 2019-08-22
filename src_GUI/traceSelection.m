@@ -1,5 +1,7 @@
 function filters = traceSelection(filters)
 
+% Load the pop-up window for trace selection
+
 % init, place at center of main monitor
 dspyinfo = get(0,'screensize');
 dwidth = 350;

@@ -141,7 +141,7 @@ for n = 1:size(events,1);
             current_intensity_var = (intensites(k) * modulation +  intensites(k));
             itensity_var = itensity_var + current_intensity_var;
         else
-            % keep the baseline stable for simulationplicity
+            % keep the baseline stable for simplicity
             itensity_var = (intensites(k));
         end
         
