@@ -24,6 +24,7 @@
 % -----------
 % White et al., 2019, (in preparation)
 
+% demo
 
 if ~exist('data', 'var')
     data = loadData();
