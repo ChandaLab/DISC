@@ -37,6 +37,13 @@ color_scheme = [0.4660, 0.6740, 0.1880   % green
                 0.3010, 0.7450, 0.9330   % light blue
                 0.8500, 0.3250, 0.0980   % orange
                 0.9290, 0.6940, 0.1250]; % yellow
+            
+% repeat color scheme if n_channels is longer than default colors
+if n_channels > size(color_scheme,1)
+    while size(color_scheme,1) < n_channels
+    color_scheme = [color_scheme;color_scheme]; 
+    end
+end
 
 % assign colors as needed
 channel_colors = color_scheme(1:n_channels,:);

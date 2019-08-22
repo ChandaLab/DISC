@@ -104,8 +104,10 @@ switch method
             
             % Is the obtained state value within the state_threshold of the
             % true value? 
-            state_check =  abs(true_components(t,2) - obtained_components(o,2))...
-                <= (state_threshold * true_components(t,3));
+            %state_check =  abs(true_components(t,2) - obtained_components(o,2))...
+            %    <= (state_threshold * true_components(t,3));
+             state_check =  abs(true_components(t,2) - obtained_components(o,2))...
+                <= (1);
             
             if state_check
                 TP = TP + 1;
@@ -225,6 +227,22 @@ end
 Accuracy = TP / (TP + FP + FN);  
 Precision = TP / (TP + FP);  
 Recall = TP / (TP + FN);  
+% check for nan
+if isnan(Accuracy)
+    Accuracy = 0;
+end
+if isnan(Precision)
+    Precision = 0;
+end
 
+if isnan(Recall)
+    Recall = 0;
+end
+
+
+
+if isnan(Accuracy) | isnan(Precision) | isnan(Recall)
+    disp('wtf')
+end
 end
 

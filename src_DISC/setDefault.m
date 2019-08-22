@@ -13,6 +13,9 @@ function disc_input = setDefault(disc_input)
 
 % ******************* User modification HERE! *****************************
 % init default structure
+if ~exist('disc_input','var')
+  disc_input = struct; 
+end
 default = struct; 
 %
 % Change-Point Detection:

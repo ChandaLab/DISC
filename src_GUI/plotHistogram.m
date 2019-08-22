@@ -10,14 +10,22 @@ function plotHistogram(axes, alignaxes, roi, bin_color)
 % 2019-02-21    DSW     Full rewrite. Addded comments. Changed name to
 %                       plotHistogram.m
 % 2019-04-10    DSW     updated to new disc_fit structure
+% 2019-07-26    DSW     correct for plot with min_values below zero
 
 % clear out anything in the previous plot 
 cla(axes); 
 
 % init histogram stuff
-bins = 100; 
+bins = 100;
 max_value = round(max(roi.time_series),1);
 min_value = round(min(roi.time_series),-1);
+% correct for min_value below zero
+if min_value == 0
+    max_value = round(max(roi.time_series),2);
+    min_value = round(min(roi.time_series),-2);
+    min_value = round(min(roi.time_series)*-1,2)*-1;
+end
+
 if isempty(max_value) || isempty(min_value)
     return
 end
