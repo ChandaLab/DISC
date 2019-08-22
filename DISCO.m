@@ -39,4 +39,4 @@ end
 data = initFields(data);
 
 % init GUI
-roiViewerGUI(data);
+discGUI(data);

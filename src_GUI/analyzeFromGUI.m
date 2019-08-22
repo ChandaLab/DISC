@@ -11,8 +11,6 @@ function [data, disc_input] = analyzeFromGUI(data, disc_input, indices, analyze_
 % 2019-20-20    DSW     Added in AIC_GMM and HQC_GMM as clustering options
 % 2019-04-10    DSW     updated to new disc_fit structure
 
-
-
 % input variables
 % analyze_all = 0 -> this trace only
 %             = 1 -> all traces in channel

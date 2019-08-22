@@ -1,4 +1,4 @@
-function disc_input = setDefault(disc_input)
+function disc_input = initDISC(disc_input)
 % David S. White
 % dwhite7@wisc.edu
 %

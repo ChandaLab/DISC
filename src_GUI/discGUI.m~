@@ -1,35 +1,35 @@
-function varargout = roiViewerGUI(varargin)
-% ROIVIEWERGUI MATLAB code for roiViewerGUI.fig
-%      ROIVIEWERGUI, by itself, creates a new ROIVIEWERGUI or raises the existing
+function varargout = discGUI(varargin)
+% discGUI MATLAB code for discGUI.fig
+%      discGUI, by itself, creates a new discGUI or raises the existing
 %      singleton*.
 %
-%      H = ROIVIEWERGUI returns the handle to a new ROIVIEWERGUI or the handle to
+%      H = discGUI returns the handle to a new discGUI or the handle to
 %      the existing singleton*.
 %
-%      ROIVIEWERGUI('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in ROIVIEWERGUI.M with the given input arguments.
+%      discGUI('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in discGUI.M with the given input arguments.
 %
-%      ROIVIEWERGUI('Property','Value',...) creates a new ROIVIEWERGUI or raises the
+%      discGUI('Property','Value',...) creates a new discGUI or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before roiViewerGUI_OpeningFcn gets called.  An
+%      applied to the GUI before discGUI_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to roiViewerGUI_OpeningFcn via varargin.
+%      stop.  All inputs are passed to discGUI_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help roiViewerGUI
+% Edit the above text to modify the response to help discGUI
 
-% Last Modified by GUIDE v2.5 22-Aug-2019 11:45:10
+% Last Modified by GUIDE v2.5 22-Aug-2019 15:14:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @roiViewerGUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @roiViewerGUI_OutputFcn, ...
+                   'gui_OpeningFcn', @discGUI_OpeningFcn, ...
+                   'gui_OutputFcn',  @discGUI_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -50,10 +50,10 @@ end
 
 
 
-% --- Executes just before roiViewerGUI is made visible.
-function roiViewerGUI_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before discGUI is made visible.
+function discGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
-% varargin   command line arguments to roiViewerGUI (see VARARGIN)
+% varargin   command line arguments to discGUI (see VARARGIN)
 
 handles.data = varargin{:};
 
@@ -79,14 +79,14 @@ handles.filters.snr_max = [];
 handles.filters.numstates_min = [];
 handles.filters.numstates_max = [];
 
-% Choose default command line output for roiViewerGUI
+% Choose default command line output for discGUI
 handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
 
 % This sets up the initial plot - only do when we are invisible
-% so window can get raised using roiViewerGUI.
+% so window can get raised using discGUI.
 % initial load of ROI 1 at channel 1
 if strcmp(get(hObject,'Visible'),'off')
     goToROI(handles.data, handles.idx, handles.ax_array,...
@@ -96,7 +96,7 @@ end
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = roiViewerGUI_OutputFcn(hObject, eventdata, handles)
+function varargout = discGUI_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 
 % Get default command line output from handles structure
@@ -181,7 +181,7 @@ function menuPlots_numStatesHist_Callback(hObject, eventdata, handles)
 numStatesHist(handles.data, handles.idx(2), 1);
 
 function menuPlots_snrHist_Callback(hObject, eventdata, handles)
-handles.data = computeSNR(handles.data, handles.idx(2), 1);
+handles.data = plotSNR(handles.data, handles.idx(2), 1);
 guidata(hObject, handles);
 
 function menuPlots_stateOccupancy_Callback(hObject, eventdata, handles)
@@ -274,16 +274,15 @@ function pushbutton_filter_Callback(hObject, eventdata, handles)
 
 handles.filters = traceSelection(handles.filters);
 % apply the selection 
-data = applyTraceSelection(data, ch_idx, handles); 
-
+handles = applyTraceSelection(handles); 
 
 % cancel if continue is not pressed
-if ~handles.filters.contpr
-    handles.text_snr_filt.String = 'any';
-    handles.text_numstates_filt.String = 'any';
-    [handles.data.rois.status] = deal(1); % clear any existing selections
-    return
-end
+% if ~handles.filters.contpr
+%     handles.text_snr_filt.String = 'any';
+%     handles.text_numstates_filt.String = 'any';
+%     [handles.data.rois.status] = deal(1); % clear any existing selections
+%     return
+% end
 % if cancel is pressed, no filter will be applied, but the traces from the
 % previous filtering will still be selected.
 
@@ -301,71 +300,6 @@ end
 %     handles.filters.numstates_min = 0;
 % end
 guidata(hObject, handles);
-
-% sort by SNR only
-if handles.filters.snrEnable && ~handles.filters.numstatesEnable
-    [handles.data.rois.status] = deal(0); % clear any existing selections
-    % change corresponding text in GUI
-    handles.text_snr_filt.String = sprintf('%.1f -> %.1f',...
-        handles.filters.snr_min, handles.filters.snr_max);
-    handles.text_numstates_filt.String = 'any';
-    % adjust trace status if parameters are met
-    handles.data = computeSNR(handles.data, handles.idx(2), 0); % fill field in data struct    
-    for ii = 1:size(handles.data.rois, 1)
-        if ~isempty(handles.data.rois(ii,handles.idx(2)).SNR)
-            trace_snr = handles.data.rois(ii,handles.idx(2)).SNR;
-            if trace_snr <= handles.filters.snr_max && ...
-                    trace_snr >= handles.filters.snr_min
-                for jj = 1:size(handles.data.rois,2)
-                    handles.data.rois(ii,jj).status = 1;
-                end
-            end
-        end
-    end
-% sort by # of states only
-elseif handles.filters.numstatesEnable && ~handles.filters.snrEnable
-    [handles.data.rois.status] = deal(0); % clear any existing selections
-    % change corresponding text in GUI
-    handles.text_numstates_filt.String = sprintf('%.0f -> %.0f',...
-        handles.filters.numstates_min, handles.filters.numstates_max);
-    handles.text_snr_filt.String = 'any';
-    % adjust trace status if parameters are met
-    for ii = 1:size(handles.data.rois, 1)
-        if ~isempty(handles.data.rois(ii,handles.idx(2)).disc_fit)
-            n_components = size(handles.data.rois(ii,handles.idx(2)).disc_fit.components, 1);
-            if n_components <= round(handles.filters.numstates_max) && ...
-                    n_components >= round(handles.filters.numstates_min)
-                for jj = 1:size(handles.data.rois,2)
-                    handles.data.rois(ii,jj).status = 1;
-                end
-            end
-        end
-    end
-% sort by SNR and # of states
-elseif handles.filters.numstatesEnable && handles.filters.snrEnable
-    [handles.data.rois.status] = deal(0); % clear any existing selections
-    % change corresponding text in GUI
-    handles.text_snr_filt.String = sprintf('%.1f -> %.1f',...
-        handles.filters.snr_min, handles.filters.snr_max);
-    handles.text_numstates_filt.String = sprintf('%.0f -> %.0f',...
-        handles.filters.numstates_min, handles.filters.numstates_max);
-    % adjust trace status if parameters are met
-    handles.data = computeSNR(handles.data, handles.idx(2), 0);
-    for ii = 1:size(handles.data.rois, 1)
-        if ~isempty(handles.data.rois(ii, handles.idx(2)).disc_fit)
-            n_components = size(handles.data.rois(ii,handles.idx(2)).disc_fit.components, 1);
-            trace_snr = handles.data.rois(ii, handles.idx(2)).SNR;
-            if n_components <= round(handles.filters.numstates_max) && ...
-                    n_components >= round(handles.filters.numstates_min) && ...
-                    trace_snr <= handles.filters.snr_max && ...
-                    trace_snr >= handles.filters.snr_min
-                for jj = 1:size(handles.data.rois,2)
-                    handles.data.rois(ii,jj).status = 1;
-                end
-            end
-        end
-    end
-end
 guidata(hObject, handles);
 % redraw titles
 handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...

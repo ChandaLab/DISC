@@ -1,19 +1,16 @@
 function getDwellTimes(data, ch_idx)
+% Grab the dwell times
 
-% find indices of analyzed traces and put them into a vector
-idx = zeros(length(vertcat(data.rois(:, ch_idx).disc_fit)), 1);
-for ii = 1:size(data.rois, 1)
-    if ~isempty(data.rois(ii, ch_idx).disc_fit)
-        idx(ii) = ii;
-    end
-end
-% remove zeros inserted between nonconsecutive roi analyses
-idx = nonzeros(idx);
+% Authors: Owen Rafferty & David S. White 
 
+% find selected traces 
+idx = findSelected(data, ch_idx); 
+
+% allocate space for event storeage 
 events = cell(1, length(idx));
 % use DISC function
-for ii = idx'
-    events{1, ii} = findEvents(data.rois(ii, ch_idx).disc_fit.class);
+for i = idx'
+    events{1, i} = findEvents(data.rois(i, ch_idx).disc_fit.class);
     % returns events = [start frame, stop frame, duration, label]
 end
 % concatenate all 'events' matrices. on larger data sets, this will
@@ -26,8 +23,8 @@ num_states = max(events(:,4));
 durations = cell(1, num_states); % allocate
 % store durations in column 3 that correspond to each label in column 4.
 % dimensions are generally different, so we're using a cell
-for ii = 1:num_states
-    durations{ii} = events(events(:,4)==ii,3);
+for i = 1:num_states
+    durations{i} = events(events(:,4)==i,3);
 end
 clear events
 
@@ -84,7 +81,7 @@ if mod(num_states,2)
     ax(end).Visible = 0;
 end
 
-pause(3);
+% pause(1);
 export = dwellTimeExportDialog(); % boolean
 
 % stop here if the user does not wish to export to csv

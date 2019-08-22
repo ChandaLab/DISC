@@ -15,7 +15,7 @@ function data = initFields(data)
 if isfield(data.rois,'zproj')
     [n_rois,n_channels] = size(data.rois);
     
-    % create new field rois.obs
+    % create new field rois.time_series
     for k = 1:n_channels
         for n = 1:n_rois
             data.rois(n,k).time_series = data.rois(n,k).zproj;
@@ -38,20 +38,3 @@ end
                             % will otherwise be displayed in title and will
                             % not necessarily be that which is computed in
                             % computeSNR.m
-
-% old format here for reference while debugging 
-% if ~isfield(data.rois, 'Ideal') 
-%     [data.rois.Ideal] = deal([]); % fit from analysis
-% end
-% if ~isfield(data.rois, 'Class')
-%     [data.rois.Class] = deal([]); 
-% end
-% if ~isfield(data.rois, 'Components')
-%     [data.rois.Components] = deal([]);
-% end
-% if ~isfield(data.rois, 'Metric')
-%     [data.rois.Metric] = deal([]); % number of states
-% end
-% if ~isfield(data.rois, 'DISC_FIT')
-%     [data.rois.DISC_FIT] = deal([]); % input parameters for fitting by DISC
-% end
