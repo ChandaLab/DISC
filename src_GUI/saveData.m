@@ -37,10 +37,11 @@ else
     if ~file
         return
     end
-    disp('Saving Data ...');
+    f1 = msgbox('Saving Data...'); 
     fp = [path file];
     save(fp, 'data');
-    disp('Data Saved.');
+    close(f1)
+    f1 = msgbox('Data Saved'); 
 end
 
 end

@@ -22,7 +22,7 @@ function varargout = roiViewerGUI(varargin)
 
 % Edit the above text to modify the response to help roiViewerGUI
 
-% Last Modified by GUIDE v2.5 05-Jul-2019 15:24:29
+% Last Modified by GUIDE v2.5 22-Aug-2019 11:45:10
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -146,7 +146,12 @@ saveData(handles.data, 1, hObject);
 
 function menuFile_loadData_Callback(hObject, eventdata, handles, fp)
 if ~exist('fp', 'var')
-    handles.data = loadData();
+    data = loadData();
+    if ~isempty(data);
+        handles.data = data;
+    else
+        return
+    end
 else
     handles.data = loadData(fp);
 end
@@ -170,15 +175,18 @@ saveData(handles.data);
 
 
 function menuPlots_dwellAnalysis_Callback(hObject, eventdata, handles)
-getDwellTimes(handles.data, handles.idx(2));
+getDwellTimes(handles.data, handles.idx(2)); % double check this 
 
 function menuPlots_numStatesHist_Callback(hObject, eventdata, handles)
 numStatesHist(handles.data, handles.idx(2), 1);
 
 function menuPlots_snrHist_Callback(hObject, eventdata, handles)
-handles.data = computeSNR(handles.data, handles.idx(2), 1);
+handles.data = plotSNR(handles.data, handles.idx(2), 1);
 guidata(hObject, handles);
 
+function menuPlots_stateOccupancy_Callback(hObject, eventdata, handles)
+handles.data = getStateOccupancy(handles.data, handles.idx(2));
+guidata(hObject, handles);
 
 function popupmenu_channelSelect_Callback(hObject, eventdata, handles)
 % changes the channel selected via popup, and remains on the current ROI.
@@ -265,94 +273,98 @@ guidata(hObject, handles);
 function pushbutton_filter_Callback(hObject, eventdata, handles)
 
 handles.filters = traceSelection(handles.filters);
+% apply the selection 
+handles = applyTraceSelection(handles); 
 
 % cancel if continue is not pressed
-if ~handles.filters.contpr
-    handles.text_snr_filt.String = 'any';
-    handles.text_numstates_filt.String = 'any';
-    return
-end
+% if ~handles.filters.contpr
+%     handles.text_snr_filt.String = 'any';
+%     handles.text_numstates_filt.String = 'any';
+%     [handles.data.rois.status] = deal(1); % clear any existing selections
+%     return
+% end
 % if cancel is pressed, no filter will be applied, but the traces from the
 % previous filtering will still be selected.
 
 % assign min and max values if entry boxes are left empty
-if handles.filters.enableSNR && isempty(handles.filters.snr_max)
-    handles.filters.snr_max = Inf;
-end
-if handles.filters.enableSNR && isempty(handles.filters.snr_min)
-    handles.filters.snr_min = -Inf;
-end
-if handles.filters.enablenumStates && isempty(handles.filters.numstates_max)
-    handles.filters.numstates_max = Inf;
-end
-if handles.filters.enablenumStates && isempty(handles.filters.numstates_min)
-    handles.filters.numstates_min = 0;
-end
+% if handles.filters.enableSNR && isempty(handles.filters.snr_max)
+%     handles.filters.snr_max = Inf;
+% end
+% if handles.filters.enableSNR && isempty(handles.filters.snr_min)
+%     handles.filters.snr_min = -Inf;
+% end
+% if handles.filters.enablenumStates && isempty(handles.filters.numstates_max)
+%     handles.filters.numstates_max = Inf;
+% end
+% if handles.filters.enablenumStates && isempty(handles.filters.numstates_min)
+%     handles.filters.numstates_min = 0;
+% end
 guidata(hObject, handles);
 
-[handles.data.rois.status] = deal(0); % clear any existing selections
-
-% sort by SNR only
-if handles.filters.snrEnable && ~handles.filters.numstatesEnable
-    % change corresponding text in GUI
-    handles.text_snr_filt.String = sprintf('%.1f -> %.1f',...
-        handles.filters.snr_min, handles.filters.snr_max);
-    handles.text_numstates_filt.String = 'any';
-    % adjust trace status if parameters are met
-    handles.data = computeSNR(handles.data, handles.idx(2), 0); % fill field in data struct    
-    for ii = 1:size(handles.data.rois, 1)
-        if ~isempty(handles.data.rois(ii,handles.idx(2)).SNR)
-            trace_snr = handles.data.rois(ii,handles.idx(2)).SNR;
-            if trace_snr <= handles.filters.snr_max && ...
-                    trace_snr >= handles.filters.snr_min
-                for jj = 1:size(handles.data.rois,2)
-                    handles.data.rois(ii,jj).status = 1;
-                end
-            end
-        end
-    end
-% sort by # of states only
-elseif handles.filters.numstatesEnable && ~handles.filters.snrEnable
-    % change corresponding text in GUI
-    handles.text_numstates_filt.String = sprintf('%.0f -> %.0f',...
-        handles.filters.numstates_min, handles.filters.numstates_max);
-    handles.text_snr_filt.String = 'any';
-    % adjust trace status if parameters are met
-    for ii = 1:size(handles.data.rois, 1)
-        if ~isempty(handles.data.rois(ii,handles.idx(2)).disc_fit)
-            n_components = size(handles.data.rois(ii,handles.idx(2)).disc_fit.components, 1);
-            if n_components <= round(handles.filters.numstates_max) && ...
-                    n_components >= round(handles.filters.numstates_min)
-                for jj = 1:size(handles.data.rois,2)
-                    handles.data.rois(ii,jj).status = 1;
-                end
-            end
-        end
-    end
-% sort by SNR and # of states
-elseif handles.filters.numstatesEnable && handles.filters.snrEnable
-    % change corresponding text in GUI
-    handles.text_snr_filt.String = sprintf('%.1f -> %.1f',...
-        handles.filters.snr_min, handles.filters.snr_max);
-    handles.text_numstates_filt.String = sprintf('%.0f -> %.0f',...
-        handles.filters.numstates_min, handles.filters.numstates_max);
-    % adjust trace status if parameters are met
-    handles.data = computeSNR(handles.data, handles.idx(2), 0);
-    for ii = 1:size(handles.data.rois, 1)
-        if ~isempty(handles.data.rois(ii, handles.idx(2)).disc_fit)
-            n_components = size(handles.data.rois(ii,handles.idx(2)).disc_fit.components, 1);
-            trace_snr = handles.data.rois(ii, handles.idx(2)).SNR;
-            if n_components <= round(handles.filters.numstates_max) && ...
-                    n_components >= round(handles.filters.numstates_min) && ...
-                    trace_snr <= handles.filters.snr_max && ...
-                    trace_snr >= handles.filters.snr_min
-                for jj = 1:size(handles.data.rois,2)
-                    handles.data.rois(ii,jj).status = 1;
-                end
-            end
-        end
-    end
-end
+% % sort by SNR only
+% if handles.filters.snrEnable && ~handles.filters.numstatesEnable
+%     [handles.data.rois.status] = deal(0); % clear any existing selections
+%     % change corresponding text in GUI
+%     handles.text_snr_filt.String = sprintf('%.1f -> %.1f',...
+%         handles.filters.snr_min, handles.filters.snr_max);
+%     handles.text_numstates_filt.String = 'any';
+%     % adjust trace status if parameters are met
+%     handles.data = computeSNR(handles.data, handles.idx(2), 0); % fill field in data struct    
+%     for ii = 1:size(handles.data.rois, 1)
+%         if ~isempty(handles.data.rois(ii,handles.idx(2)).SNR)
+%             trace_snr = handles.data.rois(ii,handles.idx(2)).SNR;
+%             if trace_snr <= handles.filters.snr_max && ...
+%                     trace_snr >= handles.filters.snr_min
+%                 for jj = 1:size(handles.data.rois,2)
+%                     handles.data.rois(ii,jj).status = 1;
+%                 end
+%             end
+%         end
+%     end
+% % sort by # of states only
+% elseif handles.filters.numstatesEnable && ~handles.filters.snrEnable
+%     [handles.data.rois.status] = deal(0); % clear any existing selections
+%     % change corresponding text in GUI
+%     handles.text_numstates_filt.String = sprintf('%.0f -> %.0f',...
+%         handles.filters.numstates_min, handles.filters.numstates_max);
+%     handles.text_snr_filt.String = 'any';
+%     % adjust trace status if parameters are met
+%     for ii = 1:size(handles.data.rois, 1)
+%         if ~isempty(handles.data.rois(ii,handles.idx(2)).disc_fit)
+%             n_components = size(handles.data.rois(ii,handles.idx(2)).disc_fit.components, 1);
+%             if n_components <= round(handles.filters.numstates_max) && ...
+%                     n_components >= round(handles.filters.numstates_min)
+%                 for jj = 1:size(handles.data.rois,2)
+%                     handles.data.rois(ii,jj).status = 1;
+%                 end
+%             end
+%         end
+%     end
+% % sort by SNR and # of states
+% elseif handles.filters.numstatesEnable && handles.filters.snrEnable
+%     [handles.data.rois.status] = deal(0); % clear any existing selections
+%     % change corresponding text in GUI
+%     handles.text_snr_filt.String = sprintf('%.1f -> %.1f',...
+%         handles.filters.snr_min, handles.filters.snr_max);
+%     handles.text_numstates_filt.String = sprintf('%.0f -> %.0f',...
+%         handles.filters.numstates_min, handles.filters.numstates_max);
+%     % adjust trace status if parameters are met
+%     handles.data = computeSNR(handles.data, handles.idx(2), 0);
+%     for ii = 1:size(handles.data.rois, 1)
+%         if ~isempty(handles.data.rois(ii, handles.idx(2)).disc_fit)
+%             n_components = size(handles.data.rois(ii,handles.idx(2)).disc_fit.components, 1);
+%             trace_snr = handles.data.rois(ii, handles.idx(2)).SNR;
+%             if n_components <= round(handles.filters.numstates_max) && ...
+%                     n_components >= round(handles.filters.numstates_min) && ...
+%                     trace_snr <= handles.filters.snr_max && ...
+%                     trace_snr >= handles.filters.snr_min
+%                 for jj = 1:size(handles.data.rois,2)
+%                     handles.data.rois(ii,jj).status = 1;
+%                 end
+%             end
+%         end
+%     end
+% end
 guidata(hObject, handles);
 % redraw titles
 handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
