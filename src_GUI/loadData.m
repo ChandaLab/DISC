@@ -19,7 +19,6 @@ function [data] = loadData(fp)
 % data.rois.time_series = time series data to be analyzed
 
 
-disp('Loading Data ...')
 if ~exist('fp','var')
     [file, path] = uigetfile({'*.mat;*.dat;*.csv','Data files (*.mat,*.dat,*.csv)'},...
         'Open data file.'); % open file picker
@@ -31,6 +30,8 @@ if ~exist('fp','var')
 end
 [~, ~, ext] = fileparts(fp); % get extension, will determine which method
                                % to use for importing
+                               
+f1 = msgbox('Loading Data...');                              
 switch lower(ext)
     case {'.dat' '.csv'} % loads if formatted as in HaMMy/vbFRET
         temp = importdata(fp); % load into a convenient cell
@@ -57,8 +58,8 @@ switch lower(ext)
         temp = load(fp, 'data'); % load from path
         data = temp.data;
 end
+close(f1)
 clear temp;
-msgbox('Data Loaded.')
 
 % init and rename fields if necessary
 data = initFields(data);

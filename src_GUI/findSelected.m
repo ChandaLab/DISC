@@ -10,7 +10,7 @@ function idx = findSelected(data, ch_idx);
 % 2019-08-22 DSW wrote the code
 
 % allocate space 
-idx = zeros(length(vertcat(data.rois(:, ch_idx).disc_fit)), 1);
+idx = zeros(size(data.rois, 1), 1);
 for i = 1:size(data.rois, 1)
     if ~isempty(data.rois(i, ch_idx).disc_fit) & data.rois(i, ch_idx).status 
         idx(i) = i;

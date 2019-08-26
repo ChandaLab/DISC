@@ -41,8 +41,10 @@ handles.text_numstates_filt.String = sprintf('%.0f -> %.0f',...
 % go through and apply the filters
 for i = 1:size(handles.data.rois(:,channel_idx),1)
     
+    % need a DISC fit for this analysis
     if ~isempty(handles.data.rois(i,channel_idx).disc_fit)
         
+       % if no SNR, compute SNR for all the trajectories
         if isempty(handles.data.rois(i,channel_idx).SNR)
             handles.data.rois(i,channel_idx).SNR = computeSNR(handles.data.rois(i,channel_idx).disc_fit.components);
         end
