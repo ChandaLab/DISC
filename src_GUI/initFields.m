@@ -31,7 +31,7 @@ if ~isfield(data.rois, 'disc_fit')
 end
 % roi selection in the GUI 
 if ~isfield(data.rois, 'status')
-    [data.rois.status] = deal(0); % default is unselected
+    [data.rois.status] = deal(1); % default is selected
 end
 % further computation after DISC (see computeSNR.m)
 [data.rois.SNR] = deal([]); % clear any values, avoids confusion as SNR 
