@@ -30,19 +30,19 @@ function viterbi_data_fit = runViterbi(data,data_fit,max_iter)
 % Check Arguments; set default values
 % Check data
 if ~exist('data','var') || isempty(data)
-    disp('Error in divSegment: No data provided.');
+    disp('Error in runViterbi: No data provided.');
     return;
 end
 
 % Check data_fit
 if ~exist('data_fit','var') || isempty(data_fit)
-    disp('Error in divSegment: No data_fit provided.');
+    disp('Error in runViterbi: No data_fit provided.');
     return;
 end
 
 % Make sure data and data_fit are the same length
 if length(data) ~= length(data_fit)
-    disp('Error in divSegment: data and data_fit are not the same length.');
+    disp('Error in runViterbi: data and data_fit are not the same length.');
     return;
 end
 
@@ -70,17 +70,18 @@ for iter = 1:max_iter
     weights = components(:,1); 
     
     % Emissions Matrix (Gaussian Dist)
-    emissons_matrix = computeEM(data,components);
+    emissions_matrix = computeEM(data,components);
     
     % Transitions matrix
     transitions_matrix = computeTM(seq);
     
     % Find viterbi path
-    [viterbi_path(iter,:),log_likelihood(iter)] = viterbiPath(weights, transitions_matrix, emissons_matrix);
-    
+    %[viterbi_path(iter,:),log_likelihood(iter)] = logViterbiPath(weights, transitions_matrix, emissions_matrix);
+    [viterbi_path(iter,:),log_likelihood(iter)] = viterbiPath(weights, transitions_matrix, emissions_matrix);     
 end
 % output of best path across all iterations 
 [~,best_iter] = max(log_likelihood);
 viterbi_data_fit =  viterbi_path(best_iter,:)'; 
+
 
 end
