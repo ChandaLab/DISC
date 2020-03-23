@@ -20,7 +20,7 @@ states = unique(data_fit);
 n_states = length(states); 
 
 % find Events and Dwell Times
-events = findEvents(data_fit); 
+events = findEvents(data_fit,1); 
 
 % total time per state
 state_time = zeros(1,n_states); 

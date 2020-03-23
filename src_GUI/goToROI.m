@@ -42,13 +42,25 @@ else
         indices(1), size(data.rois,1), numsel);
 end
 title(axes_array(1), title_txt);
-xlabel(axes_array(1), 'Frames'); 
+%xlabel(axes_array(1), 'Frames'); 
 ylabel(axes_array(1), 'Intensity (AU)');
 set(axes_array(1), 'fontsize', 12);
 set(axes_array(1), 'fontname', 'arial');
 
 % 2. time series histogram (and fit)
 plotHistogram(axes_array(2), axes_array(1), roi, channel_colors(indices(2),:))
+if isfield(roi,'fcAMP_nM')
+    title(axes_array(2), ['fcAMP (nM): ', num2str(roi.fcAMP_nM)]);
+end
 
 % 3. information criterion values of the fit
 plotMetric(axes_array(3), roi);
+if ~isempty(roi.disc_fit)
+    title(axes_array(3),['N States: ', num2str(size(roi.disc_fit.components,1))]);
+end
+
+
+% 4. cropped from raw image
+plotImageROI(axes_array(4), roi);
+
+

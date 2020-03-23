@@ -48,8 +48,9 @@ for k = 1:n_states
     mu = components(k,2);     % mean of the state
     std = components(k,3);    % standard deviation of the state
     % evaluate all data points for the gaussian components of each state (normpdf)
-    emissions_matrix(k,:) = exp(-0.5 * ((data-mu)./std).^2) ./ (sqrt(2*pi) .* std);
+    emissions_matrix(k,:) = exp(-0.5 * ((data-mu)./std).^2) ./ (sqrt(2*pi) .* std) + 1e-10;
 end
+
 % normalize to sum to 1 per data point across each state
 emissions_matrix = emissions_matrix./ repmat(sum(emissions_matrix),[size(emissions_matrix,1) 1]); 
 

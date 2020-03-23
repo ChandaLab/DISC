@@ -41,5 +41,5 @@ end
 xlabel(axes, 'Number of States'); set(axes,'ytick',[]);
 set(axes, 'fontsize', 12);
 set(axes, 'fontname', 'arial');
-
+grid(axes,'on')
 end

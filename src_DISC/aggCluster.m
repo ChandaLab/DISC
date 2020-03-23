@@ -107,10 +107,12 @@ while n_centers > 0
         for n = 1:n_centers
             ward_dist(n) = ((2*N(n)*N(n+1) / (N(n)+N(n+1)))^0.5) * (centers(n)-centers(n+1))^2;
             new_mu(n) = (N(n) * centers(n) + N(n+1) * centers(n+1)) / (N(n) + N(n+1)); 
+            %ward_dist(n) = (N(n) + N(n+1)) * new_mu(n)^2 - N(n)*centers(n)^2 - N(n+1)*centers(n+1)^2; 
         end
         
         % Merge clusters with minimal Ward's distance
         [~,min_ward_dist] = min(ward_dist);
+        %[~,min_ward_dist] = max(ward_dist);
         
         % Find data points from each of the two clusters that are going to
         % be merged

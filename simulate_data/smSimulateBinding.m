@@ -1,6 +1,6 @@
 function simulation = smSimulateBinding(duration_s, dt_s, n_sites, SNR, Q, ...
     Emission_states, Intensities, Intensity_Variation)
-%% simulationulate Single Molecule Binding Time Series data from a Q matrix
+%% Simulate Single Molecule Binding Time Series data from a Kinetic Matrix
 % Author: David S. White
 % contact: dwhite7@wisc.edu
 %
@@ -42,7 +42,7 @@ function simulation = smSimulateBinding(duration_s, dt_s, n_sites, SNR, Q, ...
 % Output Variables:
 % ----------------
 % simulation = structure with simulationulation results. 
-%   simulation.zproj = [n_data_points,1] observed sequence (Gaussian noise)
+%   simulation.time_series = [n_data_points,1] observed sequence (Gaussian noise)
 %   simulation.Q = input kinetics used in the simulationulation for reference
 %   simulation.state_seq = [n_data_points,1] assignment of states (ie 1,2,3...)
 %   simulation.ideal_seq = state_seq with assigned intensity values
@@ -65,7 +65,7 @@ duration_f = round(duration_s / dt_s); % duration in frames
 
 % simulationulate state sequence
 N = size(Q,1);
-simulation.Q = Q;                          % store before modifying
+simulation.Q = Q;                   % store before modifying
 Q = Q - diag(sum(Q,2));             % unitary
 S = [Q ones(N,1)];
 u = ones(1,N);
@@ -98,7 +98,7 @@ end
 % calculate Events
 states = unique(state_seq);
 n_states = length(states);
-events = findEvents(state_seq);
+events = findEvents(state_seq,1);
 
 same_value = 1;
 intensites = checkVariable(Intensities,n_states,same_value); % bound and unbound
@@ -106,7 +106,7 @@ SNR = checkVariable(SNR,1);
 
 ideal_seq = zeros(duration_f,1);
 ideal_seq_var = zeros(duration_f,1);
-zproj =  zeros(duration_f,1);
+time_series =  zeros(duration_f,1);
 
 % signal to noise ratio
 intensites_mu = mean(intensites(2:end));
@@ -122,7 +122,7 @@ for n = 1:size(events,1);
     % Add ideal_seq
     ideal_seq(event_start:event_stop) = sum(intensites(1:EventState));
     
-    % Add ideal_seq_var & zproj
+    % Add ideal_seq_var & time_series
     event_dur = event_stop-event_start;
     event_seq = zeros(event_dur,1);
     itensity_var = 1;
@@ -131,8 +131,7 @@ for n = 1:size(events,1);
             if ~isempty(Intensity_Variation)
                 modulation = random(Intensity_Variation,1) / 100;
                 % since values are curently absolute values from an exp dist
-                plus_or_minus = rand(1);
-                if plus_or_minus < 0.5;
+                if rand(1) < 0.5;
                     modulation = modulation * -1;
                 end
             else
@@ -150,22 +149,22 @@ for n = 1:size(events,1);
 end
 
 % Add noise
-intensities = unique(ideal_seq);
+intensites = unique(ideal_seq);
 sigma = (intensites(1)) / SNR;
-zproj = normrnd(ideal_seq_var, sigma);
+time_series = normrnd(ideal_seq_var, sigma);
 
 % create components
-[components,ideal_seq] = computeCenters(zproj,state_seq);
-[~,ideal_seq_var] = computeCenters(zproj,ideal_seq_var);
+[components,ideal_seq] = computeCenters(time_series,state_seq);
+[~,ideal_seq_var] = computeCenters(time_series,ideal_seq_var);
 
 % Store output output in the simulationulation structure
-simulation.zproj = zproj;
+simulation.time_series = time_series;
 simulation.state_seq = state_seq;
 simulation.ideal_seq = ideal_seq;
 simulation.ideal_seq_var = ideal_seq_var;
+simulation.true_snr = SNR; 
 simulation.true_components = components;
 simulation.n_states = length(states);
-simulation.SNR = SNR;
 
 end
 %% check value

@@ -12,8 +12,8 @@ function data = initFields(data)
 % 2019-04-10    DSW     Updated for DISCO v1.1.0 format changes
 
 % check for format converions form roi.zproj to roi.ts 
+[n_rois,n_channels] = size(data.rois);
 if isfield(data.rois,'zproj')
-    [n_rois,n_channels] = size(data.rois);
     
     % create new field rois.time_series
     for k = 1:n_channels
@@ -23,6 +23,21 @@ if isfield(data.rois,'zproj')
     end
     % remove old field for space saving
     data.rois = rmfield(data.rois,'zproj');
+end
+
+% time_series_0 for truncation 
+if ~isfield(data.rois,'time_series_0')
+    for k = 1:n_channels
+        for n = 1:n_rois
+            data.rois(n,k).time_series_0 = data.rois(n,k).time_series; 
+            if isfield(data.rois,'image')
+                frameRate_s = 1/data.rois(n).image.frameRateHz; 
+            else
+                % assume 100 ms frames for internal use
+                 frameRate_s = 0.1; end
+             data.rois(n,k).time_s = [frameRate_s:frameRate_s:length(data.rois(n,k).time_series)*frameRate_s]';
+        end
+    end
 end
 
 % output runDISC.m
@@ -38,3 +53,5 @@ end
                             % will otherwise be displayed in title and will
                             % not necessarily be that which is computed in
                             % computeSNR.m
+
+                            

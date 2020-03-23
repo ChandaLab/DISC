@@ -76,8 +76,8 @@ for iter = 1:max_iter
     transitions_matrix = computeTM(seq);
     
     % Find viterbi path
-    %[viterbi_path(iter,:),log_likelihood(iter)] = logViterbiPath(weights, transitions_matrix, emissions_matrix);
-    [viterbi_path(iter,:),log_likelihood(iter)] = viterbiPath(weights, transitions_matrix, emissions_matrix);     
+    [viterbi_path(iter,:),log_likelihood(iter)] = logViterbiPath(weights, transitions_matrix, emissions_matrix);
+    %[viterbi_path(iter,:),log_likelihood(iter)] = viterbiPath(weights, transitions_matrix, emissions_matrix);     
 end
 % output of best path across all iterations 
 [~,best_iter] = max(log_likelihood);

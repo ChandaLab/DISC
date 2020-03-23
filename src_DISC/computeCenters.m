@@ -1,5 +1,5 @@
 function [components,mu_data_fit,state_data_fit] = computeCenters(data,data_fit)
-%% Compute Components, statedata_fit, and clusters from data and state assignment 
+%% Compute Components, state_data_fit, and clusters from data and state assignment 
 % Author: David S. White
 % Contact: dwhite7@wisc.edu
 %

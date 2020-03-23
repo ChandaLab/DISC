@@ -22,7 +22,7 @@ function varargout = discGUI(varargin)
 
 % Edit the above text to modify the response to help discGUI
 
-% Last Modified by GUIDE v2.5 22-Aug-2019 15:14:40
+% Last Modified by GUIDE v2.5 11-Feb-2020 17:53:25
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,7 +58,7 @@ function discGUI_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.data = varargin{:};
 
 % make axes array to simplify goToROI input
-handles.ax_array = [handles.axes1 handles.axes2 handles.axes3];
+handles.ax_array = [handles.axes1 handles.axes2 handles.axes3 handles.axes4];
 [handles.data.names, handles.channel_colors] = initChannels(handles.data);
 
 handles.popupmenu_channelSelect.String = handles.data.names;
@@ -364,3 +364,42 @@ else
         handles.idx(1), size(handles.data.rois,1), numsel);
 end
 title(handles.axes1, title_txt);
+
+
+% --- Executes on button press in pushbutton_truncate.
+function pushbutton_truncate_Callback(hObject, eventdata, handles)
+handles.data = truncateTrace(handles.data,handles.idx,0); 
+guidata(hObject, handles);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
+
+% --- Executes on button press in pushbutton_reset.
+function pushbutton_reset_Callback(hObject, eventdata, handles)
+handles.data = resetTrace(handles.data,handles.idx,0);
+guidata(hObject, handles);
+handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+    handles.channel_colors);
+
+% --- Executes on button press in pushbutton_truncateAll.
+function pushbutton_truncateAll_Callback(hObject, eventdata, handles)
+    answer = questdlg('Undo all time series truncation?', ...
+    'Yes','No');
+switch answer
+    case 'Yes'
+        handles.data = truncateTrace(handles.data,handles.idx,1); 
+        guidata(hObject, handles);
+        handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+            handles.channel_colors);
+end
+
+% --- Executes on button press in pushbutton_resetAll.
+function pushbutton_resetAll_Callback(hObject, eventdata, handles)
+answer = questdlg('Undo all time series truncation?', ...
+    'Yes','No');
+switch answer
+    case 'Yes'
+        handles.data = resetTrace(handles.data,handles.idx,1);
+        guidata(hObject, handles);
+        handles.idx = goToROI(handles.data, handles.idx, handles.ax_array,...
+            handles.channel_colors);
+end

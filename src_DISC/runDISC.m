@@ -137,7 +137,6 @@ end
 % add parameters to the disc_fit structure
 disc_fit.parameters = disc_input; 
 
-
 %% Step 1. Divisive Clustering 
 % Determine number of clusters and transitons between them 
 if ~strcmp(disc_input.divisive, 'none')

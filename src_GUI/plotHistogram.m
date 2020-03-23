@@ -82,6 +82,7 @@ plot(axes, data_range, gauss_fit_all, '-k', 'linewidth', 1.7);
 
 hold(axes,'off'); set(axes,'xtick',[]); set(axes,'ytick',[]); view(axes,[90,-90])
 xlim(axes, get(alignaxes,'Ylim'))
+grid(axes,'on')
 
 % write number of states and SNR (if it exists) in the title
 if isempty(roi.SNR)
@@ -92,5 +93,4 @@ end
 title(axes, title_txt, 'HorizontalAlignment','left');
 set(axes, 'fontsize', 12);
 set(axes, 'fontname', 'arial');
-
 end
