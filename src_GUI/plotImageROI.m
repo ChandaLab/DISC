@@ -14,8 +14,10 @@ function plotImageROI(axes, roi)
 cla(axes);
 set(axes, 'Visible','off');
 % draw only if analysis is completed
-if isfield(roi.image,'cropped')
-    imshow(roi.image.cropped,[],'Parent',axes);
+if isfield(roi, 'image')
+    if isfield(roi.image,'cropped')
+        imshow(roi.image.cropped,[],'Parent',axes);
+    end
 end
 
 end
