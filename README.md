@@ -81,8 +81,9 @@ In bug reports, please describe the bug, enumerate steps to reproduce it, paste 
 If you have any other questions or comments, please email David S. White at dwhite7@wisc.edu.
 
 ## References 
+If using this software, please cite: 
 
-White, D., Goldschen-Ohm, M., Goldsmith, R. & Chanda, B. High-Throughput Single-Molecule Analysis via Divisive Segmentation and Clustering. bioRxiv, 603761 (2019).
+White, D.S., Goldschen-Ohm, M.P., Goldsmith, R.H., Chanda, B. Top-down machine learning approach for high-throughput single-molecule analysis. Elife 2020, 9
 
 ## License 
 
